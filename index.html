@@ -2622,7 +2622,9 @@ const quizData = [
                     "Better for thin materials under 1mm"
                 ],
                 correct: 1,
-                explanation: "MIG feeds filler wire continuously through the torch, making it 3–5× faster than TIG for deposition rate. This makes MIG the go-to{
+                explanation: "MIG feeds filler wire continuously through the torch, making it 3–5× faster than TIG for deposition rate. This makes MIG the go-to for production welding — structural steel, automotive, general fabrication. TIG is slower but gives superior control and cleaner welds, making it the choice for thin materials, aesthetics, and critical joints (aerospace, food-grade stainless). MIG wins on speed; TIG wins on precision."
+            },
+            {
                 q: "A part must fit into another with minimal play and no force. What kind of fit is this?",
                 options: [
                     "Transition fit",
@@ -2979,13 +2981,4 @@ const quizData = [
                 msgEl.className = 'nickname-msg success';
                 btn.textContent = 'Submitted';
             });
-        }).catch(function(error) {
-            msgEl.textContent = 'Error saving score. Try again.';
-            msgEl.className = 'nickname-msg error';
-            btn.disabled = false;
-            btn.textContent = 'Submit';
-        });
-    };
-    </script>
-</body>
-</html>
+        }).catch(function(err
