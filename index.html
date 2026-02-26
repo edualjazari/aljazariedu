@@ -2825,11 +2825,27 @@ const quizData = [
             fetch('https://forminit.com/f/oh8o7herz1m', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: email })
+                body: JSON.stringify({
+                    blocks: [
+                        {
+                            type: 'sender',
+                            properties: {
+                                email: email
+                            }
+                        }
+                    ]
+                })
             })
-            .then(response => {
-                document.getElementById('signupForm').style.display = 'none';
-                document.getElementById('signupSuccess').style.display = 'block';
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('signupForm').style.display = 'none';
+                    document.getElementById('signupSuccess').style.display = 'block';
+                } else {
+                    btn.textContent = 'Subscribe';
+                    btn.disabled = false;
+                    alert('Something went wrong. Please try again.');
+                }
             })
             .catch(error => {
                 btn.textContent = 'Subscribe';
@@ -2842,45 +2858,7 @@ const quizData = [
     // Initialize — nothing needed, start button handles it
     </script>
 
-    <!-- FIREBASE SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-        import { getDatabase, ref, get, set, onValue, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyA6XXSKUxjAeM6yCgaNtrZZvjy6Khk5GDg",
-            authDomain: "aljazariedu-c4131.firebaseapp.com",
-            databaseURL: "https://aljazariedu-c4131-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "aljazariedu-c4131",
-            storageBucket: "aljazariedu-c4131.firebasestorage.app",
-            messagingSenderId: "937448537048",
-            appId: "1:937448537048:web:902de11f23800301cd50ad"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
-        // Make functions available globally
-        window.firebaseDB = db;
-        window.firebaseRef = ref;
-        window.firebaseGet = get;
-        window.firebaseSet = set;
-        window.firebaseOnValue = onValue;
-        window.firebaseQuery = query;
-        window.firebaseOrderByChild = orderByChild;
-        window.firebaseLimitToLast = limitToLast;
-
-        // Start listening to leaderboard
-        const leaderboardRef = query(ref(db, 'leaderboard'), orderByChild('score'));
-        onValue(leaderboardRef, (snapshot) => {
-            const data = snapshot.val();
-            window.renderLeaderboard(data);
-        }, (error) => {
-            document.getElementById('leaderboardContent').innerHTML =
-                '<div class="leaderboard-empty">Could not load leaderboard.</div>';
-        });
-    </script>
-
+    <!-- LEADERBOARD FUNCTIONS (must be before Firebase module) -->
     <script>
     // =========================================
     // LEADERBOARD FUNCTIONS
@@ -2893,7 +2871,6 @@ const quizData = [
             return;
         }
 
-        // Convert to array and sort by score descending, then by timestamp ascending (earlier = better)
         const entries = Object.keys(data).map(key => ({
             nickname: key,
             score: data[key].score,
@@ -2949,7 +2926,6 @@ const quizData = [
             return;
         }
 
-        // Sanitize nickname for Firebase key (no . # $ [ ] /)
         var safeKey = nickname.replace(/[.#$\[\]\/]/g, '_');
 
         btn.disabled = true;
@@ -2981,4 +2957,54 @@ const quizData = [
                 msgEl.className = 'nickname-msg success';
                 btn.textContent = 'Submitted';
             });
-        }).catch(function(err
+        }).catch(function(err) {
+            console.error('Firebase error:', err);
+            msgEl.textContent = 'Error saving score. Please try again.';
+            msgEl.className = 'nickname-msg error';
+            btn.disabled = false;
+            btn.textContent = 'Submit';
+        });
+    };
+    </script>
+
+    <!-- FIREBASE SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+        import { getDatabase, ref, get, set, onValue, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6XXSKUxjAeM6yCgaNtrZZvjy6Khk5GDg",
+            authDomain: "aljazariedu-c4131.firebaseapp.com",
+            databaseURL: "https://aljazariedu-c4131-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "aljazariedu-c4131",
+            storageBucket: "aljazariedu-c4131.firebasestorage.app",
+            messagingSenderId: "937448537048",
+            appId: "1:937448537048:web:902de11f23800301cd50ad"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Make functions available globally
+        window.firebaseDB = db;
+        window.firebaseRef = ref;
+        window.firebaseGet = get;
+        window.firebaseSet = set;
+        window.firebaseOnValue = onValue;
+        window.firebaseQuery = query;
+        window.firebaseOrderByChild = orderByChild;
+        window.firebaseLimitToLast = limitToLast;
+
+        // Start listening to leaderboard
+        const leaderboardRef = query(ref(db, 'leaderboard'), orderByChild('score'));
+        onValue(leaderboardRef, (snapshot) => {
+            const data = snapshot.val();
+            window.renderLeaderboard(data);
+        }, (error) => {
+            document.getElementById('leaderboardContent').innerHTML =
+                '<div class="leaderboard-empty">Could not load leaderboard.</div>';
+        });
+    </script>
+
+</body>
+</html>
