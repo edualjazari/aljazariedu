@@ -78,6 +78,11 @@
             backdrop-filter: blur(20px);
             background: rgba(10, 15, 20, 0.85);
             border-bottom: 1px solid var(--border);
+            transition: transform 0.3s ease;
+        }
+
+        nav.nav-hidden {
+            transform: translateY(-100%);
         }
 
         .nav-logo {
@@ -101,11 +106,60 @@
         }
         .nav-links a:hover { color: var(--teal-light); }
 
+        .nav-login {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            padding: 0.4rem 1rem;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            cursor: pointer;
+            background: none;
+            font-family: 'IBM Plex Sans', sans-serif;
+        }
+
+        .nav-login:hover {
+            color: var(--teal-light);
+            border-color: var(--teal);
+        }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .nav-user-name {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--teal-light);
+            letter-spacing: 0.02em;
+        }
+        .nav-logout {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.78rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            padding: 0.3rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            cursor: pointer;
+            background: none;
+            font-family: 'IBM Plex Sans', sans-serif;
+        }
+        .nav-logout:hover { color: var(--error); border-color: var(--error); }
+
         section { position: relative; z-index: 1; }
 
         /* ===== PAGE HEADER ===== */
         .page-header {
-            padding: 8rem 2rem 3.5rem;
+            padding: 5rem 2rem 0.5rem;
             text-align: center;
             position: relative;
         }
@@ -128,13 +182,13 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            padding: 0.5rem 1.2rem;
+            padding: 0.4rem 1.1rem;
             border: 1px solid var(--border-light);
             border-radius: 100px;
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             font-weight: 500;
             color: var(--text-dim);
-            margin-bottom: 2rem;
+            margin-bottom: 0.75rem;
             background: var(--bg-card);
         }
 
@@ -152,91 +206,152 @@
 
         .page-header h1 {
             font-family: 'DM Serif Display', serif;
-            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
             line-height: 1.15;
             letter-spacing: -0.03em;
-            margin-bottom: 1.25rem;
+            margin-bottom: 0.5rem;
         }
 
         .page-header h1 .teal { color: var(--teal-light); }
         .page-header h1 .orange { color: var(--orange); }
 
         .page-header-sub {
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             color: var(--text-dim);
-            max-width: 600px;
+            max-width: 760px;
             margin: 0 auto;
             font-weight: 300;
-            line-height: 1.8;
+            line-height: 1.6;
         }
 
         /* ===== CAROUSEL ===== */
         .carousel-section {
-            padding: 0 0 4rem;
+            padding: 0.25rem 0 1rem;
         }
 
-        .carousel-wrapper {
+        .carousel-outer {
             position: relative;
-            max-width: 1200px;
+            max-width: 100%;
             margin: 0 auto;
-            padding: 0 2rem;
+            display: flex;
+            align-items: stretch;
         }
 
+        /* Side arrows */
+        .side-arrow {
+            position: relative;
+            z-index: 10;
+            width: 56px;
+            min-width: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .side-arrow:hover:not(:disabled) {
+            color: var(--teal-light);
+        }
+
+        .side-arrow:disabled {
+            opacity: 0.15;
+            cursor: default;
+        }
+
+        .side-arrow svg { width: 28px; height: 28px; }
+
+        /* Viewport with peek */
         .carousel-viewport {
             overflow: hidden;
-            border-radius: 16px;
+            flex: 1;
+            position: relative;
+        }
+
+        /* Fade masks on sides */
+        .carousel-viewport::before,
+        .carousel-viewport::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 60px;
+            z-index: 5;
+            pointer-events: none;
+        }
+        .carousel-viewport::before {
+            left: 0;
+            background: linear-gradient(to right, var(--bg), transparent);
+        }
+        .carousel-viewport::after {
+            right: 0;
+            background: linear-gradient(to left, var(--bg), transparent);
         }
 
         .carousel-track {
             display: flex;
-            transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .carousel-slide {
-            min-width: 100%;
-            padding: 0 1rem;
+            min-width: 80%;
+            max-width: 80%;
+            padding: 0 0.6rem;
+            opacity: 0.25;
+            transform: scale(0.93);
+            transition: opacity 0.45s ease, transform 0.45s ease;
+            pointer-events: none;
         }
 
+        .carousel-slide.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        /* ===== CHAPTER CARD ===== */
         .chapter-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 2.5rem;
-            max-width: 860px;
-            margin: 0 auto;
-            transition: all 0.4s ease;
+            border-radius: 14px;
+            padding: 2rem 3rem;
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            grid-template-rows: auto 1fr;
+            gap: 0 2.25rem;
+            height: 100%;
         }
 
-        .chapter-top {
+        /* SVG illustration — left column, spans both rows */
+        .chapter-illustration {
+            grid-row: 1 / 3;
+            grid-column: 1;
             display: flex;
             align-items: flex-start;
-            gap: 1.25rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .chapter-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            flex-shrink: 0;
+            padding-top: 0.15rem;
         }
 
-        .chapter-icon.teal-icon {
-            background: var(--teal-glow);
-            border: 1px solid var(--teal);
+        .chapter-illustration img {
+            width: 120px;
+            height: auto;
+            display: block;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            background: #fff;
+            padding: 10px;
         }
 
-        .chapter-icon.orange-icon {
-            background: var(--orange-glow);
-            border: 1px solid var(--orange);
+        /* Right column content */
+        .chapter-header {
+            grid-row: 1;
+            grid-column: 2;
+            margin-bottom: 1rem;
         }
-
-        .chapter-icon svg { width: 24px; height: 24px; }
-
-        .chapter-meta { flex: 1; }
 
         .chapter-number {
             font-family: 'IBM Plex Mono', monospace;
@@ -244,7 +359,7 @@
             color: var(--orange);
             text-transform: uppercase;
             letter-spacing: 0.12em;
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.25rem;
             display: block;
         }
 
@@ -255,25 +370,9 @@
             letter-spacing: -0.01em;
         }
 
-        /* SVG Illustration */
-        .chapter-illustration {
-            width: 100%;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 1.5rem;
-            border: 1px solid var(--border);
-            background: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .chapter-illustration img {
-            width: 100%;
-            height: auto;
-            display: block;
-            max-height: 280px;
-            object-fit: contain;
+        .chapter-body {
+            grid-row: 2;
+            grid-column: 2;
         }
 
         .chapter-excerpt {
@@ -281,7 +380,7 @@
             font-size: 0.95rem;
             font-weight: 300;
             line-height: 1.8;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.15rem;
             padding-left: 1.25rem;
             border-left: 2px solid var(--teal);
         }
@@ -329,75 +428,39 @@
         .chapter-questions li::before {
             content: '?';
             font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.75rem;
+            font-size: 0.68rem;
             font-weight: 600;
             color: var(--teal-light);
             flex-shrink: 0;
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             border-radius: 4px;
             background: var(--teal-glow);
             border: 1px solid var(--teal);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: 2px;
+            margin-top: 1px;
         }
 
-        /* ===== CAROUSEL CONTROLS ===== */
+        /* ===== CHAPTER NUMBER NAV ===== */
         .carousel-controls {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
-        .carousel-arrow {
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
-            border: 1px solid var(--border-light);
-            background: var(--bg-card);
-            color: var(--text-dim);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            flex-shrink: 0;
-        }
-
-        .carousel-arrow:hover:not(:disabled) {
-            border-color: var(--teal);
-            color: var(--teal-light);
-            background: var(--bg-card-hover);
-            transform: translateY(-1px);
-        }
-
-        .carousel-arrow:disabled {
-            opacity: 0.25;
-            cursor: default;
-        }
-
-        .carousel-arrow svg { width: 18px; height: 18px; }
-
-        /* Chapter number navigation */
-        .carousel-chapters {
-            display: flex;
             gap: 0.25rem;
-            align-items: center;
+            margin-top: 0.75rem;
         }
 
         .carousel-chapter-btn {
-            width: 36px;
-            height: 36px;
+            width: 34px;
+            height: 34px;
             border-radius: 8px;
             border: 1px solid var(--border);
             background: var(--bg);
             color: var(--text-muted);
             font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s;
@@ -422,14 +485,14 @@
 
         /* ===== CTA SECTION ===== */
         .book-cta-section {
-            padding: 4rem 0 6rem;
+            padding: 3rem 0 5rem;
             border-top: 1px solid var(--border);
             text-align: center;
         }
 
         .book-cta-section h2 {
             font-family: 'DM Serif Display', serif;
-            font-size: 2rem;
+            font-size: 1.8rem;
             margin-bottom: 0.75rem;
         }
 
@@ -497,27 +560,157 @@
         }
         .footer-text a:hover { color: var(--teal-light); }
 
+        /* ===== VISITOR PROMO (shown to non-logged-in users) ===== */
+        .book-promo {
+            padding: 0 2rem 4rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .promo-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .promo-card h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(1.4rem, 3vw, 1.8rem);
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .promo-features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            text-align: left;
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .promo-feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            font-size: 0.88rem;
+            color: var(--text-dim);
+            line-height: 1.5;
+        }
+        .promo-feature svg {
+            flex-shrink: 0;
+            width: 16px; height: 16px;
+            color: var(--teal-light);
+            margin-top: 3px;
+        }
+
+        .promo-quote {
+            font-style: italic;
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            max-width: 500px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+            padding: 1.25rem 1.5rem;
+            border-left: 3px solid var(--orange);
+            background: var(--orange-glow);
+            border-radius: 0 10px 10px 0;
+            text-align: left;
+        }
+
+        .promo-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .promo-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.9rem 2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: 'IBM Plex Sans', sans-serif;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+        .promo-cta.primary { background: var(--teal); color: #fff; }
+        .promo-cta.primary:hover { background: var(--teal-light); transform: translateY(-1px); }
+        .promo-cta.secondary { background: transparent; color: var(--text-dim); border: 1px solid var(--border-light); }
+        .promo-cta.secondary:hover { border-color: var(--teal); color: var(--teal-light); }
+
+        .promo-cta svg { width: 16px; height: 16px; }
+
+        .pro-banner {
+            margin-top: 2rem;
+            padding: 1.25rem;
+            background: var(--orange-glow);
+            border: 1px solid rgba(232, 99, 43, 0.2);
+            border-radius: 10px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+        .pro-banner a { color: var(--orange); font-weight: 600; text-decoration: none; }
+        .pro-banner a:hover { text-decoration: underline; }
+
+        @media (max-width: 600px) {
+            .promo-features { grid-template-columns: 1fr; }
+        }
+
         /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .carousel-slide { min-width: 88%; max-width: 88%; }
+        }
+
         @media (max-width: 768px) {
             nav { padding: 0.75rem 1.25rem; }
             .nav-links { gap: 1rem; }
             .nav-links a { font-size: 0.75rem; }
-            .page-header { padding: 7rem 1.5rem 2.5rem; }
-            .carousel-wrapper { padding: 0 1rem; }
-            .carousel-slide { padding: 0 0.5rem; }
-            .chapter-card { padding: 1.5rem; }
-            .chapter-top { gap: 1rem; }
-            .chapter-icon { width: 44px; height: 44px; border-radius: 10px; }
-            .chapter-icon svg { width: 20px; height: 20px; }
-            .chapter-title { font-size: 1.2rem; }
-            .carousel-chapter-btn { width: 30px; height: 30px; font-size: 0.68rem; border-radius: 6px; }
-            .carousel-chapters { gap: 0.2rem; }
+            .page-header { padding: 5.5rem 1.5rem 1.5rem; }
+
+            .side-arrow { width: 36px; min-width: 36px; }
+            .side-arrow svg { width: 22px; height: 22px; }
+
+            .carousel-slide { min-width: 94%; max-width: 94%; }
+
+            .chapter-card {
+                grid-template-columns: 1fr;
+                padding: 1.25rem;
+            }
+
+            .chapter-illustration {
+                grid-row: auto;
+                grid-column: 1;
+                justify-content: flex-start;
+                margin-bottom: 0.75rem;
+            }
+
+            .chapter-illustration img { width: 64px; }
+
+            .chapter-header { grid-column: 1; }
+            .chapter-body { grid-column: 1; }
+
+            .carousel-chapter-btn { width: 28px; height: 28px; font-size: 0.65rem; border-radius: 6px; }
+
+            .carousel-viewport::before,
+            .carousel-viewport::after { width: 25px; }
         }
 
         @media (max-width: 480px) {
             .nav-links a:not(:last-child) { display: none; }
-            .chapter-top { flex-direction: column; gap: 0.75rem; }
-            .carousel-chapter-btn { width: 28px; height: 28px; font-size: 0.65rem; }
+            .side-arrow { width: 28px; min-width: 28px; }
+            .carousel-slide { min-width: 96%; max-width: 96%; }
+            .carousel-chapter-btn { width: 26px; height: 26px; font-size: 0.6rem; }
         }
     </style>
 </head>
@@ -528,19 +721,22 @@
     <nav>
         <a href="index.html" class="nav-logo">Al-Jazari<span>Edu</span></a>
         <div class="nav-links">
-            <a href="index.html#quiz-section">Quiz</a>
+            <a href="quiz.html">Quiz</a>
             <a href="book.html">Book</a>
-            <a href="index.html#mission-section">Mission</a>
+            <a href="plans.html">Plans</a>
             <a href="index.html#signup-section">Subscribe</a>
+            <span id="navAuthArea">
+                <a href="auth.html" class="nav-login">Log In</a>
+            </span>
         </div>
     </nav>
 
-    <!-- PAGE HEADER -->
+    <!-- HEADER -->
     <section class="page-header">
         <div class="page-header-content">
             <div class="page-badge">
                 <span class="dot"></span>
-                Book Preview — Print Edition Coming Soon
+                Early Access — Print Edition Coming Soon
             </div>
             <h1>
                 <span class="teal">Practical Mechanical Design</span><br>
@@ -552,41 +748,91 @@
         </div>
     </section>
 
+    <!-- VISITOR PROMO (shown when not logged in) -->
+    <section class="book-promo hidden" id="bookPromo">
+        <div class="promo-card">
+            <h2>What's Inside the Book?</h2>
+
+            <div class="promo-features">
+                <div class="promo-feature">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    <span>11 chapters — machining to assembly</span>
+                </div>
+                <div class="promo-feature">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    <span>Real manufacturing constraints, not theory</span>
+                </div>
+                <div class="promo-feature">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    <span>Sheet metal, welding, casting, plastics</span>
+                </div>
+                <div class="promo-feature">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    <span>Written by a practising engineer</span>
+                </div>
+                <div class="promo-feature">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    <span>DFM rules, tolerance guides, cheat sheets</span>
+                </div>
+                <div class="promo-feature">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    <span>Conversational, mentor-like tone</span>
+                </div>
+            </div>
+
+            <div class="promo-quote">
+                "The book my students needed but couldn't find — one that treats manufacturing knowledge as the starting point, not an afterthought."
+            </div>
+
+            <div class="promo-actions">
+                <a href="auth.html?tab=register&redirect=book.html" class="promo-cta primary">
+                    Register Free to Preview Chapters
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                </a>
+                <a href="auth.html?redirect=book.html" class="promo-cta secondary">Already have an account? Log in</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CHAPTER CAROUSEL (shown to logged-in users) -->
+    <div id="bookContent" class="hidden">
+
     <!-- CAROUSEL -->
     <section class="carousel-section">
-        <div class="carousel-wrapper">
+        <div class="carousel-outer">
+            <!-- Left arrow -->
+            <button class="side-arrow" id="prevBtn" aria-label="Previous chapter">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+
             <div class="carousel-viewport">
                 <div class="carousel-track" id="carouselTrack">
 
                     <!-- CH 1 -->
                     <div class="carousel-slide">
                         <div class="chapter-card">
-                            <div class="chapter-top">
-                                <div class="chapter-icon teal-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="#3A6A8A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7S2 12 2 12z"/>
-                                        <circle cx="12" cy="12" r="3"/>
-                                    </svg>
-                                </div>
-                                <div class="chapter-meta">
-                                    <span class="chapter-number">Chapter 1</span>
-                                    <h2 class="chapter-title">The Practical Design Mindset</h2>
-                                </div>
-                            </div>
                             <div class="chapter-illustration">
-                                <img src="C1.svg" alt="Chapter 1 — The Practical Design Mindset illustration">
+                                <img src="C1.svg" alt="Chapter 1 illustration">
                             </div>
-                            <p class="chapter-excerpt">
-                                Some problems show up repeatedly in design reviews. A deep pocket with a narrow opening looks elegant — but a cutting tool long enough to reach that depth will chatter, deflect, or break. A simple enclosure quoted at 2× expected cost. An assembly where every component fits in CAD, but the largest one is wider than the access opening. <em>None of these are obvious in CAD. All of them are obvious when you ask how it gets made.</em>
-                            </p>
-                            <div class="chapter-questions">
-                                <span class="chapter-questions-label">Questions this chapter answers</span>
-                                <ul>
-                                    <li>What are the most common design problems that only show up during manufacturing?</li>
-                                    <li>How do engineers with a practical mindset think differently from those without one?</li>
-                                    <li>Why are constraints actually requirements, not limitations?</li>
-                                    <li>What does learning from the shop floor look like in practice?</li>
-                                </ul>
+                            <div class="chapter-header">
+                                <span class="chapter-number">Chapter 1</span>
+                                <h2 class="chapter-title">The Practical Design Mindset</h2>
+                            </div>
+                            <div class="chapter-body">
+                                <p class="chapter-excerpt">
+                                    Some problems show up repeatedly in design reviews. A deep pocket with a narrow opening looks elegant — but a cutting tool long enough to reach that depth will chatter, deflect, or break. <em>None of these are obvious in CAD. All of them are obvious when you ask how it gets made.</em>
+                                </p>
+                                <div class="chapter-questions">
+                                    <span class="chapter-questions-label">Questions this chapter answers</span>
+                                    <ul>
+                                        <li>What are the most common design problems that only show up during manufacturing?</li>
+                                        <li>How do engineers with a practical mindset think differently from those without one?</li>
+                                        <li>Why are constraints actually requirements, not limitations?</li>
+                                        <li>What does learning from the shop floor look like in practice?</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -594,33 +840,26 @@
                     <!-- CH 2 -->
                     <div class="carousel-slide">
                         <div class="chapter-card">
-                            <div class="chapter-top">
-                                <div class="chapter-icon orange-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="#E8632B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M12 2l8 16H4L12 2z"/>
-                                        <path d="M12 8v5"/>
-                                        <path d="M8 13l4 3 4-3"/>
-                                    </svg>
-                                </div>
-                                <div class="chapter-meta">
-                                    <span class="chapter-number">Chapter 2</span>
-                                    <h2 class="chapter-title">The Material–Process–Design Triangle</h2>
-                                </div>
-                            </div>
                             <div class="chapter-illustration">
-                                <img src="C2.svg" alt="Chapter 2 — Material–Process–Design Triangle illustration">
+                                <img src="C2.svg" alt="Chapter 2 illustration">
                             </div>
-                            <p class="chapter-excerpt">
-                                Three factors determine whether your design succeeds or fails: material choice, manufacturing process, and design features. They're inseparable. Change one, and the other two must follow. <em>Material determines possible processes. Process determines design constraints. Design requirements dictate material and process.</em> Pull one thread, and the whole fabric shifts.
-                            </p>
-                            <div class="chapter-questions">
-                                <span class="chapter-questions-label">Questions this chapter answers</span>
-                                <ul>
-                                    <li>Why can't you choose a manufacturing process without first choosing a material?</li>
-                                    <li>How does the Material–Process–Design triangle work in real product decisions?</li>
-                                    <li>How did Tesla's decision to use giga-castings change the entire design approach?</li>
-                                    <li>What framework should you use when evaluating material and process options?</li>
-                                </ul>
+                            <div class="chapter-header">
+                                <span class="chapter-number">Chapter 2</span>
+                                <h2 class="chapter-title">The Material–Process–Design Triangle</h2>
+                            </div>
+                            <div class="chapter-body">
+                                <p class="chapter-excerpt">
+                                    Three factors determine whether your design succeeds or fails: material choice, manufacturing process, and design features. They're inseparable. <em>Material determines possible processes. Process determines design constraints. Design requirements dictate material and process.</em>
+                                </p>
+                                <div class="chapter-questions">
+                                    <span class="chapter-questions-label">Questions this chapter answers</span>
+                                    <ul>
+                                        <li>Why can't you choose a manufacturing process without first choosing a material?</li>
+                                        <li>How does the Material–Process–Design triangle work in real product decisions?</li>
+                                        <li>How did Tesla's decision to use giga-castings change the entire design approach?</li>
+                                        <li>What framework should you use when evaluating material and process options?</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -628,34 +867,26 @@
                     <!-- CH 3 -->
                     <div class="carousel-slide">
                         <div class="chapter-card">
-                            <div class="chapter-top">
-                                <div class="chapter-icon teal-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="#3A6A8A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M14 3v8h5"/>
-                                        <path d="M14 11L6 19"/>
-                                        <path d="M6 14v5h5"/>
-                                        <circle cx="17" cy="5" r="2"/>
-                                    </svg>
-                                </div>
-                                <div class="chapter-meta">
-                                    <span class="chapter-number">Chapter 3</span>
-                                    <h2 class="chapter-title">Machining</h2>
-                                </div>
-                            </div>
                             <div class="chapter-illustration">
-                                <img src="C3.svg" alt="Chapter 3 — Machining illustration">
+                                <img src="C3.svg" alt="Chapter 3 illustration">
                             </div>
-                            <p class="chapter-excerpt">
-                                Machining is subtractive manufacturing — you start with raw material and remove material until you have the shape you need. <em>Every feature is a cutting operation that requires time and tooling.</em> When you design for machining, you're always thinking: every feature requires a tool to reach it, every surface must be accessible. Ask yourself — how will the machinist cut this?
-                            </p>
-                            <div class="chapter-questions">
-                                <span class="chapter-questions-label">Questions this chapter answers</span>
-                                <ul>
-                                    <li>When should you choose CNC machining over conventional manual machining?</li>
-                                    <li>Why can't you machine a sharp internal corner — and what should you do instead?</li>
-                                    <li>What are the design rules that prevent expensive rework and tool breakage?</li>
-                                    <li>How do you choose between machining and other processes for your part?</li>
-                                </ul>
+                            <div class="chapter-header">
+                                <span class="chapter-number">Chapter 3</span>
+                                <h2 class="chapter-title">Machining</h2>
+                            </div>
+                            <div class="chapter-body">
+                                <p class="chapter-excerpt">
+                                    Machining is subtractive manufacturing — you start with raw material and remove material until you have the shape you need. <em>Every feature is a cutting operation that requires time and tooling.</em> When you design for machining, you're always thinking: every feature requires a tool to reach it, every surface must be accessible.
+                                </p>
+                                <div class="chapter-questions">
+                                    <span class="chapter-questions-label">Questions this chapter answers</span>
+                                    <ul>
+                                        <li>When should you choose CNC machining over conventional manual machining?</li>
+                                        <li>Why can't you machine a sharp internal corner — and what should you do instead?</li>
+                                        <li>What are the design rules that prevent expensive rework and tool breakage?</li>
+                                        <li>How do you choose between machining and other processes for your part?</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -663,33 +894,26 @@
                     <!-- CH 4 -->
                     <div class="carousel-slide">
                         <div class="chapter-card">
-                            <div class="chapter-top">
-                                <div class="chapter-icon orange-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="#E8632B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M4 20h16"/>
-                                        <path d="M4 20V10l6-6"/>
-                                        <path d="M10 4h10v16"/>
-                                    </svg>
-                                </div>
-                                <div class="chapter-meta">
-                                    <span class="chapter-number">Chapter 4</span>
-                                    <h2 class="chapter-title">Sheet Metal Fabrication</h2>
-                                </div>
-                            </div>
                             <div class="chapter-illustration">
-                                <img src="C4.svg" alt="Chapter 4 — Sheet Metal Fabrication illustration">
+                                <img src="C4.svg" alt="Chapter 4 illustration">
                             </div>
-                            <p class="chapter-excerpt">
-                                A colleague sent me a sheet metal file to modify. I added two holes, sent it to the shop. Two days later, the machinist came to my desk: "These dimensions are wrong. Did you check the K-factor?" I didn't. <em>K-factor was 0.5 — the software default — wrong for 2mm stainless steel. Twenty parts would have been scrap.</em> I'd trusted the software. He knew the reality.
-                            </p>
-                            <div class="chapter-questions">
-                                <span class="chapter-questions-label">Questions this chapter answers</span>
-                                <ul>
-                                    <li>What is K-factor, why does the CAD default get it wrong, and how do you find the right value?</li>
-                                    <li>Why does bend sequence matter — and how does it affect what geometries are possible?</li>
-                                    <li>What are the minimum flange lengths, hole-to-bend distances, and bend relief rules?</li>
-                                    <li>What information does your fabricator actually need from you to quote and build the part?</li>
-                                </ul>
+                            <div class="chapter-header">
+                                <span class="chapter-number">Chapter 4</span>
+                                <h2 class="chapter-title">Sheet Metal Fabrication</h2>
+                            </div>
+                            <div class="chapter-body">
+                                <p class="chapter-excerpt">
+                                    A colleague sent me a sheet metal file to modify. I added two holes, sent it to the shop. Two days later, the machinist came: "Did you check the K-factor?" <em>K-factor was 0.5 — the software default — wrong for 2mm stainless steel. Twenty parts would have been scrap.</em>
+                                </p>
+                                <div class="chapter-questions">
+                                    <span class="chapter-questions-label">Questions this chapter answers</span>
+                                    <ul>
+                                        <li>What is K-factor, why does the CAD default get it wrong, and how do you find the right value?</li>
+                                        <li>Why does bend sequence matter — and how does it affect what geometries are possible?</li>
+                                        <li>What are the minimum flange lengths, hole-to-bend distances, and bend relief rules?</li>
+                                        <li>What information does your fabricator actually need from you to quote and build the part?</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -697,35 +921,26 @@
                     <!-- CH 5 -->
                     <div class="carousel-slide">
                         <div class="chapter-card">
-                            <div class="chapter-top">
-                                <div class="chapter-icon teal-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="#3A6A8A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M12 3v6"/>
-                                        <path d="M8 9l4-3 4 3"/>
-                                        <circle cx="12" cy="14" r="4"/>
-                                        <path d="M12 18v3"/>
-                                        <path d="M8 21h8"/>
-                                    </svg>
-                                </div>
-                                <div class="chapter-meta">
-                                    <span class="chapter-number">Chapter 5</span>
-                                    <h2 class="chapter-title">Welding</h2>
-                                </div>
-                            </div>
                             <div class="chapter-illustration">
-                                <img src="C5.svg" alt="Chapter 5 — Welding illustration">
+                                <img src="C5.svg" alt="Chapter 5 illustration">
                             </div>
-                            <p class="chapter-excerpt">
-                                Welding shows up on almost every mechanical design project — structural frames, sheet metal enclosures, tube assemblies. But there's a difference between what looks easy in CAD and what happens in the shop. <em>Compound-angle tube cuts needing extra setups, continuous welds on thin sheets that warp badly, or joints that welders simply cannot reach.</em> These issues happen often and add real cost.
-                            </p>
-                            <div class="chapter-questions">
-                                <span class="chapter-questions-label">Questions this chapter answers</span>
-                                <ul>
-                                    <li>When should you bend a tube versus cut and weld it — and what drives the cost difference?</li>
-                                    <li>How do you design weld joints that a fabricator can actually access with a torch?</li>
-                                    <li>What causes weld distortion, and how do you control it through design choices?</li>
-                                    <li>How do you properly specify welds on engineering drawings?</li>
-                                </ul>
+                            <div class="chapter-header">
+                                <span class="chapter-number">Chapter 5</span>
+                                <h2 class="chapter-title">Welding</h2>
+                            </div>
+                            <div class="chapter-body">
+                                <p class="chapter-excerpt">
+                                    Welding shows up on almost every mechanical design project — structural frames, sheet metal enclosures, tube assemblies. <em>Compound-angle tube cuts needing extra setups, continuous welds on thin sheets that warp badly, or joints that welders simply cannot reach.</em> These issues happen often and add real cost.
+                                </p>
+                                <div class="chapter-questions">
+                                    <span class="chapter-questions-label">Questions this chapter answers</span>
+                                    <ul>
+                                        <li>When should you bend a tube versus cut and weld it — and what drives the cost difference?</li>
+                                        <li>How do you design weld joints that a fabricator can actually access with a torch?</li>
+                                        <li>What causes weld distortion, and how do you control it through design choices?</li>
+                                        <li>How do you properly specify welds on engineering drawings?</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -733,33 +948,26 @@
                     <!-- CH 6 -->
                     <div class="carousel-slide">
                         <div class="chapter-card">
-                            <div class="chapter-top">
-                                <div class="chapter-icon orange-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="#E8632B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M8 2h8l2 5H6l2-5z"/>
-                                        <path d="M6 7v10c0 2 2 3 6 3s6-1 6-3V7"/>
-                                        <path d="M6 12c0 1 2 2 6 2s6-1 6-2"/>
-                                    </svg>
-                                </div>
-                                <div class="chapter-meta">
-                                    <span class="chapter-number">Chapter 6</span>
-                                    <h2 class="chapter-title">Casting</h2>
-                                </div>
-                            </div>
                             <div class="chapter-illustration">
-                                <img src="C6.svg" alt="Chapter 6 — Casting illustration">
+                                <img src="C6.svg" alt="Chapter 6 illustration">
                             </div>
-                            <p class="chapter-excerpt">
-                                Casting creates geometries impossible with other processes — internal cooling passages in turbine blades, engine blocks with integrated water jackets, pump housings with complex flow paths. All formed in one piece during solidification. <em>The practical workflow is catalogue first, custom last.</em> Search industrial catalogues, pick options that might work, then adapt your design to fit.
-                            </p>
-                            <div class="chapter-questions">
-                                <span class="chapter-questions-label">Questions this chapter answers</span>
-                                <ul>
-                                    <li>What are the differences between sand, investment, die, and permanent mold casting?</li>
-                                    <li>Why should you default to catalogue cast parts — and when does custom casting make sense?</li>
-                                    <li>What are the critical design rules for wall thickness, draft angles, and fillet radii?</li>
-                                    <li>At what volume threshold does custom casting become cheaper than catalogue parts?</li>
-                                </ul>
+                            <div class="chapter-header">
+                                <span class="chapter-number">Chapter 6</span>
+                                <h2 class="chapter-title">Casting</h2>
+                            </div>
+                            <div class="chapter-body">
+                                <p class="chapter-excerpt">
+                                    Casting creates geometries impossible with other processes — internal cooling passages in turbine blades, engine blocks with integrated water jackets. All formed in one piece during solidification. <em>The practical workflow is catalogue first, custom last.</em> Search industrial catalogues, pick options that might work, then adapt.
+                                </p>
+                                <div class="chapter-questions">
+                                    <span class="chapter-questions-label">Questions this chapter answers</span>
+                                    <ul>
+                                        <li>What are the differences between sand, investment, die, and permanent mold casting?</li>
+                                        <li>Why should you default to catalogue cast parts — and when does custom casting make sense?</li>
+                                        <li>What are the critical design rules for wall thickness, draft angles, and fillet radii?</li>
+                                        <li>At what volume threshold does custom casting become cheaper than catalogue parts?</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -767,33 +975,26 @@
                     <!-- CH 7 -->
                     <div class="carousel-slide">
                         <div class="chapter-card">
-                            <div class="chapter-top">
-                                <div class="chapter-icon teal-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="#3A6A8A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <rect x="3" y="3" width="18" height="18" rx="3"/>
-                                        <path d="M3 12h18"/>
-                                        <path d="M12 3v18"/>
-                                    </svg>
-                                </div>
-                                <div class="chapter-meta">
-                                    <span class="chapter-number">Chapter 7</span>
-                                    <h2 class="chapter-title">Plastics & Injection Molding</h2>
-                                </div>
-                            </div>
                             <div class="chapter-illustration">
-                                <img src="C7.svg" alt="Chapter 7 — Plastics & Injection Molding illustration">
+                                <img src="C7.svg" alt="Chapter 7 illustration">
                             </div>
-                            <p class="chapter-excerpt">
-                                The economics are compelling — complex geometry with integrated features, produced consistently at high volume, at a fraction of what machining would cost. A vacuum cleaner housing with ribs, bosses, snap features, and mounting points comes out of the mold ready to assemble. <em>But plastic manufacturing has its own rules. Wall thickness, draft angles, shrinkage, flow paths — these aren't optional. They're built into the physics.</em>
-                            </p>
-                            <div class="chapter-questions">
-                                <span class="chapter-questions-label">Questions this chapter answers</span>
-                                <ul>
-                                    <li>What's the real difference between thermoplastics and thermosets — and why does it matter?</li>
-                                    <li>How do you design for uniform wall thickness and avoid sink marks, warping, and voids?</li>
-                                    <li>When does injection molding make economic sense versus 3D printing or machining?</li>
-                                    <li>What alternative plastic processes exist when injection molding isn't the right fit?</li>
-                                </ul>
+                            <div class="chapter-header">
+                                <span class="chapter-number">Chapter 7</span>
+                                <h2 class="chapter-title">Plastics & Injection Molding</h2>
+                            </div>
+                            <div class="chapter-body">
+                                <p class="chapter-excerpt">
+                                    The economics are compelling — complex geometry with integrated features, produced consistently at high volume, at a fraction of what machining would cost. <em>But plastic manufacturing has its own rules. Wall thickness, draft angles, shrinkage, flow paths — these aren't optional. They're built into the physics.</em>
+                                </p>
+                                <div class="chapter-questions">
+                                    <span class="chapter-questions-label">Questions this chapter answers</span>
+                                    <ul>
+                                        <li>What's the real difference between thermoplastics and thermosets — and why does it matter?</li>
+                                        <li>How do you design for uniform wall thickness and avoid sink marks, warping, and voids?</li>
+                                        <li>When does injection molding make economic sense versus 3D printing or machining?</li>
+                                        <li>What alternative plastic processes exist when injection molding isn't the right fit?</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -801,35 +1002,26 @@
                     <!-- CH 8 -->
                     <div class="carousel-slide">
                         <div class="chapter-card">
-                            <div class="chapter-top">
-                                <div class="chapter-icon orange-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="#E8632B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M12 2v4"/>
-                                        <path d="M5 8h14"/>
-                                        <path d="M5 12h14"/>
-                                        <path d="M5 16h14"/>
-                                        <path d="M4 20h16"/>
-                                    </svg>
-                                </div>
-                                <div class="chapter-meta">
-                                    <span class="chapter-number">Chapter 8</span>
-                                    <h2 class="chapter-title">Additive Manufacturing (3D Printing)</h2>
-                                </div>
-                            </div>
                             <div class="chapter-illustration">
-                                <img src="C8.svg" alt="Chapter 8 — Additive Manufacturing illustration">
+                                <img src="C8.svg" alt="Chapter 8 illustration">
                             </div>
-                            <p class="chapter-excerpt">
-                                "We can just 3D print it" has become the modern equivalent of "we'll fix it in software." Sometimes true. Often dangerously naive. AM gives you geometric freedom that no other process can match. <em>It does not give you free parts, fast parts, or parts with properties identical to conventionally manufactured components.</em> The real question isn't "can we?" — it's "should we?"
-                            </p>
-                            <div class="chapter-questions">
-                                <span class="chapter-questions-label">Questions this chapter answers</span>
-                                <ul>
-                                    <li>What are the real capabilities and limitations of FDM, SLA, SLS, and metal AM?</li>
-                                    <li>How do you design specifically for additive — not just "print whatever CAD gives you"?</li>
-                                    <li>What are the actual costs when you include post-processing, support removal, and finishing?</li>
-                                    <li>When does 3D printing make engineering and economic sense versus traditional processes?</li>
-                                </ul>
+                            <div class="chapter-header">
+                                <span class="chapter-number">Chapter 8</span>
+                                <h2 class="chapter-title">Additive Manufacturing (3D Printing)</h2>
+                            </div>
+                            <div class="chapter-body">
+                                <p class="chapter-excerpt">
+                                    "We can just 3D print it" has become the modern equivalent of "we'll fix it in software." AM gives you geometric freedom that no other process can match. <em>It does not give you free parts, fast parts, or parts with properties identical to conventionally manufactured components.</em>
+                                </p>
+                                <div class="chapter-questions">
+                                    <span class="chapter-questions-label">Questions this chapter answers</span>
+                                    <ul>
+                                        <li>What are the real capabilities and limitations of FDM, SLA, SLS, and metal AM?</li>
+                                        <li>How do you design specifically for additive — not just "print whatever CAD gives you"?</li>
+                                        <li>What are the actual costs when you include post-processing, support removal, and finishing?</li>
+                                        <li>When does 3D printing make engineering and economic sense versus traditional processes?</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -837,34 +1029,26 @@
                     <!-- CH 9 -->
                     <div class="carousel-slide">
                         <div class="chapter-card">
-                            <div class="chapter-top">
-                                <div class="chapter-icon teal-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="#3A6A8A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M3 6h18"/>
-                                        <path d="M3 12h12"/>
-                                        <path d="M3 18h8"/>
-                                        <path d="M21 10l-3 3 3 3"/>
-                                    </svg>
-                                </div>
-                                <div class="chapter-meta">
-                                    <span class="chapter-number">Chapter 9</span>
-                                    <h2 class="chapter-title">Process Selection & DFM Principles</h2>
-                                </div>
-                            </div>
                             <div class="chapter-illustration">
-                                <img src="C9.svg" alt="Chapter 9 — Process Selection illustration">
+                                <img src="C9.svg" alt="Chapter 9 illustration">
                             </div>
-                            <p class="chapter-excerpt">
-                                You've spent the previous chapters learning how things are actually made. Now comes the real engineering challenge: choosing. <em>This chapter gives you universal DFM principles — design decisions that reduce cost and improve manufacturability regardless of process — and a systematic method for selecting between processes when multiple options could work.</em>
-                            </p>
-                            <div class="chapter-questions">
-                                <span class="chapter-questions-label">Questions this chapter answers</span>
-                                <ul>
-                                    <li>What DFM principles apply universally regardless of which manufacturing process you use?</li>
-                                    <li>How do you systematically choose between machining, sheet metal, casting, and molding?</li>
-                                    <li>How do you use selection matrices and flowcharts to justify your process decisions?</li>
-                                    <li>What happens when plans change mid-project — how do you adapt your process choice?</li>
-                                </ul>
+                            <div class="chapter-header">
+                                <span class="chapter-number">Chapter 9</span>
+                                <h2 class="chapter-title">Process Selection & DFM Principles</h2>
+                            </div>
+                            <div class="chapter-body">
+                                <p class="chapter-excerpt">
+                                    You've spent the previous chapters learning how things are actually made. Now comes the real engineering challenge: choosing. <em>This chapter gives you universal DFM principles — design decisions that reduce cost and improve manufacturability regardless of process — and a systematic method for selecting between processes.</em>
+                                </p>
+                                <div class="chapter-questions">
+                                    <span class="chapter-questions-label">Questions this chapter answers</span>
+                                    <ul>
+                                        <li>What DFM principles apply universally regardless of which manufacturing process you use?</li>
+                                        <li>How do you systematically choose between machining, sheet metal, casting, and molding?</li>
+                                        <li>How do you use selection matrices and flowcharts to justify your process decisions?</li>
+                                        <li>What happens when plans change mid-project — how do you adapt your process choice?</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -872,35 +1056,26 @@
                     <!-- CH 10 -->
                     <div class="carousel-slide">
                         <div class="chapter-card">
-                            <div class="chapter-top">
-                                <div class="chapter-icon orange-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="#E8632B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <rect x="3" y="3" width="7" height="7" rx="1"/>
-                                        <rect x="14" y="3" width="7" height="7" rx="1"/>
-                                        <rect x="3" y="14" width="7" height="7" rx="1"/>
-                                        <path d="M14 17.5h7"/>
-                                        <path d="M17.5 14v7"/>
-                                    </svg>
-                                </div>
-                                <div class="chapter-meta">
-                                    <span class="chapter-number">Chapter 10</span>
-                                    <h2 class="chapter-title">Design for Assembly</h2>
-                                </div>
-                            </div>
                             <div class="chapter-illustration">
-                                <img src="C10.svg" alt="Chapter 10 — Design for Assembly illustration">
+                                <img src="C10.svg" alt="Chapter 10 illustration">
                             </div>
-                            <p class="chapter-excerpt">
-                                You've designed a beautiful part. Every dimension correct, every tolerance rational. Then someone has to put them all together, and everything falls apart. Here's a number that surprises most designers: <em>assembly typically accounts for 40 to 60 percent of total product cost.</em> Not material. Not machining. Assembly. The labor, the fixtures, the rework when something doesn't fit.
-                            </p>
-                            <div class="chapter-questions">
-                                <span class="chapter-questions-label">Questions this chapter answers</span>
-                                <ul>
-                                    <li>Why does assembly cost 40–60% of total product cost — and how do you reduce that?</li>
-                                    <li>How do you plan an assembly sequence before finalizing your design?</li>
-                                    <li>What design choices reduce part count, eliminate fasteners, and prevent assembly errors?</li>
-                                    <li>How do you design for maintenance and serviceability, not just initial assembly?</li>
-                                </ul>
+                            <div class="chapter-header">
+                                <span class="chapter-number">Chapter 10</span>
+                                <h2 class="chapter-title">Design for Assembly</h2>
+                            </div>
+                            <div class="chapter-body">
+                                <p class="chapter-excerpt">
+                                    You've designed a beautiful part. Every dimension correct, every tolerance rational. Then someone has to put them all together, and everything falls apart. <em>Assembly typically accounts for 40 to 60 percent of total product cost.</em> Not material. Not machining. The labor, the fixtures, the rework.
+                                </p>
+                                <div class="chapter-questions">
+                                    <span class="chapter-questions-label">Questions this chapter answers</span>
+                                    <ul>
+                                        <li>Why does assembly cost 40–60% of total product cost — and how do you reduce that?</li>
+                                        <li>How do you plan an assembly sequence before finalizing your design?</li>
+                                        <li>What design choices reduce part count, eliminate fasteners, and prevent assembly errors?</li>
+                                        <li>How do you design for maintenance and serviceability, not just initial assembly?</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -908,31 +1083,26 @@
                     <!-- CH 11 -->
                     <div class="carousel-slide">
                         <div class="chapter-card">
-                            <div class="chapter-top">
-                                <div class="chapter-icon teal-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="#3A6A8A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94L6.73 20.18a2.12 2.12 0 01-3-3l6.7-6.7a6 6 0 017.94-7.94l-3.76 3.76z"/>
-                                    </svg>
-                                </div>
-                                <div class="chapter-meta">
-                                    <span class="chapter-number">Chapter 11</span>
-                                    <h2 class="chapter-title">Mechanical & Market Components</h2>
-                                </div>
-                            </div>
                             <div class="chapter-illustration">
-                                <img src="C11.svg" alt="Chapter 11 — Mechanical & Market Components illustration">
+                                <img src="C11.svg" alt="Chapter 11 illustration">
                             </div>
-                            <p class="chapter-excerpt">
-                                Glass, adhesives, seals, rubber profiles, fastener types, gas springs, sliders, locks, latches, levelling feet, handles. Components you'll specify in almost every design. Most engineering programs never mention them. Most BOMs are full of them. <em>This chapter covers how to find them, select them, and design around them. Because when you're not manufacturing custom, these components drive your geometry.</em>
-                            </p>
-                            <div class="chapter-questions">
-                                <span class="chapter-questions-label">Questions this chapter answers</span>
-                                <ul>
-                                    <li>What do bolt grade markings mean and how do you identify them on sight?</li>
-                                    <li>How do you choose between different nut types for a given application?</li>
-                                    <li>What drives the selection of gas springs, and how do you size them?</li>
-                                    <li>How do catalogue component dimensions constrain your design before you even start modelling?</li>
-                                </ul>
+                            <div class="chapter-header">
+                                <span class="chapter-number">Chapter 11</span>
+                                <h2 class="chapter-title">Mechanical & Market Components</h2>
+                            </div>
+                            <div class="chapter-body">
+                                <p class="chapter-excerpt">
+                                    Glass, adhesives, seals, rubber profiles, fastener types, gas springs, sliders, locks, latches, levelling feet, handles. Components you'll specify in almost every design. <em>This chapter covers how to find them, select them, and design around them. These components drive your geometry.</em>
+                                </p>
+                                <div class="chapter-questions">
+                                    <span class="chapter-questions-label">Questions this chapter answers</span>
+                                    <ul>
+                                        <li>What do bolt grade markings mean and how do you identify them on sight?</li>
+                                        <li>How do you choose between different nut types for a given application?</li>
+                                        <li>What drives the selection of gas springs, and how do you size them?</li>
+                                        <li>How do catalogue component dimensions constrain your design before you even start modelling?</li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -940,21 +1110,16 @@
                 </div>
             </div>
 
-            <!-- Controls -->
-            <div class="carousel-controls">
-                <button class="carousel-arrow" id="prevBtn" aria-label="Previous chapter">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
-                    </svg>
-                </button>
-                <div class="carousel-chapters" id="carouselChapters"></div>
-                <button class="carousel-arrow" id="nextBtn" aria-label="Next chapter">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
-                    </svg>
-                </button>
-            </div>
+            <!-- Right arrow -->
+            <button class="side-arrow" id="nextBtn" aria-label="Next chapter">
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+                </svg>
+            </button>
         </div>
+
+        <!-- Chapter number buttons -->
+        <div class="carousel-controls" id="carouselChapters"></div>
     </section>
 
     <!-- CTA -->
@@ -971,6 +1136,15 @@
         </div>
     </section>
 
+    <!-- PRO UPGRADE BANNER (shown to free users inside bookContent) -->
+    <div id="proUpgradeBanner" class="hidden" style="max-width: 900px; margin: 0 auto; padding: 0 2rem 3rem;">
+        <div class="pro-banner">
+            Want the full book with complete chapter content? <a href="plans.html#proRequestSection">Upgrade to Pro →</a>
+        </div>
+    </div>
+
+    </div><!-- /bookContent -->
+
     <!-- FOOTER -->
     <footer>
         <div class="footer-name">Al-Jazari Education</div>
@@ -980,9 +1154,41 @@
         </p>
     </footer>
 
+    <!-- SHARED AUTH MODULE -->
+    <script type="module">
+        import { onUserReady, isPro } from './aje-auth.js';
+
+        onUserReady((user, profile) => {
+            const promo = document.getElementById('bookPromo');
+            const content = document.getElementById('bookContent');
+            const banner = document.getElementById('proUpgradeBanner');
+
+            if (!user) {
+                // Visitor — show promo, hide chapters
+                promo.classList.remove('hidden');
+                content.classList.add('hidden');
+            } else {
+                // Logged in — show chapters, hide promo
+                promo.classList.add('hidden');
+                content.classList.remove('hidden');
+
+                // Show upgrade banner for free users
+                if (profile?.plan !== 'pro') {
+                    banner.classList.remove('hidden');
+                }
+
+                // Initialize carousel now that content is visible
+                if (typeof window._initCarousel === 'function') {
+                    window._initCarousel();
+                }
+            }
+        });
+    </script>
+
     <script>
-    (function() {
+    window._initCarousel = function() {
         var track = document.getElementById('carouselTrack');
+        if (!track) return;
         var slides = track.querySelectorAll('.carousel-slide');
         var prevBtn = document.getElementById('prevBtn');
         var nextBtn = document.getElementById('nextBtn');
@@ -1006,7 +1212,20 @@
             if (index < 0) index = 0;
             if (index >= total) index = total - 1;
             current = index;
-            track.style.transform = 'translateX(-' + (current * 100) + '%)';
+
+            // Pixel-based centering: measure actual slide and viewport
+            var viewportWidth = track.parentElement.offsetWidth;
+            var slideWidth = slides[current].offsetWidth;
+            var slideLeft = slides[current].offsetLeft;
+            var centerOffset = (viewportWidth - slideWidth) / 2;
+            var px = -(slideLeft - centerOffset);
+            track.style.transform = 'translateX(' + px + 'px)';
+
+            // Update active states
+            for (var i = 0; i < slides.length; i++) {
+                if (i === current) slides[i].classList.add('active');
+                else slides[i].classList.remove('active');
+            }
 
             var btns = chaptersContainer.querySelectorAll('.carousel-chapter-btn');
             for (var i = 0; i < btns.length; i++) {
@@ -1035,14 +1254,55 @@
 
         track.addEventListener('touchend', function(e) {
             var diff = touchStartX - e.changedTouches[0].screenX;
-            if (Math.abs(diff) > 50) {
-                if (diff > 0) goTo(current + 1);
-                else goTo(current - 1);
-            }
+            if (diff > 50) goTo(current + 1);
+            else if (diff < -50) goTo(current - 1);
         }, { passive: true });
 
+        // Initialize
         goTo(0);
+
+        // Recalculate on resize
+        window.addEventListener('resize', function() { goTo(current); });
+    };
+    </script>
+
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+    </script>
+
+    <!-- NAV HIDE/SHOW ON SCROLL -->
+    <script>
+    (function() {
+        const nav = document.querySelector('nav');
+        let lastScrollY = window.scrollY;
+        let ticking = false;
+
+        function updateNav() {
+            const currentScrollY = window.scrollY;
+
+            if (currentScrollY > lastScrollY && currentScrollY > 60) {
+                nav.classList.add('nav-hidden');
+            } else {
+                nav.classList.remove('nav-hidden');
+            }
+
+            lastScrollY = currentScrollY;
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', function() {
+            if (!ticking) {
+                requestAnimationFrame(updateNav);
+                ticking = true;
+            }
+        });
     })();
     </script>
+
 </body>
 </html>

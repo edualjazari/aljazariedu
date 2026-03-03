@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al-Jazari Education — Log In</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --teal: #294D66;
+            --teal-dark: #1E3A4E;
+            --teal-light: #3A6A8A;
+            --teal-glow: rgba(41, 77, 102, 0.2);
+            --orange: #E8632B;
+            --orange-dark: #C4511F;
+            --orange-light: #F2874D;
+            --orange-glow: rgba(232, 99, 43, 0.12);
+            --bg: #0A0F14;
+            --bg-card: #111920;
+            --bg-card-hover: #162029;
+            --text: #E8ECF0;
+            --text-dim: #8A9BAE;
+            --text-muted: #5A6B7E;
+            --border: #1E2A36;
+            --border-light: #2A3A4A;
+            --success: #2ECC71;
+            --error: #E74C3C;
+            --correct-bg: rgba(46, 204, 113, 0.08);
+            --wrong-bg: rgba(231, 76, 60, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== NOISE TEXTURE OVERLAY ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== GRID BACKGROUND ===== */
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ===== NAV ===== */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(20px);
+            background: rgba(10, 15, 20, 0.85);
+            border-bottom: 1px solid var(--border);
+            transition: transform 0.3s ease;
+        }
+
+        nav.nav-hidden {
+            transform: translateY(-100%);
+        }
+
+        .nav-logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem;
+            color: var(--teal-light);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-logo span { color: var(--orange); }
+
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover { color: var(--teal-light); }
+
+        /* ===== AUTH PAGE LAYOUT ===== */
+        .auth-page {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6rem 2rem 3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-page::after {
+            content: '';
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--teal-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        /* ===== AUTH CARD ===== */
+        .auth-card {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 420px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            animation: cardEnter 0.5s ease-out;
+        }
+
+        @keyframes cardEnter {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .auth-logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.6rem;
+            color: var(--teal-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-logo span { color: var(--orange); }
+
+        .auth-subtitle {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* ===== FORM STYLES ===== */
+        .auth-form { display: flex; flex-direction: column; gap: 1rem; }
+
+        .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+
+        .form-label {
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--text-dim);
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        .form-input {
+            padding: 0.85rem 1rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-input::placeholder { color: var(--text-muted); }
+
+        .form-input:focus {
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px var(--teal-glow);
+        }
+
+        .form-input.error {
+            border-color: var(--error);
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+        }
+
+        .form-error {
+            font-size: 0.78rem;
+            color: var(--error);
+            display: none;
+            margin-top: 0.15rem;
+        }
+
+        .form-error.visible { display: block; }
+
+        /* ===== PASSWORD FIELD ===== */
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper .form-input {
+            padding-right: 3rem;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.3s;
+        }
+
+        .password-toggle:hover { color: var(--text-dim); }
+
+        .password-toggle svg { width: 18px; height: 18px; }
+
+        /* ===== PASSWORD STRENGTH ===== */
+        .password-strength {
+            display: none;
+            margin-top: 0.35rem;
+        }
+
+        .password-strength.visible { display: block; }
+
+        .strength-bar-track {
+            height: 3px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 0.35rem;
+        }
+
+        .strength-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s, background 0.3s;
+            width: 0%;
+        }
+
+        .strength-label {
+            font-size: 0.72rem;
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--text-muted);
+        }
+
+        /* ===== REMEMBER & FORGOT ===== */
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.25rem;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border: 1px solid var(--border-light);
+            border-radius: 4px;
+            background: var(--bg);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .checkbox-wrapper input[type="checkbox"]:checked {
+            background: var(--teal);
+            border-color: var(--teal);
+        }
+
+        .checkbox-wrapper input[type="checkbox"]:checked::after {
+            content: '';
+            position: absolute;
+            left: 4.5px;
+            top: 1.5px;
+            width: 5px;
+            height: 9px;
+            border: solid #fff;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .checkbox-label {
+            font-size: 0.82rem;
+            color: var(--text-dim);
+            user-select: none;
+        }
+
+        .forgot-link {
+            font-size: 0.82rem;
+            color: var(--teal-light);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .forgot-link:hover { color: var(--orange-light); }
+
+        /* ===== SUBMIT BUTTON ===== */
+        .auth-submit {
+            width: 100%;
+            padding: 0.9rem;
+            background: var(--orange);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            font-family: 'IBM Plex Sans', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-submit:hover {
+            background: var(--orange-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(232, 99, 43, 0.25);
+        }
+
+        .auth-submit:active {
+            transform: translateY(0);
+        }
+
+        .auth-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Loading spinner inside button */
+        .auth-submit .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin: 0 auto;
+        }
+
+        .auth-submit.loading .btn-text { display: none; }
+        .auth-submit.loading .spinner { display: inline-block; }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== DIVIDER ===== */
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.25rem 0;
+        }
+
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .auth-divider span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+        }
+
+        /* ===== GOOGLE BUTTON ===== */
+        .auth-google {
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-dim);
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.65rem;
+        }
+
+        .auth-google:hover {
+            border-color: var(--border-light);
+            background: var(--bg-card-hover);
+            color: var(--text);
+        }
+
+        .auth-google svg { width: 18px; height: 18px; }
+
+        /* ===== ALERT / STATUS ===== */
+        .auth-alert {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: none;
+            margin-bottom: 1rem;
+            animation: alertIn 0.3s ease-out;
+        }
+
+        @keyframes alertIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-alert.error {
+            display: block;
+            background: var(--wrong-bg);
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+
+        .auth-alert.success {
+            display: block;
+            background: var(--correct-bg);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        /* ===== FOOTER LINK ===== */
+        .auth-footer {
+            text-align: center;
+            margin-top: 1.75rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .auth-footer p {
+            font-size: 0.88rem;
+            color: var(--text-dim);
+        }
+
+        .auth-footer a {
+            color: var(--orange);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .auth-footer a:hover { color: var(--orange-light); }
+
+        /* ===== TERMS NOTE ===== */
+        .auth-terms {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 1rem;
+            line-height: 1.5;
+        }
+
+        .auth-terms a {
+            color: var(--text-dim);
+            text-decoration: underline;
+            text-underline-offset: 2px;
+        }
+
+        .auth-terms a:hover { color: var(--teal-light); }
+
+        /* ===== PAGE FOOTER ===== */
+        footer {
+            position: relative;
+            z-index: 1;
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .footer-name {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.1rem;
+            color: var(--teal-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .footer-text a {
+            color: var(--text-dim);
+            text-decoration: none;
+        }
+
+        .footer-text a:hover { color: var(--teal-light); }
+
+        /* ===== HIDDEN UTILITY ===== */
+        .hidden { display: none !important; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            nav { padding: 0.75rem 1.25rem; }
+            .nav-links { gap: 1rem; }
+            .nav-links a { font-size: 0.75rem; }
+            .auth-page { padding: 5.5rem 1.25rem 2rem; }
+            .auth-card { padding: 2rem 1.5rem; }
+        }
+
+        @media (max-width: 480px) {
+            .nav-links a:not(:last-child) { display: none; }
+            .auth-card { padding: 1.75rem 1.25rem; border-radius: 12px; }
+            .form-row { flex-direction: column; gap: 0.5rem; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+
+    <!-- NAV -->
+    <nav>
+        <a href="index.html" class="nav-logo">Al-Jazari<span>Edu</span></a>
+        <div class="nav-links">
+            <a href="index.html#quiz-section">Quiz</a>
+            <a href="book.html">Book</a>
+            <a href="plans.html">Plans</a>
+        </div>
+    </nav>
+
+    <!-- AUTH PAGE -->
+    <section class="auth-page">
+        <div class="auth-card">
+            <!-- Header -->
+            <div class="auth-header">
+                <div class="auth-logo">Al-Jazari<span>Edu</span></div>
+                <p class="auth-subtitle" id="authSubtitle">Welcome back, engineer.</p>
+            </div>
+
+            <!-- Alert -->
+            <div class="auth-alert" id="authAlert"></div>
+
+            <!-- ===== LOGIN FORM ===== -->
+            <form class="auth-form" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label" for="loginEmail">Email</label>
+                    <input
+                        class="form-input"
+                        type="email"
+                        id="loginEmail"
+                        placeholder="your@email.com"
+                        autocomplete="email"
+                        required
+                    >
+                    <span class="form-error" id="loginEmailError">Please enter a valid email address</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="loginPassword">Password</label>
+                    <div class="password-wrapper">
+                        <input
+                            class="form-input"
+                            type="password"
+                            id="loginPassword"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+                        <button type="button" class="password-toggle" onclick="togglePassword('loginPassword', this)" aria-label="Toggle password visibility">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label class="checkbox-wrapper">
+                        <input type="checkbox" id="rememberMe">
+                        <span class="checkbox-label">Remember me</span>
+                    </label>
+                    <a href="#" class="forgot-link" onclick="showForgotPassword(event)">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="auth-submit" id="loginBtn">
+                    <span class="btn-text">Log In</span>
+                    <span class="spinner"></span>
+                </button>
+
+                <div class="auth-divider"><span>or</span></div>
+
+                <button type="button" class="auth-google" onclick="handleGoogleAuth()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    Continue with Google
+                </button>
+            </form>
+
+            <!-- ===== REGISTER FORM ===== -->
+            <form class="auth-form hidden" id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label class="form-label" for="registerName">Display Name</label>
+                    <input
+                        class="form-input"
+                        type="text"
+                        id="registerName"
+                        placeholder="How others will see you"
+                        autocomplete="name"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="registerEmail">Email</label>
+                    <input
+                        class="form-input"
+                        type="email"
+                        id="registerEmail"
+                        placeholder="your@email.com"
+                        autocomplete="email"
+                        required
+                    >
+                    <span class="form-error" id="registerEmailError">Please enter a valid email address</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="registerPassword">Password</label>
+                    <div class="password-wrapper">
+                        <input
+                            class="form-input"
+                            type="password"
+                            id="registerPassword"
+                            placeholder="Min. 8 characters"
+                            autocomplete="new-password"
+                            required
+                            minlength="8"
+                            oninput="checkPasswordStrength(this.value)"
+                        >
+                        <button type="button" class="password-toggle" onclick="togglePassword('registerPassword', this)" aria-label="Toggle password visibility">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="password-strength" id="passwordStrength">
+                        <div class="strength-bar-track">
+                            <div class="strength-bar-fill" id="strengthBar"></div>
+                        </div>
+                        <span class="strength-label" id="strengthLabel"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="registerConfirm">Confirm Password</label>
+                    <div class="password-wrapper">
+                        <input
+                            class="form-input"
+                            type="password"
+                            id="registerConfirm"
+                            placeholder="Repeat your password"
+                            autocomplete="new-password"
+                            required
+                        >
+                        <button type="button" class="password-toggle" onclick="togglePassword('registerConfirm', this)" aria-label="Toggle password visibility">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                    <span class="form-error" id="confirmError">Passwords do not match</span>
+                </div>
+
+                <button type="submit" class="auth-submit" id="registerBtn">
+                    <span class="btn-text">Create Account</span>
+                    <span class="spinner"></span>
+                </button>
+
+                <div class="auth-divider"><span>or</span></div>
+
+                <button type="button" class="auth-google" onclick="handleGoogleAuth()">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    Continue with Google
+                </button>
+
+                <p class="auth-terms">
+                    By creating an account, you agree to our
+                    <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+                </p>
+            </form>
+
+            <!-- ===== FORGOT PASSWORD FORM ===== -->
+            <form class="auth-form hidden" id="forgotForm" onsubmit="handleForgotPassword(event)">
+                <p style="font-size: 0.88rem; color: var(--text-dim); margin-bottom: 0.5rem; line-height: 1.6;">
+                    Enter your email and we'll send you a link to reset your password.
+                </p>
+
+                <div class="form-group">
+                    <label class="form-label" for="forgotEmail">Email</label>
+                    <input
+                        class="form-input"
+                        type="email"
+                        id="forgotEmail"
+                        placeholder="your@email.com"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="auth-submit" id="forgotBtn">
+                    <span class="btn-text">Send Reset Link</span>
+                    <span class="spinner"></span>
+                </button>
+
+                <div style="text-align: center; margin-top: 1rem;">
+                    <a href="#" class="forgot-link" onclick="switchTab('login'); return false;">
+                        ← Back to Log In
+                    </a>
+                </div>
+            </form>
+
+            <!-- Footer toggle -->
+            <div class="auth-footer" id="authFooter">
+                <p id="footerLogin">Don't have an account? <a href="#" onclick="switchTab('register'); return false;">Register</a></p>
+                <p id="footerRegister" class="hidden">Already have an account? <a href="#" onclick="switchTab('login'); return false;">Log In</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-name">Al-Jazari<span style="color: var(--orange);">Edu</span></div>
+        <p class="footer-text">
+            Built for engineers who build things. &nbsp;
+            <a href="mailto:admin@aljazariedu.com">admin@aljazariedu.com</a>
+        </p>
+    </footer>
+
+    <!-- FIREBASE SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6XXSKUxjAeM6yCgaNtrZZvjy6Khk5GDg",
+            authDomain: "aljazariedu-c4131.firebaseapp.com",
+            databaseURL: "https://aljazariedu-c4131-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "aljazariedu-c4131",
+            storageBucket: "aljazariedu-c4131.firebasestorage.app",
+            messagingSenderId: "937448537048",
+            appId: "1:937448537048:web:902de11f23800301cd50ad"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const firestoreDb = getFirestore(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        function getRedirectUrl() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('redirect') || 'index.html';
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                window.location.href = getRedirectUrl();
+            }
+        });
+
+        function firebaseErrorMsg(code) {
+            switch(code) {
+                case 'auth/user-not-found': return 'No account found with this email.';
+                case 'auth/wrong-password': return 'Incorrect password. Try again.';
+                case 'auth/invalid-credential': return 'Invalid email or password.';
+                case 'auth/email-already-in-use': return 'An account with this email already exists.';
+                case 'auth/weak-password': return 'Password is too weak. Use at least 8 characters.';
+                case 'auth/too-many-requests': return 'Too many attempts. Please wait a moment and try again.';
+                case 'auth/popup-closed-by-user': return 'Google sign-in was cancelled.';
+                case 'auth/network-request-failed': return 'Network error. Check your connection.';
+                case 'auth/invalid-email': return 'Please enter a valid email address.';
+                default: return 'Something went wrong. Please try again.';
+            }
+        }
+
+        // Ensure Firestore user profile exists
+        async function ensureProfile(user, displayName) {
+            const userRef = doc(firestoreDb, 'users', user.uid);
+            const snap = await getDoc(userRef);
+            if (!snap.exists()) {
+                await setDoc(userRef, {
+                    displayName: displayName || user.displayName || user.email.split('@')[0],
+                    email: user.email,
+                    plan: 'free',
+                    newsletter: false,
+                    createdAt: new Date().toISOString()
+                });
+            }
+        }
+
+        // ===== LOGIN =====
+        window.handleLogin = function(e) {
+            e.preventDefault();
+            window.hideAlert();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            if (!window.validateEmail(email)) {
+                window.showAlert('Please enter a valid email address.');
+                document.getElementById('loginEmail').classList.add('error');
+                return;
+            }
+            document.getElementById('loginEmail').classList.remove('error');
+            window.setLoading('loginBtn', true);
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then(async (cred) => {
+                    await ensureProfile(cred.user);
+                    window.setLoading('loginBtn', false);
+                    window.showAlert('Welcome back, ' + (cred.user.displayName || 'engineer') + '!', 'success');
+                    setTimeout(() => { window.location.href = getRedirectUrl(); }, 800);
+                })
+                .catch((error) => {
+                    window.setLoading('loginBtn', false);
+                    window.showAlert(firebaseErrorMsg(error.code));
+                });
+        };
+
+        // ===== REGISTER =====
+        window.handleRegister = function(e) {
+            e.preventDefault();
+            window.hideAlert();
+            const name = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const confirm = document.getElementById('registerConfirm').value;
+
+            if (!name) { window.showAlert('Please enter your display name.'); return; }
+            if (!window.validateEmail(email)) {
+                window.showAlert('Please enter a valid email address.');
+                document.getElementById('registerEmail').classList.add('error');
+                return;
+            }
+            document.getElementById('registerEmail').classList.remove('error');
+            if (password.length < 8) { window.showAlert('Password must be at least 8 characters.'); return; }
+            if (password !== confirm) {
+                window.showAlert('Passwords do not match.');
+                document.getElementById('registerConfirm').classList.add('error');
+                document.getElementById('confirmError').classList.add('visible');
+                return;
+            }
+            document.getElementById('registerConfirm').classList.remove('error');
+            document.getElementById('confirmError').classList.remove('visible');
+
+            window.setLoading('registerBtn', true);
+
+            createUserWithEmailAndPassword(auth, email, password)
+                .then(async (cred) => {
+                    await updateProfile(cred.user, { displayName: name });
+                    await ensureProfile(cred.user, name);
+                    window.setLoading('registerBtn', false);
+                    window.showAlert('Account created! Welcome, ' + name + '.', 'success');
+                    setTimeout(() => { window.location.href = getRedirectUrl(); }, 800);
+                })
+                .catch((error) => {
+                    window.setLoading('registerBtn', false);
+                    window.showAlert(firebaseErrorMsg(error.code));
+                });
+        };
+
+        // ===== FORGOT PASSWORD =====
+        window.handleForgotPassword = function(e) {
+            e.preventDefault();
+            window.hideAlert();
+            const email = document.getElementById('forgotEmail').value.trim();
+            if (!window.validateEmail(email)) { window.showAlert('Please enter a valid email address.'); return; }
+            window.setLoading('forgotBtn', true);
+
+            sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    window.setLoading('forgotBtn', false);
+                    window.showAlert('Password reset email sent! Check your inbox.', 'success');
+                })
+                .catch((error) => {
+                    window.setLoading('forgotBtn', false);
+                    if (error.code === 'auth/user-not-found') {
+                        window.showAlert('If an account with this email exists, a reset link has been sent.', 'success');
+                    } else {
+                        window.showAlert(firebaseErrorMsg(error.code));
+                    }
+                });
+        };
+
+        // ===== GOOGLE SIGN-IN =====
+        window.handleGoogleAuth = function() {
+            window.hideAlert();
+            signInWithPopup(auth, googleProvider)
+                .then(async (result) => {
+                    await ensureProfile(result.user);
+                    window.showAlert('Welcome, ' + (result.user.displayName || 'engineer') + '!', 'success');
+                    setTimeout(() => { window.location.href = getRedirectUrl(); }, 800);
+                })
+                .catch((error) => {
+                    if (error.code !== 'auth/popup-closed-by-user') {
+                        window.showAlert(firebaseErrorMsg(error.code));
+                    }
+                });
+        };
+    </script>
+
+    <script>
+    /* =============================================
+       AUTH UI
+       ============================================= */
+
+    const subtitles = {
+        login: 'Welcome back, engineer.',
+        register: 'Join the workshop.',
+        forgot: 'Reset your password.'
+    };
+
+    function switchTab(tab) {
+        hideAlert();
+
+        document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
+        document.getElementById('registerForm').classList.toggle('hidden', tab !== 'register');
+        document.getElementById('forgotForm').classList.toggle('hidden', tab !== 'forgot');
+
+        document.getElementById('authSubtitle').textContent = subtitles[tab] || '';
+
+        document.getElementById('footerLogin').classList.toggle('hidden', tab !== 'login');
+        document.getElementById('footerRegister').classList.toggle('hidden', tab !== 'register');
+        document.getElementById('authFooter').classList.toggle('hidden', tab === 'forgot');
+    }
+
+    function showForgotPassword(e) {
+        e.preventDefault();
+        switchTab('forgot');
+    }
+
+    /* ===== PASSWORD VISIBILITY ===== */
+    function togglePassword(inputId, btn) {
+        const input = document.getElementById(inputId);
+        const isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+
+        btn.innerHTML = isPassword
+            ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                <line x1="1" y1="1" x2="23" y2="23"></line>
+               </svg>`
+            : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+               </svg>`;
+    }
+
+    /* ===== PASSWORD STRENGTH ===== */
+    function checkPasswordStrength(password) {
+        const strengthEl = document.getElementById('passwordStrength');
+        const bar = document.getElementById('strengthBar');
+        const label = document.getElementById('strengthLabel');
+
+        if (!password) {
+            strengthEl.classList.remove('visible');
+            return;
+        }
+
+        strengthEl.classList.add('visible');
+        let score = 0;
+
+        if (password.length >= 8) score++;
+        if (password.length >= 12) score++;
+        if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
+        if (/\d/.test(password)) score++;
+        if (/[^a-zA-Z\d]/.test(password)) score++;
+
+        const levels = [
+            { width: '20%', color: 'var(--error)', text: 'Very weak' },
+            { width: '40%', color: 'var(--orange)', text: 'Weak' },
+            { width: '60%', color: 'var(--orange-light)', text: 'Fair' },
+            { width: '80%', color: 'var(--teal-light)', text: 'Strong' },
+            { width: '100%', color: 'var(--success)', text: 'Very strong' },
+        ];
+
+        const level = levels[Math.min(score, levels.length) - 1] || levels[0];
+        bar.style.width = level.width;
+        bar.style.background = level.color;
+        label.textContent = level.text;
+        label.style.color = level.color;
+    }
+
+    /* ===== ALERT ===== */
+    window.showAlert = function(message, type = 'error') {
+        const alert = document.getElementById('authAlert');
+        alert.textContent = message;
+        alert.className = 'auth-alert ' + type;
+    };
+
+    window.hideAlert = function() {
+        const alert = document.getElementById('authAlert');
+        alert.className = 'auth-alert';
+    };
+
+    /* ===== FORM VALIDATION ===== */
+    window.validateEmail = function(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    };
+
+    window.setLoading = function(btnId, loading) {
+        const btn = document.getElementById(btnId);
+        btn.classList.toggle('loading', loading);
+        btn.disabled = loading;
+    };
+
+    /* ===== URL PARAM SUPPORT ===== */
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialTab = urlParams.get('tab');
+    if (initialTab === 'register' || initialTab === 'forgot') {
+        switchTab(initialTab);
+    }
+
+    /* ===== CLEAR ERROR ON INPUT ===== */
+    document.querySelectorAll('.form-input').forEach(input => {
+        input.addEventListener('input', () => {
+            input.classList.remove('error');
+            hideAlert();
+        });
+    });
+
+    /* ===== NAV HIDE/SHOW ON SCROLL ===== */
+    (function() {
+        const nav = document.querySelector('nav');
+        let lastScrollY = window.scrollY;
+        let ticking = false;
+
+        function updateNav() {
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > lastScrollY && currentScrollY > 60) {
+                nav.classList.add('nav-hidden');
+            } else {
+                nav.classList.remove('nav-hidden');
+            }
+            lastScrollY = currentScrollY;
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', function() {
+            if (!ticking) {
+                requestAnimationFrame(updateNav);
+                ticking = true;
+            }
+        });
+    })();
+    </script>
+</body>
+</html>

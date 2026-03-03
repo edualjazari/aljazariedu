@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Al-Jazari Education — Practical Mechanical Engineering Knowledge</title>
-    <meta name="description" content="Bridge the gap between engineering theory and real-world manufacturing. Test your mechanical design knowledge with practical quizzes on machining, sheet metal, plastics, FEA, and more. Book coming soon: Practical Mechanical Design and Manufacturing — From Concept to Production.">
+    <meta name="description" content="Bridge the gap between engineering theory and real-world manufacturing. Test your mechanical design knowledge with practical quizzes on machining, sheet metal, plastics, FEA, and more. Now in early access: Practical Mechanical Design and Manufacturing — From Concept to Production.">
     <meta name="keywords" content="mechanical engineering, design for manufacturing, DFM, machining, sheet metal, injection molding, 3D printing, FEA, engineering quiz, mechanical design">
     <meta property="og:title" content="Al-Jazari Education — Reality First, Tools Second">
     <meta property="og:description" content="Practical mechanical engineering quizzes and resources. Test your knowledge across machining, sheet metal, plastics, FEA, materials, and more.">
@@ -85,6 +85,11 @@
             backdrop-filter: blur(20px);
             background: rgba(10, 15, 20, 0.85);
             border-bottom: 1px solid var(--border);
+            transition: transform 0.3s ease;
+        }
+
+        nav.nav-hidden {
+            transform: translateY(-100%);
         }
 
         .nav-logo {
@@ -225,7 +230,7 @@
 
         /* ===== QUIZ SECTION ===== */
         #quiz-section {
-            padding: 3rem 0 6rem;
+            padding: 6rem 0;
         }
 
         .section-header {
@@ -663,6 +668,69 @@
             z-index: 2;
         }
 
+        .now-live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 1rem;
+            background: var(--success);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            border-radius: 6px;
+            position: absolute;
+            top: -12px;
+            right: -8px;
+            transform: rotate(3deg);
+            z-index: 2;
+        }
+
+        .now-live-badge .live-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #fff;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .now-live-inline {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.9rem;
+            background: var(--success);
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+
+        .now-live-inline .live-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #fff;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        #leaderboardContent::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        #leaderboardContent::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #leaderboardContent::-webkit-scrollbar-thumb {
+            background: var(--border-light);
+            border-radius: 4px;
+        }
+
         .book-info h2 {
             font-family: 'DM Serif Display', serif;
             font-size: 2rem;
@@ -881,10 +949,10 @@
         /* ===== FEATURE TILES ===== */
         .feature-tiles {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 1rem;
             margin-top: 3rem;
-            max-width: 900px;
+            max-width: 780px;
             margin-left: auto;
             margin-right: auto;
         }
@@ -958,9 +1026,32 @@
             color: var(--text-muted);
         }
 
+        .feature-tile.early {
+            border-color: var(--orange);
+            cursor: pointer;
+        }
+
+        .feature-tile.early:hover {
+            border-color: var(--orange-light);
+            background: var(--bg-card-hover);
+            box-shadow: 0 8px 30px rgba(232, 99, 43, 0.12);
+        }
+
+        .tile-status.early {
+            border-color: rgba(232, 99, 43, 0.3);
+            color: var(--orange-light);
+        }
+
+        .tile-status.early .status-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--orange);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
         @media (max-width: 768px) {
             .feature-tiles {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
@@ -1156,6 +1247,178 @@
             }
         }
 
+
+        /* ===== PLACEHOLDER SECTIONS ===== */
+        .placeholder-section {
+            padding: 6rem 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .placeholder-content {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .placeholder-content.flipped {
+            grid-template-columns: 1fr 1.2fr;
+        }
+
+        .placeholder-info h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .placeholder-info p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            font-weight: 300;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .placeholder-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 1rem;
+            border: 1px solid var(--border-light);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            background: var(--bg-card);
+        }
+
+        .placeholder-card {
+            background: linear-gradient(135deg, var(--teal-dark), var(--bg-card));
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 3rem 2.5rem;
+            position: relative;
+            overflow: visible;
+        }
+
+        .placeholder-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at top right, var(--orange-glow), transparent 50%);
+            pointer-events: none;
+        }
+
+        .placeholder-card-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1rem;
+            color: var(--orange);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .placeholder-card-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.6rem;
+            line-height: 1.3;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .placeholder-card-sub {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            position: relative;
+        }
+
+        .placeholder-card-lines {
+            margin-top: 2rem;
+            position: relative;
+        }
+
+        .placeholder-card-lines div {
+            height: 3px;
+            background: var(--border-light);
+            border-radius: 3px;
+            margin-bottom: 0.6rem;
+        }
+
+        .placeholder-card-lines div:nth-child(1) { width: 100%; }
+        .placeholder-card-lines div:nth-child(2) { width: 85%; }
+        .placeholder-card-lines div:nth-child(3) { width: 92%; }
+        .placeholder-card-lines div:nth-child(4) { width: 60%; }
+
+        @media (max-width: 768px) {
+            .placeholder-content,
+            .placeholder-content.flipped {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+            .placeholder-visual { order: -1; }
+        }
+
+        /* ===== NAV LOGIN BUTTON ===== */
+        .nav-login {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            padding: 0.4rem 1rem;
+            border: 1px solid var(--border-light);
+            border-radius: 6px;
+            cursor: pointer;
+            background: none;
+            font-family: 'IBM Plex Sans', sans-serif;
+        }
+
+        .nav-login:hover {
+            color: var(--teal-light);
+            border-color: var(--teal);
+        }
+
+        /* ===== NAV USER INFO (logged in) ===== */
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .nav-user-name {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--teal-light);
+            letter-spacing: 0.02em;
+        }
+
+        .nav-logout {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.78rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            padding: 0.3rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            cursor: pointer;
+            background: none;
+            font-family: 'IBM Plex Sans', sans-serif;
+        }
+
+        .nav-logout:hover {
+            color: var(--error);
+            border-color: var(--error);
+        }
+
         /* ===== UTILITY ===== */
         .hidden { display: none !important; }
 
@@ -1171,8 +1434,11 @@
         <div class="nav-links">
             <a href="#quiz-section">Quiz</a>
             <a href="#book-section">Book</a>
-            <a href="#mission-section">Mission</a>
+            <a href="plans.html">Plans</a>
             <a href="#signup-section">Subscribe</a>
+            <span id="navAuthArea">
+                <a href="auth.html" class="nav-login">Log In</a>
+            </span>
         </div>
     </nav>
 
@@ -1192,72 +1458,54 @@
             </p>
 
             <div class="feature-tiles">
-                <a href="#book-section" class="feature-tile" style="text-decoration:none; color:inherit;">
-                    <span class="tile-icon">📖</span>
-                    <h3>Book</h3>
+                <a href="#training-section" class="feature-tile" style="text-decoration:none; color:inherit;">
+                    <span class="tile-icon">🎓</span>
+                    <h3>Training &amp; Courses</h3>
                     <span class="tile-status soon">Coming Soon</span>
+                </a>
+                <a href="#book-section" class="feature-tile early" style="text-decoration:none; color:inherit;">
+                    <span class="tile-icon">📖</span>
+                    <h3>Practical Book</h3>
+                    <span class="tile-status early"><span class="status-dot"></span> Early Access</span>
                 </a>
                 <a href="#quiz-section" class="feature-tile live" style="text-decoration:none; color:inherit;">
                     <span class="tile-icon">⚡</span>
                     <h3>Knowledge Quiz</h3>
                     <span class="tile-status live"><span class="status-dot"></span> Now Live</span>
                 </a>
-                <div class="feature-tile">
-                    <span class="tile-icon">🎓</span>
-                    <h3>Training &amp; Courses</h3>
-                    <span class="tile-status soon">Coming Soon</span>
-                </div>
-                <div class="feature-tile">
+                <a href="#challenges-section" class="feature-tile" style="text-decoration:none; color:inherit;">
                     <span class="tile-icon">🔧</span>
                     <h3>Design Challenges</h3>
                     <span class="tile-status soon">Coming Soon</span>
-                </div>
-                <div class="feature-tile">
-                    <span class="tile-icon">👤</span>
-                    <h3>Accounts &amp; Ranking</h3>
-                    <span class="tile-status soon">Coming Soon</span>
-                </div>
+                </a>
             </div>
         </div>
     </section>
 
-    <!-- QUIZ -->
-    <section id="quiz-section" style="border-top: 1px solid var(--border);">
+    <!-- TRAINING & COURSES -->
+    <section id="training-section" class="placeholder-section">
         <div class="container">
-            <div class="section-header">
-                <span class="section-label">Test Your Knowledge</span>
-                <h2>Engineering Quiz</h2>
-                <p>Real-world mechanical design — is your design shop-floor ready?</p>
-            </div>
-
-            <div class="quiz-layout">
-                <div class="quiz-app" id="quizApp">
-                    <!-- Start Screen -->
-                    <div id="quizStart" style="text-align:center;">
-                        <p style="color: var(--text-dim); font-size: 1.05rem; margin-bottom: 2rem; font-weight: 300;">Machining, sheet metal, plastics, FEA, materials — test yourself across the full spectrum of practical mechanical design.</p>
-                        <button class="hero-cta" onclick="startQuiz()" style="font-size:1rem; padding:1rem 2.5rem;">
-                            Start Quiz
-                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:18px;height:18px;">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                            </svg>
-                        </button>
-                    </div>
-
-                    <!-- Active Quiz -->
-                    <div id="activeQuiz" class="hidden"></div>
-
-                    <!-- Results -->
-                    <div id="quizResults" class="hidden"></div>
+            <div class="placeholder-content">
+                <div class="placeholder-info">
+                    <span class="section-label">Training &amp; Courses</span>
+                    <h2>Real Manufacturing &amp; Design Skills</h2>
+                    <p>
+                        Training on real manufacturing and design — not just software buttons. 
+                        Our courses focus on design thinking, manufacturability, and process knowledge. 
+                        3D modeling software training included, but oriented on design intent and 
+                        manufacturing constraints, not modeling tutorials.
+                    </p>
+                    <span class="placeholder-badge">Coming Soon</span>
                 </div>
-
-                <!-- LEADERBOARD PANEL -->
-                <div class="leaderboard-panel">
-                    <div class="leaderboard-title">
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                        Top 10 — Leaderboard
-                    </div>
-                    <div id="leaderboardContent">
-                        <div class="leaderboard-loading">Loading...</div>
+                <div class="placeholder-visual">
+                    <div class="placeholder-card">
+                        <span class="coming-soon-badge">Coming Soon</span>
+                        <div class="placeholder-card-label">Courses</div>
+                        <div class="placeholder-card-title">Design Thinking &amp;<br>Manufacturing Skills</div>
+                        <div class="placeholder-card-sub">Reality-based training programs</div>
+                        <div class="placeholder-card-lines">
+                            <div></div><div></div><div></div><div></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1315,6 +1563,69 @@
         </div>
     </section>
 
+    <!-- QUIZ -->
+    <section id="quiz-section" style="border-top: 1px solid var(--border);">
+        <div class="container">
+            <div class="book-content">
+                <div class="book-info">
+                    <span class="now-live-inline"><span class="live-dot"></span> Now Live</span>
+                    <span class="section-label">Test Your Knowledge</span>
+                    <h2>Engineering Quiz</h2>
+                    <p>
+                        Real-world mechanical design — is your design shop-floor ready? 
+                        Machining, sheet metal, plastics, FEA, materials — test yourself 
+                        across the full spectrum of practical mechanical design.
+                    </p>
+                    <a href="quiz.html" style="display:inline-flex; align-items:center; gap:0.75rem; padding:0.85rem 2rem; background:var(--teal); color:#fff; text-decoration:none; font-weight:600; font-size:0.9rem; border-radius:8px; transition:all 0.3s ease; margin-top:1.5rem;" onmouseover="this.style.background='var(--teal-light)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--teal)';this.style.transform='none'">
+                        Start Quiz
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                    </a>
+                </div>
+                <div class="book-visual">
+                    <div class="book-mockup" style="padding: 2.5rem 2rem;">
+                        <div class="leaderboard-title">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                            Top 10 — Leaderboard
+                        </div>
+                        <div id="leaderboardContent" style="max-height: 280px; overflow-y: auto;">
+                            <div class="leaderboard-loading">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DESIGN CHALLENGES -->
+    <section id="challenges-section" class="placeholder-section">
+        <div class="container">
+            <div class="placeholder-content flipped">
+                <div class="placeholder-visual">
+                    <div class="placeholder-card">
+                        <span class="coming-soon-badge">Coming Soon</span>
+                        <div class="placeholder-card-label">Challenges</div>
+                        <div class="placeholder-card-title">Practical Design<br>&amp; Simulation Cases</div>
+                        <div class="placeholder-card-sub">Real problems, real engineering</div>
+                        <div class="placeholder-card-lines">
+                            <div></div><div></div><div></div><div></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="placeholder-info">
+                    <span class="section-label">Design Challenges</span>
+                    <h2>Real Engineering Problems</h2>
+                    <p>
+                        Not textbook exercises. Design a bracket for a specific load case, improve a 
+                        flawed design, set up an FEA simulation, or model a part from a manufacturing 
+                        drawing. A mix of modeling challenges, design problems, and simulation cases 
+                        drawn from real-world practice.
+                    </p>
+                    <span class="placeholder-badge">Coming Soon</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- MISSION -->
     <section id="mission-section">
         <div class="container">
@@ -1347,7 +1658,6 @@
             </div>
         </div>
     </section>
-
     <!-- SIGNUP -->
     <section id="signup-section">
         <div class="container">
@@ -1377,1444 +1687,6 @@
     </footer>
 
     <script>
-    // =========================================
-    // QUIZ DATA — ADD YOUR QUESTIONS HERE
-    // =========================================
-    // 
-    // FORMAT:
-    //   Each topic has a name, icon, and array of questions.
-    //   Each question has:
-    //     q: the question text
-    //     options: array of 4 answer strings
-    //     correct: index of the correct answer (0-3)
-    //     explanation: text shown after answering
-    //
-    // TO ADD A NEW TOPIC: copy a topic block and edit.
-    // TO ADD QUESTIONS: add objects to the questions array.
-    // =========================================
-
-// =========================================
-// AL-JAZARI EDUCATION — COMPLETE QUIZ DATA
-// =========================================
-// 
-// TOPICS: 10 categories, 10+ questions each
-// FORMAT: 5 random questions served per attempt
-// 
-// To add questions: just add objects to any topic's questions array.
-// To add a new topic: copy a topic block and edit.
-// =========================================
-
-const quizData = [
-    // =============================
-    // TOPIC 1: DESIGN FUNDAMENTALS
-    // =============================
-    {
-        name: "Design Fundamentals",
-        icon: "📐",
-        questions: [
-            {
-                q: "What is the function of a fillet in mechanical parts?",
-                options: [
-                    "Reduce weight",
-                    "Improve aesthetics",
-                    "Minimize stress concentration",
-                    "Add volume"
-                ],
-                correct: 2,
-                explanation: "Fillets reduce stress concentrations at internal corners. Sharp corners act as stress risers — under load, stress at a sharp 90° corner can be several times higher than the nominal stress. A fillet distributes that stress over a larger area, dramatically improving fatigue life and part reliability."
-            },
-            {
-                q: "What is a \"safety factor\" (Factor of Safety)?",
-                options: [
-                    "A tolerance class used in GD&T",
-                    "Ratio of allowable stress to actual stress",
-                    "A safety standard for machine guarding",
-                    "The modulus of elasticity of a material"
-                ],
-                correct: 1,
-                explanation: "Factor of Safety (FoS) is the ratio of the material's allowable (or yield) stress to the actual working stress. An FoS of 2 means the part can handle twice the expected load before failure. It accounts for uncertainties in loading, material properties, manufacturing variations, and unexpected conditions. Choosing the right FoS is engineering judgment — too low risks failure, too high wastes material and money."
-            },
-            {
-                q: "What is the role of a gusset in design?",
-                options: [
-                    "Aesthetic support",
-                    "Reinforce joint strength",
-                    "Vibration control",
-                    "Prevent corrosion"
-                ],
-                correct: 1,
-                explanation: "A gusset is a triangular or plate-like reinforcement added at the junction of two structural members. It increases the stiffness and load-carrying capacity of the joint by distributing stress over a larger area. You'll see gussets everywhere — in welded frames, sheet metal brackets, and injection molded parts (where they support bosses and ribs)."
-            },
-            {
-                q: "A free body diagram represents:",
-                options: [
-                    "Thermal distribution across a part",
-                    "Structural damping characteristics",
-                    "All forces and moments acting on a body",
-                    "Gear ratios in a transmission"
-                ],
-                correct: 2,
-                explanation: "A free body diagram (FBD) isolates a body and shows every external force and moment acting on it — gravity, applied loads, reaction forces, friction. It's the starting point for any structural analysis. Before you run FEA or do hand calculations, you should be able to draw the FBD. If you can't identify the forces, no software will save you."
-            },
-            {
-                q: "What is Elastic Modulus (Young's Modulus)?",
-                options: [
-                    "Ratio of load to deflection",
-                    "Ratio of stress to strain in the elastic region",
-                    "Maximum tensile stress before fracture",
-                    "Energy stored before failure"
-                ],
-                correct: 1,
-                explanation: "Young's Modulus (E) measures a material's stiffness — how much it resists deformation under load. It's the slope of the stress-strain curve in the elastic (linear) region. Steel has E ≈ 200 GPa, aluminum ≈ 70 GPa, meaning steel is about 3× stiffer than aluminum. This is a material property — you can't change it by heat treatment or processing."
-            },
-            {
-                q: "You double the diameter of a circular shaft under torsion. The torque capacity increases by a factor of:",
-                options: [
-                    "2",
-                    "4",
-                    "8",
-                    "16"
-                ],
-                correct: 2,
-                explanation: "Torque capacity depends on the polar moment of inertia, which is proportional to d⁴ (diameter to the fourth power). However, the shear stress formula τ = Tc/J means capacity scales with d³. Doubling diameter: 2³ = 8× the torque capacity. This is why small increases in shaft diameter dramatically improve strength — and why undersized shafts fail so catastrophically."
-            },
-            {
-                q: "A rectangular beam is stronger in bending when placed:",
-                options: [
-                    "Flat (wide side horizontal)",
-                    "Vertically (tall height)",
-                    "Horizontally (wide width)",
-                    "Diagonally at 45°"
-                ],
-                correct: 1,
-                explanation: "Bending resistance depends on the moment of inertia (I), which for a rectangle is (b×h³)/12. The height (h) is cubed, so orientation matters enormously. A 50×100mm beam on its tall side is 4× stiffer than the same beam laid flat. This is why I-beams, floor joists, and structural members are always oriented with maximum depth in the loading direction."
-            },
-            {
-                q: "A beam is simply supported at both ends. Where is the maximum bending moment under a central point load?",
-                options: [
-                    "At the support ends",
-                    "At the load point (center)",
-                    "Equally distributed along the beam",
-                    "At the quarter span points"
-                ],
-                correct: 1,
-                explanation: "For a simply supported beam with a central point load, the maximum bending moment occurs directly under the load at mid-span. The moment diagram is triangular — zero at the supports, maximum at center. This is fundamental beam theory that you'll use constantly in structural design and FEA validation."
-            },
-            {
-                q: "If force = mass × acceleration, and mass is constant, doubling the acceleration will:",
-                options: [
-                    "Halve the force",
-                    "Not affect the force",
-                    "Double the force",
-                    "Square the force"
-                ],
-                correct: 2,
-                explanation: "Newton's Second Law: F = ma. With constant mass, force is directly proportional to acceleration. Double the acceleration, double the force. Simple, but critically important when designing for dynamic loads — a part that survives static loading may fail under vibration or impact where accelerations are many times gravity."
-            },
-            {
-                q: "What is the key benefit of Design for Manufacturing (DFM)?",
-                options: [
-                    "Lower design software costs",
-                    "Better simulation accuracy",
-                    "Reduces production cost and errors",
-                    "Faster marketing campaigns"
-                ],
-                correct: 2,
-                explanation: "DFM is the practice of designing parts so they can be manufactured efficiently, reliably, and cost-effectively. It means thinking about how the part will be made while you're still designing it — not after. A DFM-aware design avoids unnecessary tight tolerances, eliminates features that are difficult to produce, and considers the chosen manufacturing process constraints from the start."
-            },
-            {
-                q: "When designing a shaft-hub assembly with a press fit (interference fit), which of the following is true?",
-                options: [
-                    "Shaft tolerance must be less than hub tolerance",
-                    "Shaft tolerance must equal hub tolerance",
-                    "Shaft nominal dimension is larger than hub nominal dimension",
-                    "A clearance fit should be used instead"
-                ],
-                correct: 2,
-                explanation: "In an interference (press) fit, the shaft is slightly larger than the hole. When pressed together, the elastic deformation of both parts creates a grip force that holds them together without fasteners. The amount of interference depends on the required holding force, material properties, and operating temperature. Standard fits like H7/p6 define exact tolerance bands for this."
-            },
-            {
-                q: "What does a torque applied on a bolt measure in?",
-                options: [
-                    "Newtons (N)",
-                    "Newtons per meter (N/m)",
-                    "Newton-meters (N·m)",
-                    "Kilograms (kg)"
-                ],
-                correct: 2,
-                explanation: "Torque is force × distance, measured in Newton-meters (N·m). When you tighten a bolt with a torque wrench, you're applying a force at a distance from the bolt axis. The specified torque ensures proper clamping force — under-torquing risks loosening, over-torquing risks stripping threads or yielding the bolt."
-            }
-        ]
-    },
-
-    // =============================
-    // TOPIC 2: CAD & DRAWINGS
-    // =============================
-    {
-        name: "CAD & Engineering Drawings",
-        icon: "💻",
-        questions: [
-            {
-                q: "In a properly constrained 2D sketch in SolidWorks, what color are all lines and entities?",
-                options: [
-                    "Blue (under-defined)",
-                    "Yellow (over-defined)",
-                    "Black (fully defined)",
-                    "Green (selected)"
-                ],
-                correct: 2,
-                explanation: "In SolidWorks, sketch entities turn black when fully defined — meaning every point and line has enough dimensions and constraints that nothing can move. Blue means under-defined (something can still move), and red/yellow means over-defined (conflicting constraints). Always aim for a fully defined (black) sketch — it prevents unexpected geometry changes downstream."
-            },
-            {
-                q: "What is the best CAD feature to create a shaft with varying diameters along its length?",
-                options: [
-                    "Sweep",
-                    "Revolve",
-                    "Loft",
-                    "Extrude"
-                ],
-                correct: 1,
-                explanation: "Revolve is the correct feature — you draw the shaft's cross-section profile (half-profile showing the varying diameters) and revolve it 360° around the shaft axis. This creates the stepped or tapered cylindrical geometry in one clean feature. Extrude only creates prismatic shapes, sweep follows a path, and loft transitions between different cross-sections."
-            },
-            {
-                q: "What does a centerline in a 2D engineering drawing represent?",
-                options: [
-                    "Material boundary",
-                    "Hidden feature behind the part",
-                    "Rotational or symmetrical axis",
-                    "Cutting plane for section views"
-                ],
-                correct: 2,
-                explanation: "Centerlines (long dash–short dash pattern) indicate axes of symmetry or rotation. They mark the center of holes, cylindrical features, and symmetrical parts. They're essential for dimensioning — diameters are dimensioned from centerlines, and they tell the machinist where the rotational axis is for turning operations."
-            },
-            {
-                q: "Which format is best to export a neutral 3D model from SolidWorks for CNC or external sharing?",
-                options: [
-                    "SLDPRT (SolidWorks native)",
-                    "STL (mesh format)",
-                    "STEP (AP214/AP203)",
-                    "DWG (AutoCAD format)"
-                ],
-                correct: 2,
-                explanation: "STEP is the universal neutral 3D format. It preserves solid geometry, surface data, and assembly structure that any CAD or CAM system can read. SLDPRT only works in SolidWorks. STL is a mesh (triangles only, no real geometry) used for 3D printing. DWG is a 2D drawing format. When sending files to a machine shop or external partner, STEP is the standard."
-            },
-            {
-                q: "What does Geometric Dimensioning and Tolerancing (GD&T) primarily help with?",
-                options: [
-                    "Color matching between parts",
-                    "File export compatibility",
-                    "Tolerance stack-up in simulation only",
-                    "Communicating functional design intent and permissible variation"
-                ],
-                correct: 3,
-                explanation: "GD&T is a standardized language (ASME Y14.5 / ISO 1101) for defining permissible geometric variation on engineering drawings. It communicates not just size tolerances but form (flatness, roundness), orientation (perpendicularity, parallelism), location (true position), and runout. It tells the manufacturer exactly what matters functionally and what doesn't."
-            },
-            {
-                q: "What is the purpose of a Bill of Materials (BOM) in a CAD assembly?",
-                options: [
-                    "Store simulation results",
-                    "Show exploded views",
-                    "List all parts, quantities, and specifications",
-                    "Generate STEP files for export"
-                ],
-                correct: 2,
-                explanation: "The BOM is a structured list of every component in an assembly — part numbers, descriptions, quantities, materials, and specifications. It's the bridge between design and manufacturing/procurement. Without an accurate BOM, the purchasing team doesn't know what to order, assembly doesn't know what goes where, and quality doesn't know what to inspect."
-            },
-            {
-                q: "In an assembly, which mate type allows a cylindrical pin to both rotate and slide in a hole?",
-                options: [
-                    "Lock mate",
-                    "Distance mate",
-                    "Concentric mate",
-                    "Tangent mate"
-                ],
-                correct: 2,
-                explanation: "A concentric mate aligns two cylindrical axes, allowing both rotation around and translation along the shared axis — exactly what a pin in a hole does. A lock mate fixes everything. A distance mate sets a specific gap. Understanding mate types helps you build assemblies that move correctly and represent real mechanical behavior."
-            },
-            {
-                q: "Which of the following file types is used for 2D drawings?",
-                options: [
-                    "SLDPRT",
-                    "DXF",
-                    "STL",
-                    "OBJ"
-                ],
-                correct: 1,
-                explanation: "DXF (Drawing Exchange Format) is the standard 2D drawing format. It's used to share flat patterns for laser/waterjet cutting, 2D drawings for review, and CNC profiles. SLDPRT is a 3D SolidWorks part. STL is a 3D mesh for printing. OBJ is a 3D graphics format. When a sheet metal fabricator asks for your flat pattern, they want a DXF."
-            },
-            {
-                q: "What SolidWorks feature creates a hollow part by removing material from the inside?",
-                options: [
-                    "Loft",
-                    "Shell",
-                    "Fillet",
-                    "Extrude Cut"
-                ],
-                correct: 1,
-                explanation: "Shell removes the interior of a solid body, leaving walls of a specified thickness. Select the face(s) to open, set the wall thickness, and SolidWorks hollows the part. It's commonly used for enclosures, housings, and containers. This is much faster and more parametric than manually creating an Extrude Cut to hollow a part."
-            },
-            {
-                q: "Which feature in CAD is typically used to copy geometry along a path or axis?",
-                options: [
-                    "Fillet",
-                    "Shell",
-                    "Pattern (linear or circular)",
-                    "Mate"
-                ],
-                correct: 2,
-                explanation: "Patterns replicate features along a linear direction, around a circular axis, or along a path. Instead of creating 20 identical holes one by one, you create one hole and pattern it. This is faster, easier to modify (change count or spacing in one place), and keeps your feature tree clean. Linear patterns for rows, circular patterns for bolt circles."
-            },
-            {
-                q: "In manufacturing drawings, a hole callout Ø10 H7 refers to:",
-                options: [
-                    "Hole diameter and standard fit tolerance",
-                    "Hole depth and thread pitch",
-                    "Countersunk hole type",
-                    "Drill size for tapping"
-                ],
-                correct: 0,
-                explanation: "Ø10 H7 means a 10mm diameter hole with an H7 tolerance band. 'H' is the hole basis (starts at nominal), '7' is the tolerance grade (IT7 ≈ ±0.007mm for this size). H7 is commonly paired with shaft tolerances like g6 (clearance fit), k6 (transition fit), or p6 (press fit). This is the ISO system of limits and fits — essential knowledge for any mechanical designer."
-            }
-        ]
-    },
-
-    // =============================
-    // TOPIC 3: MACHINING
-    // =============================
-    {
-        name: "Machining",
-        icon: "🔧",
-        questions: [
-            {
-                q: "Which machining process is most accurate for finishing internal holes to precise diameters?",
-                options: [
-                    "Turning",
-                    "Drilling",
-                    "Reaming",
-                    "Tapping"
-                ],
-                correct: 2,
-                explanation: "Reaming finishes a pre-drilled hole to exact size and smooth surface finish, achieving tolerances of ±0.01–0.02mm. Drilling alone gives ±0.1–0.2mm at best. The process is: drill undersized, then ream to final diameter. For even more precision, boring achieves ±0.01mm but requires a boring bar and is slower."
-            },
-            {
-                q: "Why is it bad practice to specify a surface finish tighter than necessary?",
-                options: [
-                    "It makes the drawing look cluttered",
-                    "Tighter finishes always require grinding, which is slow",
-                    "It dramatically increases cost and time with no functional benefit",
-                    "Surface finish callouts are optional and ignored by machinists"
-                ],
-                correct: 2,
-                explanation: "Every step tighter in surface finish (e.g., Ra 3.2 → Ra 1.6 → Ra 0.8) can double or triple the machining time and cost. It may require additional operations like grinding or lapping. A good engineer specifies the roughest finish that meets the functional requirement. Ra 3.2 is standard machining. Ra 0.8 needs careful finishing. Ra 0.4 often needs grinding. Only specify what the function demands."
-            },
-            {
-                q: "In CNC milling, what is the primary constraint on which features can be machined?",
-                options: [
-                    "The color of the material",
-                    "The cutting tool must be able to physically access the feature",
-                    "Features must be perfectly symmetrical",
-                    "Only flat surfaces can be milled"
-                ],
-                correct: 1,
-                explanation: "The fundamental constraint in milling is tool access — the cutter approaches from outside or above, and the tool body/holder cannot collide with the part. Deep narrow pockets, internal undercuts, and features hidden behind walls are problematic. When designing, always ask: can a cutting tool physically reach this feature? If not, redesign or consider a different process."
-            },
-            {
-                q: "What is the main constraint of turning (lathe) operations?",
-                options: [
-                    "Only soft materials can be turned",
-                    "Parts must be rotationally symmetric",
-                    "Maximum part length is 100mm",
-                    "Only external features can be created"
-                ],
-                correct: 1,
-                explanation: "In turning, the part rotates and the tool cuts — this inherently creates rotationally symmetric geometry. Shafts, cylinders, tapers, grooves, and threads are all turning operations. You can't easily turn a square profile or off-center feature. For cylindrical parts with non-symmetric features (flats, cross-holes), mill-turn machines combine both capabilities."
-            },
-            {
-                q: "Standard drill bits create what kind of bottom in blind holes?",
-                options: [
-                    "Perfectly flat bottom",
-                    "Pointed (conical) bottom at 118° or 135°",
-                    "Rounded hemispherical bottom",
-                    "Square bottom"
-                ],
-                correct: 1,
-                explanation: "Standard twist drills have a pointed tip (typically 118° or 135°), so blind holes always have a conical bottom. If you need a flat-bottom hole, you must specify it — the machinist will use an end mill or flat-bottom drill, which costs more. Design for the pointed bottom whenever possible and dimension hole depth to the usable cylindrical portion."
-            },
-            {
-                q: "What is the typical tolerance achievable with standard CNC milling?",
-                options: [
-                    "±0.5mm",
-                    "±0.05–0.1mm",
-                    "±0.001mm",
-                    "±1.0mm"
-                ],
-                correct: 1,
-                explanation: "Standard CNC milling achieves ±0.05–0.1mm without special effort. Tighter tolerances (±0.02mm) require careful work, slow finishing passes, and add significant cost. ±0.01mm is extreme precision territory requiring specialized equipment. Always specify the loosest tolerance that meets functional requirements — ±0.1mm covers most general machining needs."
-            },
-            {
-                q: "A countersink is used to:",
-                options: [
-                    "Guide screws into wood",
-                    "Prevent vibration loosening",
-                    "Allow screw heads to sit flush with the surface",
-                    "Reduce part weight"
-                ],
-                correct: 2,
-                explanation: "A countersink creates a conical recess at a hole entrance, matching the angle of a flat-head screw (typically 82° or 90°). This allows the screw head to sit flush with or below the surface — essential when you need a smooth external surface or when a protruding head would interfere with other components."
-            },
-            {
-                q: "Why should internal corners in machined pockets always have a radius?",
-                options: [
-                    "It looks more professional",
-                    "Rotating cutters physically cannot create sharp internal corners",
-                    "Sharp corners are banned by ISO standards",
-                    "It reduces the material cost"
-                ],
-                correct: 1,
-                explanation: "A rotating cylindrical end mill always leaves a radius at internal corners equal to the tool radius. A 10mm end mill leaves a 5mm corner radius. Designing sharp internal corners is asking for the impossible — the machinist will need a smaller tool and additional passes, increasing cost. Design your corner radii to match standard tool sizes and your mating parts will thank you."
-            },
-            {
-                q: "What is the purpose of tapping in machining?",
-                options: [
-                    "Creating external threads on a shaft",
-                    "Cutting internal threads in a pre-drilled hole",
-                    "Enlarging a hole to precise diameter",
-                    "Creating a flat surface on round stock"
-                ],
-                correct: 1,
-                explanation: "Tapping cuts internal threads inside a hole so you can screw a bolt directly into the part. It requires a correctly-sized pilot hole first — for example, an M6 tap needs a 5.0mm pilot hole. The thread engagement depth matters: in steel, 1.5× bolt diameter is sufficient; in aluminum, use 2.0–2.5× because the softer material provides less holding force per thread."
-            },
-            {
-                q: "Which material is generally easiest to machine among these?",
-                options: [
-                    "316L Stainless Steel",
-                    "K100 Tool Steel",
-                    "6061 Aluminum",
-                    "Titanium alloy"
-                ],
-                correct: 2,
-                explanation: "6061 aluminum is one of the easiest materials to machine — it cuts fast, produces clean chips, holds tolerances well, and causes minimal tool wear. 316L stainless is tough and work-hardens. K100 tool steel is very hard and abrasive. Titanium is notoriously difficult — it generates heat, galls, and destroys tools quickly. Material choice directly impacts machining cost and lead time."
-            }
-        ]
-    },
-
-    // =============================
-    // TOPIC 4: SHEET METAL
-    // =============================
-    {
-        name: "Sheet Metal",
-        icon: "📄",
-        questions: [
-            {
-                q: "In sheet metal design, why is bend relief added at bends?",
-                options: [
-                    "To reduce part weight",
-                    "To allow heat dissipation during welding",
-                    "To prevent tearing or distortion at the bend junction",
-                    "To improve the visual appearance"
-                ],
-                correct: 2,
-                explanation: "Bend relief is a cut (notch) at the junction where a bend meets an edge or another bend. Without it, material at the junction has nowhere to go during bending, causing tears, cracks, or uncontrolled deformation. The relief width should be 1.5–2× material thickness, and depth must extend past the bend tangent point."
-            },
-            {
-                q: "What does the K-Factor in sheet metal represent?",
-                options: [
-                    "Coefficient of friction during bending",
-                    "Thermal expansion rate of the sheet",
-                    "Ratio of neutral axis location to material thickness",
-                    "Percentage of springback after bending"
-                ],
-                correct: 2,
-                explanation: "The K-Factor defines where the neutral axis sits within the material thickness during bending — the line that neither stretches nor compresses. K = distance from inner surface to neutral axis ÷ thickness. Typical values: 0.33–0.44 for steel, 0.38–0.42 for aluminum. Your CAD uses K-Factor to calculate flat pattern dimensions. Wrong K-Factor = wrong flat pattern = every bent dimension is wrong."
-            },
-            {
-                q: "What is the minimum recommended inside bend radius for sheet metal?",
-                options: [
-                    "Zero — sharp bends are fine",
-                    "Equal to material thickness (1T) as a general rule",
-                    "Always 5mm regardless of material",
-                    "Half the material thickness (0.5T)"
-                ],
-                correct: 1,
-                explanation: "A safe general rule is: minimum inside bend radius = material thickness (1T). Bending tighter than this risks cracking, especially in harder materials or when bending across the grain direction. Some ductile materials (mild steel, aluminum) can go tighter with proper tooling, but 1T is the starting point for reliable production. Always confirm with your fabricator."
-            },
-            {
-                q: "Why does grain direction matter in sheet metal bending?",
-                options: [
-                    "It affects the color of the finished part",
-                    "Bending parallel to the grain is more likely to cause cracking",
-                    "Grain direction only matters in wood, not metal",
-                    "It determines the maximum sheet size available"
-                ],
-                correct: 1,
-                explanation: "Sheet metal has a grain direction from the rolling process. Bending parallel to the grain (along the rolling direction) puts stress along already-elongated grain boundaries, making cracks more likely. Bending perpendicular to the grain is safer. For critical parts, specify bend orientation relative to grain on your drawing, or at minimum ensure your bend radius accounts for grain direction."
-            },
-            {
-                q: "What happens if you use the default K-Factor in your CAD without verifying it?",
-                options: [
-                    "Nothing — defaults are always accurate",
-                    "The 3D model may look wrong but the flat pattern will be fine",
-                    "The flat pattern dimensions will likely be wrong, causing incorrect bent dimensions",
-                    "Only the weight calculation will be affected"
-                ],
-                correct: 2,
-                explanation: "CAD defaults (often K = 0.5) are generic guesses. The actual K-Factor depends on your specific material, thickness, tooling (V-die width), and bend radius. A wrong K-Factor means the calculated flat pattern is wrong — and every bent part comes off the press brake with incorrect dimensions. For production parts, always verify K-Factor with your fabricator or measure it yourself."
-            },
-            {
-                q: "What is the recommended minimum flange length for a sheet metal bend?",
-                options: [
-                    "Any length works",
-                    "At least 4× material thickness",
-                    "Exactly equal to the bend radius",
-                    "At least 1mm"
-                ],
-                correct: 1,
-                explanation: "The minimum flange length should be at least 4× material thickness (measured from the inside of the bend to the edge). Shorter flanges can't be gripped properly by the press brake, leading to inconsistent bends, slipping, or the part flying off the tool. For 2mm material, that's a minimum 8mm flange. Shorter than this, and your fabricator will tell you it can't be reliably formed."
-            },
-            {
-                q: "What is the flat pattern in sheet metal design?",
-                options: [
-                    "The 3D view of the bent part",
-                    "The calculated unfolded shape before bending",
-                    "A surface finish specification",
-                    "The cutting tool path for the press brake"
-                ],
-                correct: 1,
-                explanation: "The flat pattern is the calculated shape of the sheet before any bending — what gets cut from flat stock by laser, waterjet, or punch. CAD calculates it using K-Factor and bend allowance. Everything downstream depends on it: the fabricator cuts exactly what you provide and bends it according to your specifications. A wrong flat pattern means every part comes out wrong. No amount of shop floor skill compensates for incorrect flat pattern calculations."
-            },
-            {
-                q: "When designing holes near bends in sheet metal, what is the general minimum distance rule?",
-                options: [
-                    "Holes can be placed anywhere",
-                    "At least 2× material thickness + bend radius from the bend line",
-                    "Exactly on the bend line for best results",
-                    "At least 10mm regardless of material"
-                ],
-                correct: 1,
-                explanation: "Holes placed too close to a bend will deform during bending — they elongate, shift, or distort. The safe minimum distance from the bend line to the edge of the hole is typically 2× material thickness plus the bend radius. If you must have a hole closer, add it as a secondary operation after bending (drill or punch after forming)."
-            },
-            {
-                q: "What is springback in sheet metal bending?",
-                options: [
-                    "The sheet bouncing off the press brake",
-                    "The tendency of metal to partially return toward its original shape after bending",
-                    "A defect caused by incorrect K-Factor",
-                    "The elastic deformation of the press brake itself"
-                ],
-                correct: 1,
-                explanation: "When you bend sheet metal, part of the deformation is elastic (recoverable). After the press brake releases, the part springs back slightly — a 90° bend might open up to 92°. The operator compensates by over-bending. Springback depends on material (stainless springs back more than mild steel), thickness, bend radius, and grain direction. Modern press brakes can compensate automatically."
-            },
-            {
-                q: "Which file format does a sheet metal fabricator typically need for laser cutting the flat pattern?",
-                options: [
-                    "SLDPRT (SolidWorks part)",
-                    "DXF (2D drawing exchange format)",
-                    "STL (mesh for 3D printing)",
-                    "PDF (document format)"
-                ],
-                correct: 1,
-                explanation: "Fabricators need a DXF file of the flat pattern for CNC laser, waterjet, or punch programming. The DXF contains the exact 2D geometry — outer profile, holes, slots, bend lines — that the cutting machine follows. Some shops also accept STEP files and generate the flat pattern themselves, but DXF is the universal standard for 2D cutting profiles."
-            }
-        ]
-    },
-
-    // =============================
-    // TOPIC 5: PLASTICS & INJECTION MOLDING
-    // =============================
-    {
-        name: "Plastics & Injection Molding",
-        icon: "🏭",
-        questions: [
-            {
-                q: "Which manufacturing process is most suitable for mass production of plastic parts?",
-                options: [
-                    "Casting",
-                    "CNC Milling",
-                    "Injection molding",
-                    "Waterjet cutting"
-                ],
-                correct: 2,
-                explanation: "Injection molding dominates mass production of plastic parts. High tooling cost ($5,000–$100,000+ for the mold) is offset by very low per-part cost and cycle times of 15–60 seconds. Above 500–5,000 parts, injection molding becomes more economical than any alternative. It also offers the widest material selection and best dimensional consistency."
-            },
-            {
-                q: "Why must injection molded parts have draft angles on vertical walls?",
-                options: [
-                    "To improve the flow of plastic into the mold",
-                    "To allow the part to eject from the mold without damage",
-                    "To reduce the weight of the part",
-                    "Draft angles are optional and only cosmetic"
-                ],
-                correct: 1,
-                explanation: "Draft is the taper on walls that allows the part to release from the mold during ejection. Without draft, the part sticks and gets damaged or damages the mold. Minimum: 0.5° for smooth surfaces, 1° recommended. Textured surfaces need an additional 1° per 0.025mm of texture depth. Model draft from the beginning, not as an afterthought."
-            },
-            {
-                q: "What causes sink marks on injection molded parts?",
-                options: [
-                    "Material is too hot during injection",
-                    "Excessive wall thickness or thick ribs causing uneven cooling",
-                    "The mold surface is too rough",
-                    "Injection pressure is too high"
-                ],
-                correct: 1,
-                explanation: "Sink marks appear where thick sections cool and shrink more than surrounding thinner areas — creating a visible depression on the surface. Common culprits: ribs thicker than 60% of the wall, bosses with thick walls, and non-uniform wall thickness. The fix is design-side: keep walls uniform (±25%), make ribs 50–60% of wall thickness, and core out thick sections."
-            },
-            {
-                q: "What is the recommended rib thickness relative to wall thickness in injection molding?",
-                options: [
-                    "Equal to wall thickness (100%)",
-                    "50–60% of wall thickness",
-                    "Double the wall thickness (200%)",
-                    "As thin as possible regardless of wall"
-                ],
-                correct: 1,
-                explanation: "Rib thickness should be 50–60% of the nominal wall. For a 2.5mm wall, ribs should be 1.25–1.5mm thick. Thicker ribs create sink marks on the opposite surface because the extra material at the intersection cools slower and shrinks more. Rib height should not exceed 3× wall thickness. This is one of the most commonly violated rules by junior designers."
-            },
-            {
-                q: "What is an undercut in injection molding, and why is it a problem?",
-                options: [
-                    "A surface defect from low injection pressure",
-                    "Any feature that prevents straight ejection from the mold",
-                    "A mark left by the ejector pins",
-                    "A type of gate used for large parts"
-                ],
-                correct: 1,
-                explanation: "An undercut is any feature (hook, snap, internal groove, side hole) that blocks the part from pulling straight out of the mold. Each undercut requires a side action — a moving mold component that adds $1,500–$7,500+ to mold cost and complexity. Minimize or eliminate undercuts whenever possible. If you must have them, understand the cost impact."
-            },
-            {
-                q: "Why is uniform wall thickness critical in injection molded parts?",
-                options: [
-                    "It reduces material cost only",
-                    "Non-uniform walls cause warpage, sink marks, and unpredictable shrinkage",
-                    "It's only important for transparent parts",
-                    "Uniform walls are preferred but not critical"
-                ],
-                correct: 1,
-                explanation: "Thick sections cool slower than thin ones. This differential cooling causes warpage (the part bends), sink marks (visible depressions), voids (internal bubbles), and unpredictable shrinkage. Target variation within ±25% of nominal thickness. When you must transition between thicknesses, do it gradually over a distance of at least 3× the thickness change."
-            },
-            {
-                q: "What is the typical recommended wall thickness range for ABS injection molded parts?",
-                options: [
-                    "0.3–0.5mm",
-                    "1.2–3.5mm",
-                    "5.0–8.0mm",
-                    "10–15mm"
-                ],
-                correct: 1,
-                explanation: "ABS typically uses 1.2mm minimum, 1.8–3.5mm recommended, 3.5mm maximum wall thickness. Thinner walls risk incomplete filling (short shots). Thicker walls increase cycle time, cause sink marks, and waste material. Different plastics have different ranges — nylon can go as thin as 0.8mm, while polycarbonate typically needs 1.0mm minimum."
-            },
-            {
-                q: "How should bosses (screw posts) be designed in injection molded parts?",
-                options: [
-                    "Thick solid cylinders attached directly to the wall",
-                    "Wall thickness at 60% of nominal wall, supported with ribs",
-                    "As thin as possible with no support",
-                    "Separate from the wall with no connection"
-                ],
-                correct: 1,
-                explanation: "Boss outer wall should be 60% of nominal wall thickness (for 2.5mm walls, boss wall = 1.5mm). Support bosses with 2–3 gusset ribs at 120° spacing. Boss height should not exceed 2.5× outer diameter. Thick unsupported bosses cause sink marks and crack under screw torque. For repeated assembly, use metal threaded inserts instead of screwing directly into plastic."
-            },
-            {
-                q: "At roughly what production volume does injection molding become more economical than 3D printing?",
-                options: [
-                    "10–50 parts",
-                    "100–500 parts",
-                    "10,000–50,000 parts",
-                    "Only above 1 million parts"
-                ],
-                correct: 1,
-                explanation: "The crossover is typically 100–500 parts, depending on part size, complexity, and mold cost. Below this, 3D printing wins because there's no tooling investment. Above this, injection molding's low per-part cost and fast cycle times make it far cheaper. Always calculate the break-even point based on actual quotes — it varies significantly by part."
-            },
-            {
-                q: "What is the purpose of adding texture to injection mold surfaces?",
-                options: [
-                    "To hide cosmetic defects like flow lines and sink marks",
-                    "To make the mold last longer",
-                    "To reduce injection pressure",
-                    "Texture has no practical purpose"
-                ],
-                correct: 0,
-                explanation: "Texture serves both functional and cosmetic purposes. A medium texture (SPI C-2) can effectively hide minor defects like flow lines and light sink marks. It also provides grip on handheld parts and creates premium appearances (leather grain, carbon fiber pattern). However, texture requires additional draft — add 1° per 0.025mm of texture depth, or ejection becomes impossible."
-            }
-        ]
-    },
-
-    // =============================
-    // TOPIC 6: 3D PRINTING
-    // =============================
-    {
-        name: "3D Printing & Additive",
-        icon: "🖨️",
-        questions: [
-            {
-                q: "In 3D printing using FDM, which of the following improves surface finish?",
-                options: [
-                    "Increasing layer height",
-                    "Decreasing nozzle temperature",
-                    "Increasing print speed",
-                    "Decreasing layer height"
-                ],
-                correct: 3,
-                explanation: "Finer layers (e.g., 0.1mm vs 0.3mm) produce smoother surfaces because each step between layers is smaller, reducing visible stair-stepping. The tradeoff is time — halving the layer height roughly doubles print time. For functional prototypes where appearance doesn't matter, use coarse layers. For visual prototypes or presentation models, use fine layers."
-            },
-            {
-                q: "Why are FDM 3D printed parts weakest perpendicular to the layer lines?",
-                options: [
-                    "The plastic is thinner in that direction",
-                    "Layer-to-layer adhesion is weaker than the material itself (anisotropic behavior)",
-                    "The printer moves slower in that direction",
-                    "It's a myth — FDM parts are equally strong in all directions"
-                ],
-                correct: 1,
-                explanation: "FDM parts are anisotropic — inter-layer bond strength is typically 50% or less of the in-plane strength. Each layer adheres to the one below through thermal bonding, which is never as strong as continuous material. Orient parts so the strongest axis (along layers) aligns with expected loads. A hook under tension should have layers perpendicular to the pull direction."
-            },
-            {
-                q: "At what overhang angle do FDM prints typically require support structures?",
-                options: [
-                    "Any angle over 0° from horizontal",
-                    "Beyond approximately 45° from vertical",
-                    "Only at 90° (horizontal overhangs)",
-                    "Supports are never needed in FDM"
-                ],
-                correct: 1,
-                explanation: "The 45° rule: overhangs steeper than 45° from vertical (or less than 45° from horizontal) need support because each layer has less than half its width landing on the layer below, causing drooping and poor quality. Design to minimize supports — use chamfers instead of overhangs, orient parts to be self-supporting, or split parts if needed."
-            },
-            {
-                q: "Which 3D printing technology requires NO support structures because the powder supports the part?",
-                options: [
-                    "FDM (Fused Deposition Modeling)",
-                    "SLA (Stereolithography)",
-                    "SLS (Selective Laser Sintering)",
-                    "All 3D printing requires supports"
-                ],
-                correct: 2,
-                explanation: "SLS sinters parts within a powder bed — the surrounding unsintered powder supports the geometry during printing, eliminating the need for supports. This allows complex geometry (interlocking parts, lattices, internal channels) that would be impossible or very expensive to support in FDM or SLA. The tradeoff: SLS machines are industrial ($100K+) and surface finish is grainy."
-            },
-            {
-                q: "Why should FDM printed holes typically be designed 0.2–0.3mm oversized?",
-                options: [
-                    "To compensate for material shrinkage after cooling",
-                    "Because the circular path causes material to bulge inward slightly",
-                    "It's a safety precaution for bolt clearance",
-                    "FDM holes don't need any compensation"
-                ],
-                correct: 1,
-                explanation: "FDM prints circles as a series of small straight segments, and the extruded filament tends to bulge slightly inward on circular paths, making holes come out undersized. Design holes 0.2–0.3mm larger than needed, or drill to final size after printing. For precision holes, always post-process — print undersized and ream/drill to final dimension."
-            },
-            {
-                q: "What does infill percentage mean in FDM printing?",
-                options: [
-                    "The percentage of the surface that is printed",
-                    "The internal fill density — 20% means 80% air inside",
-                    "The speed at which the printer fills each layer",
-                    "The overlap between adjacent extrusion lines"
-                ],
-                correct: 1,
-                explanation: "Infill is the internal structure pattern and density. 20% infill means the interior is 80% air with a sparse lattice structure. Higher infill adds weight and strength but with diminishing returns — going from 20% to 50% adds significant strength, but 50% to 100% adds mostly weight. For structural parts, specify minimum infill. For prototypes, 15–20% is usually sufficient."
-            },
-            {
-                q: "When is 3D printing NOT a good choice?",
-                options: [
-                    "When you need 5 prototype parts quickly",
-                    "When you need 5,000 identical parts in production",
-                    "When the part has complex internal geometry",
-                    "When every part needs to be slightly different"
-                ],
-                correct: 1,
-                explanation: "At volumes above 100–500 parts, injection molding or other conventional processes become far more economical. 3D printing has no tooling cost but high per-part cost and slow cycle times. A part that takes 4 hours to print costs $20–50 in material alone — injection molding the same part might cost $0.50 each at volume. Calculate the break-even point."
-            },
-            {
-                q: "Which FDM material degrades under UV exposure, making it unsuitable for long-term outdoor use?",
-                options: [
-                    "ABS",
-                    "PETG",
-                    "PLA",
-                    "Nylon"
-                ],
-                correct: 2,
-                explanation: "PLA (Polylactic Acid) degrades under UV exposure and has a low heat deflection temperature (~55°C). It's fine for prototypes, models, and indoor decorative parts, but unsuitable for functional outdoor applications. For outdoor use, consider ASA (UV-resistant), PETG, or UV-stabilized injection molded parts for production."
-            },
-            {
-                q: "What is the typical dimensional tolerance achievable with FDM 3D printing?",
-                options: [
-                    "±0.01mm (very precise)",
-                    "±0.2–0.5mm",
-                    "±2.0mm",
-                    "±0.001mm"
-                ],
-                correct: 1,
-                explanation: "FDM typically achieves ±0.2–0.5mm dimensional accuracy — much looser than CNC machining (±0.05mm) or injection molding (±0.1mm). If your design has tight tolerance requirements, 3D print for prototyping and form-checking, then use a precision manufacturing process for production parts."
-            },
-            {
-                q: "What is SLA (Stereolithography) best known for compared to FDM?",
-                options: [
-                    "Lower cost per part",
-                    "Much smoother surface finish and finer detail",
-                    "Stronger parts with better mechanical properties",
-                    "Larger build volumes"
-                ],
-                correct: 1,
-                explanation: "SLA uses a UV laser to cure liquid resin layer by layer, producing parts with very smooth surfaces and fine detail resolution. It's excellent for appearance prototypes, dental models, jewelry patterns, and any application where surface quality matters. The tradeoffs: resin is more expensive, parts can be brittle, some resins degrade under UV, and post-curing is required."
-            }
-        ]
-    },
-
-    // =============================
-    // TOPIC 7: MATERIALS & HEAT TREATMENT
-    // =============================
-    {
-        name: "Materials & Heat Treatment",
-        icon: "🔬",
-        questions: [
-            {
-                q: "Which material is commonly used in aircraft structures for its strength-to-weight ratio?",
-                options: [
-                    "Stainless steel",
-                    "Cast iron",
-                    "Titanium alloy",
-                    "Bronze"
-                ],
-                correct: 2,
-                explanation: "Titanium alloys offer excellent strength-to-weight ratio, corrosion resistance, and high-temperature performance — critical for aerospace. They're roughly 40% lighter than steel with comparable strength. The downside: titanium is expensive and very difficult to machine (it generates heat, galls tools, and requires specialized cutting parameters)."
-            },
-            {
-                q: "What does the Rockwell hardness test measure?",
-                options: [
-                    "Ductility under tension",
-                    "Surface finish quality",
-                    "Resistance to indentation",
-                    "Modulus of elasticity"
-                ],
-                correct: 2,
-                explanation: "Rockwell hardness measures how well a material resists being dented by a standardized indenter under a specific load. Different scales exist: HRC (Rockwell C) for hardened steels, HRB for softer metals. Higher number = harder material. Hardness correlates with wear resistance and strength, but inversely with machinability — harder materials are more difficult and expensive to machine."
-            },
-            {
-                q: "Annealing is a heat treatment used to:",
-                options: [
-                    "Increase brittleness for clean fracture",
-                    "Harden the material surface",
-                    "Reduce internal stresses and increase ductility",
-                    "Increase corrosion resistance"
-                ],
-                correct: 2,
-                explanation: "Annealing involves heating a material above its recrystallization temperature, holding it, and cooling it slowly (usually in the furnace). This relieves internal stresses from prior processing (cold working, welding, machining), increases ductility, and reduces hardness. It's often used between manufacturing operations — for example, after deep drawing sheet metal that has work-hardened."
-            },
-            {
-                q: "Which of the following has the highest thermal conductivity?",
-                options: [
-                    "Brass",
-                    "Steel",
-                    "Copper",
-                    "Titanium"
-                ],
-                correct: 2,
-                explanation: "Copper has the highest thermal conductivity of these materials (~400 W/m·K), followed by brass (~120), steel (~50), and titanium (~22). This is why copper is used in heat sinks, heat exchangers, and electrical contacts. When designing for heat dissipation, material selection for thermal conductivity is as important as geometry."
-            },
-            {
-                q: "Which of the following materials is most brittle?",
-                options: [
-                    "Rubber",
-                    "Polycarbonate",
-                    "Cast iron",
-                    "Mild steel"
-                ],
-                correct: 2,
-                explanation: "Cast iron is the most brittle material in this list — it fractures with little to no plastic deformation (no warning before failure). The graphite flakes in gray cast iron act as internal stress concentrators. Mild steel and polycarbonate are ductile (they deform significantly before breaking). Rubber is hyperelastic. This distinction matters for safety — brittle materials fail suddenly."
-            },
-            {
-                q: "Which is a characteristic feature of ductile failure?",
-                options: [
-                    "Sudden break with no warning",
-                    "Shiny, flat fracture surface",
-                    "Large visible deformation before failure",
-                    "Crack propagation without strain"
-                ],
-                correct: 2,
-                explanation: "Ductile failure shows significant plastic deformation before fracture — necking, bending, stretching. This is actually a safety advantage: you can see the part deforming before it breaks, giving warning. Brittle failure is the dangerous one — sudden, no warning, clean fracture. Engineers prefer ductile materials for structural applications precisely because of this warning behavior."
-            },
-            {
-                q: "The purpose of quenching and tempering in steel is to:",
-                options: [
-                    "Harden the steel, then reduce brittleness for usable toughness",
-                    "Improve the steel's color and appearance",
-                    "Increase electrical conductivity",
-                    "Reduce the part size through thermal contraction"
-                ],
-                correct: 0,
-                explanation: "Quenching (rapid cooling from high temperature) creates very hard but brittle martensite. Tempering (reheating to a moderate temperature) then reduces some hardness in exchange for significantly improved toughness. The combination gives you a hard, strong, but not excessively brittle material. The tempering temperature controls the hardness-toughness tradeoff."
-            },
-            {
-                q: "Which process joins metals by melting a filler metal into the joint WITHOUT melting the base metals?",
-                options: [
-                    "Welding (fusion welding)",
-                    "Brazing",
-                    "Soldering",
-                    "Both brazing and soldering"
-                ],
-                correct: 3,
-                explanation: "Both brazing and soldering use filler metals that melt at temperatures below the base metal's melting point. The difference: brazing uses fillers above 450°C (stronger joints), soldering below 450°C (electronics, plumbing). In contrast, fusion welding melts the base metals themselves to form the joint. Brazing is often used to join dissimilar metals that can't be easily welded."
-            },
-            {
-                q: "What does 'isotropic' mean when describing a material?",
-                options: [
-                    "Properties differ in different directions",
-                    "Properties are the same in all directions",
-                    "The material is transparent",
-                    "The material cannot be recycled"
-                ],
-                correct: 1,
-                explanation: "Isotropic materials have identical properties (strength, stiffness, thermal expansion) in all directions — metals are generally isotropic. Anisotropic or orthotropic materials have direction-dependent properties — wood, carbon fiber composites, and FDM 3D printed parts are anisotropic. This matters hugely for structural design: you must know which direction the loads come from relative to the material's strong axis."
-            },
-            {
-                q: "Surface roughness primarily affects:",
-                options: [
-                    "Corrosion resistance only",
-                    "Visual appearance only",
-                    "Friction, wear, and fit between mating parts",
-                    "Welding penetration depth"
-                ],
-                correct: 2,
-                explanation: "Surface roughness directly impacts how parts interact: rougher surfaces create more friction, wear faster, and affect the fit between mating components. Bearing surfaces need smooth finishes. Sealing surfaces need controlled roughness. Bonding surfaces actually need some roughness for adhesion. Specify the roughest finish that meets the functional requirement — over-specifying surface finish adds cost for no benefit."
-            }
-        ]
-    },
-
-    // =============================
-    // TOPIC 8: FEA & STRESS ANALYSIS
-    // =============================
-    {
-        name: "FEA & Stress Analysis",
-        icon: "📊",
-        questions: [
-            {
-                q: "What is the main output of a static structural FEA analysis?",
-                options: [
-                    "Mesh file and element connectivity",
-                    "Force distribution only",
-                    "Stress and deformation fields",
-                    "Temperature gradients"
-                ],
-                correct: 2,
-                explanation: "Static FEA gives you stress distribution (where the part is most loaded) and deformation (how much it deflects/stretches). These let you evaluate whether the design will survive its loads with acceptable deflection. You compare peak Von Mises stress against material yield strength, and check that deformations meet functional requirements."
-            },
-            {
-                q: "What boundary condition should be used to simulate a cantilever beam in FEA?",
-                options: [
-                    "Frictionless support on all faces",
-                    "Roller support at both ends",
-                    "Fixed support (all DOF constrained) at one end",
-                    "Pin support at both ends"
-                ],
-                correct: 2,
-                explanation: "A cantilever beam is fixed at one end (all 6 degrees of freedom locked: 3 translations + 3 rotations) and free at the other. The fixed boundary condition prevents any movement or rotation at the support. Getting boundary conditions wrong is the most common source of FEA errors — a perfectly meshed model with wrong constraints gives perfectly wrong results."
-            },
-            {
-                q: "A mesh with too few elements in FEA will most likely result in:",
-                options: [
-                    "Overestimated stresses (conservative results)",
-                    "Very long simulation times",
-                    "Inaccurate results (usually underestimated stresses)",
-                    "Increased precision in stress calculations"
-                ],
-                correct: 2,
-                explanation: "Too few elements means the mesh can't capture stress gradients — especially at corners, fillets, and load application points where stress changes rapidly. Coarse meshes typically underestimate peak stresses, which is dangerous because you think the part is safer than it really is. Always refine the mesh in high-stress areas and run a mesh convergence study."
-            },
-            {
-                q: "Von Mises stress is used to evaluate failure in:",
-                options: [
-                    "Only thermal expansion problems",
-                    "Ductile materials (like steel and aluminum)",
-                    "Only plastic deformation, not fracture",
-                    "Buckling loads on columns"
-                ],
-                correct: 1,
-                explanation: "Von Mises stress combines all stress components (normal and shear) into a single equivalent value that can be compared directly to the material's yield strength. It's the standard failure criterion for ductile materials. If Von Mises stress exceeds yield strength, the material begins to plastically deform. For brittle materials, other criteria (Maximum Principal Stress, Mohr-Coulomb) are more appropriate."
-            },
-            {
-                q: "Stress concentration is most likely to occur at:",
-                options: [
-                    "Smooth flat surfaces",
-                    "Large radius fillets",
-                    "Sharp corners and notches",
-                    "Bolt holes with large diameter"
-                ],
-                correct: 2,
-                explanation: "Sharp corners, notches, sudden cross-section changes, and small holes all create stress concentrations — localized regions where stress is much higher than the average. A sharp 90° corner can have a stress concentration factor of 3–5×, meaning local stress is 3–5 times the nominal stress. This is why fillets are critical and why FEA mesh must be refined at these features."
-            },
-            {
-                q: "For FEA of a structure with thin-walled beams and plates, which element types are most appropriate?",
-                options: [
-                    "Solid elements for everything (maximum detail)",
-                    "Shell elements for plates and beam elements for beams",
-                    "Beam elements for plates and shell elements for beams",
-                    "Only shell elements for everything"
-                ],
-                correct: 1,
-                explanation: "Shell elements efficiently model thin plates (capturing bending with far fewer elements than solids), and beam elements efficiently model long slender members. Using solid elements for thin structures requires many elements through the thickness, massively increasing computation time with minimal accuracy improvement. Choosing the right element type is a core FEA skill."
-            },
-            {
-                q: "Increasing the mesh density (more elements) generally leads to:",
-                options: [
-                    "Lower accuracy",
-                    "Less computational cost",
-                    "More accurate results (approaching true solution)",
-                    "Artificially higher stress values"
-                ],
-                correct: 2,
-                explanation: "Finer meshes capture stress gradients more accurately, and results converge toward the true mathematical solution as mesh density increases. But there are diminishing returns — doubling elements from 10K to 20K may change results by 10%, while doubling from 100K to 200K might change results by less than 1%. A mesh convergence study finds the sweet spot between accuracy and computation time."
-            },
-            {
-                q: "A displacement constraint in FEA means:",
-                options: [
-                    "The part will deform only in one direction",
-                    "A specific point or surface is prevented from moving (fixed in space)",
-                    "No contact between parts is allowed",
-                    "Temperature is kept constant at that location"
-                ],
-                correct: 1,
-                explanation: "A displacement constraint fixes a node or surface's movement to zero (or a specified value) in one or more directions. Fixed support = all displacements and rotations set to zero. Roller support = one direction fixed, others free. These represent how the part is actually held in real life — bolted to a wall, sitting on a surface, pinned at a joint."
-            },
-            {
-                q: "Why should you always validate FEA results against hand calculations or known solutions?",
-                options: [
-                    "Hand calculations are always more accurate than FEA",
-                    "To verify that boundary conditions, loads, and mesh are reasonable",
-                    "FEA software has too many bugs to trust",
-                    "Validation is only required for aerospace applications"
-                ],
-                correct: 1,
-                explanation: "FEA gives you whatever you ask for — including beautifully wrong results if your setup is wrong. Comparing FEA against a simplified hand calculation (even approximate) catches errors in boundary conditions, load magnitudes, material properties, or units. If your FEA shows 5 MPa stress but a quick hand calc says 50 MPa, something is wrong. Always sanity-check your model."
-            },
-            {
-                q: "Why is Factor of Safety (FoS) used in design validation?",
-                options: [
-                    "To match experimental and simulation results exactly",
-                    "To reduce simulation computation time",
-                    "To account for uncertainties and ensure reliability",
-                    "To reduce material usage to minimum"
-                ],
-                correct: 2,
-                explanation: "FoS accounts for all the things you can't perfectly predict: material property variation, manufacturing tolerances, unexpected overloads, environmental degradation, and simplifications in your analysis. Typical values: 1.5–2.0 for general machinery, 2.0–3.0 for structural applications, 4.0+ for lifting equipment. The right FoS depends on consequences of failure and how well you understand the loading."
-            }
-        ]
-    },
-
-    // =============================
-    // TOPIC 9: MECHANICAL COMPONENTS
-    // =============================
-    {
-        name: "Mechanical Components",
-        icon: "⚙️",
-        questions: [
-            {
-                q: "Which mechanism converts rotational motion into linear motion?",
-                options: [
-                    "Spur gear",
-                    "Pulley system",
-                    "Lead screw",
-                    "Clutch"
-                ],
-                correct: 2,
-                explanation: "A lead screw converts rotation into linear motion — as the screw turns, the nut travels along it. This principle is used in CNC machines, vises, linear actuators, and jack screws. Ball screws are the precision version, using ball bearings between screw and nut for higher efficiency and less friction. Rack and pinion also converts rotational to linear, but lead screws provide higher mechanical advantage."
-            },
-            {
-                q: "Which type of gear is used for parallel shafts?",
-                options: [
-                    "Bevel gear (intersecting shafts)",
-                    "Worm gear (perpendicular, high reduction)",
-                    "Helical gear (parallel shafts)",
-                    "Rack and pinion (rotary to linear)"
-                ],
-                correct: 2,
-                explanation: "Helical gears (and spur gears) are used for parallel shaft arrangements. Helical gears run smoother and quieter than spur gears because the teeth engage gradually rather than all at once. Bevel gears connect intersecting shafts (typically 90°). Worm gears provide high reduction ratios with perpendicular shafts."
-            },
-            {
-                q: "Which bearing type is most suitable for high radial loads?",
-                options: [
-                    "Deep groove ball bearing",
-                    "Needle roller bearing",
-                    "Tapered roller bearing",
-                    "Cylindrical roller bearing"
-                ],
-                correct: 3,
-                explanation: "Cylindrical roller bearings have the highest radial load capacity because the line contact between rollers and races distributes load over a much larger area than the point contact in ball bearings. For combined radial + axial loads, tapered roller bearings are preferred. Needle bearings handle high radial loads in very compact spaces. Ball bearings are the general-purpose choice."
-            },
-            {
-                q: "A nylon insert lock nut (nyloc nut) is used to:",
-                options: [
-                    "Increase the torque capacity of the bolt",
-                    "Align gears on a shaft",
-                    "Prevent the nut from loosening due to vibration",
-                    "Provide electrical insulation"
-                ],
-                correct: 2,
-                explanation: "The nylon insert deforms around the bolt threads, creating friction that resists self-loosening under vibration. Standard nuts can loosen over time from dynamic loads. Nyloc nuts are a simple, effective, and inexpensive anti-vibration solution. Limitations: they shouldn't be reused (the nylon loses grip), and they can't be used above ~120°C (nylon melts)."
-            },
-            {
-                q: "Which of the following is a standard metric thread size?",
-                options: [
-                    "3/8-16 UNC (imperial)",
-                    "M6 × 1",
-                    "#10-24 (imperial)",
-                    "5/16 BSW (British)"
-                ],
-                correct: 1,
-                explanation: "M6 × 1 is metric: 'M6' means 6mm nominal diameter, '× 1' means 1mm pitch (distance between threads). The others are all imperial/British systems. In metric regions, M3, M4, M5, M6, M8, M10, M12 are the most common sizes. Always specify metric or imperial clearly — mixing thread systems in an assembly is a guaranteed headache."
-            },
-            {
-                q: "Which of the following is NOT a method of power transmission?",
-                options: [
-                    "Belt drive",
-                    "Chain drive",
-                    "Bearing",
-                    "Gear train"
-                ],
-                correct: 2,
-                explanation: "Bearings support rotating components and reduce friction — they don't transmit power. Belts, chains, and gears all transmit rotational power from one shaft to another with various tradeoffs: gears are precise but rigid, belts are flexible and absorb shock, chains handle higher loads than belts but need lubrication."
-            },
-            {
-                q: "What is the function of a flywheel?",
-                options: [
-                    "Increase torque output",
-                    "Smooth out rotational speed fluctuations",
-                    "Store electrical energy",
-                    "Reduce rotational inertia"
-                ],
-                correct: 1,
-                explanation: "A flywheel stores rotational kinetic energy (E = ½Iω²). During power strokes, it absorbs excess energy; during idle strokes, it releases it — smoothing out speed variations. This is why internal combustion engines have flywheels: the engine only produces power during the combustion stroke, but the flywheel maintains rotation through the other three strokes."
-            },
-            {
-                q: "If a spring has stiffness k and is stretched by distance x, what is the force?",
-                options: [
-                    "F = k / x",
-                    "F = k × x",
-                    "F = x / k",
-                    "F = x² × k"
-                ],
-                correct: 1,
-                explanation: "Hooke's Law: F = kx. The force is directly proportional to displacement. A spring with k = 10 N/mm compressed by 5mm exerts 50N of force. This linear relationship holds until the spring reaches its elastic limit. Spring rate (k) is determined by material, wire diameter, coil diameter, number of active coils, and whether the spring is in compression, tension, or torsion."
-            },
-            {
-                q: "What does damping in a mechanical system do?",
-                options: [
-                    "Amplify oscillations for testing",
-                    "Eliminate all stress in the system",
-                    "Absorb and reduce vibrations over time",
-                    "Increase the natural frequency"
-                ],
-                correct: 2,
-                explanation: "Damping dissipates vibrational energy (usually converting it to heat), causing oscillations to decay over time. Without damping, a system would vibrate indefinitely. Shock absorbers in cars are dampers — they don't support the load (springs do that), they control how quickly oscillations die out. Under-damped systems bounce, over-damped systems respond sluggishly."
-            },
-            {
-                q: "What does Screw Class 8.8 mean?",
-                options: [
-                    "8mm diameter with 8mm length",
-                    "800 MPa ultimate tensile strength, yield at 80% of that (640 MPa)",
-                    "Grade 8 steel with 8% carbon content",
-                    "8 threads per inch with 8mm head size"
-                ],
-                correct: 1,
-                explanation: "The first number × 100 = ultimate tensile strength in MPa (8 × 100 = 800 MPa). The second number × first number × 10 = yield strength (0.8 × 800 = 640 MPa). So an 8.8 bolt can withstand up to 800 MPa before breaking, and starts to permanently deform at 640 MPa. Class 10.9 is stronger (1000 MPa / 900 MPa). Class 4.6 is the weakest common grade."
-            }
-        ]
-    },
-
-    // =============================
-    // TOPIC 10: WELDING & JOINING
-    // =============================
-    {
-        name: "Welding & Joining",
-        icon: "🔥",
-        questions: [
-            {
-                q: "Which welding process provides the highest precision and best control?",
-                options: [
-                    "MIG (GMAW)",
-                    "TIG (GTAW)",
-                    "Stick (SMAW)",
-                    "Flux-cored (FCAW)"
-                ],
-                correct: 1,
-                explanation: "TIG (Tungsten Inert Gas) welding uses a non-consumable tungsten electrode and separate filler rod, giving the operator independent control over heat input and filler addition. This makes it the most precise and cleanest welding process — ideal for thin materials, stainless steel, aluminum, and visible welds where appearance matters. The tradeoff: it's slower and requires more skill than MIG."
-            },
-            {
-                q: "A chamfer is typically added to parts to:",
-                options: [
-                    "Create decorative features",
-                    "Improve printability in 3D printing",
-                    "Remove sharp edges and help with assembly",
-                    "Create undercuts for molds"
-                ],
-                correct: 2,
-                explanation: "Chamfers serve practical purposes: removing sharp edges that could cut hands during handling, making parts easier to insert into holes during assembly (the angled lead-in guides alignment), and preparing edges for welding (bevel chamfers create space for weld material). A 0.5–1.0mm chamfer on machined edges is standard practice for safety and handling."
-            },
-            {
-                q: "A clearance fit is designed to:",
-                options: [
-                    "Prevent parts from ever coming apart",
-                    "Ensure interference between mating parts",
-                    "Allow easy assembly and disassembly",
-                    "Require welding after fitting"
-                ],
-                correct: 2,
-                explanation: "In a clearance fit, the hole is always larger than the shaft, ensuring a gap (clearance) that allows free movement, easy assembly, and disassembly. Examples: a bolt through a clearance hole, a sliding bearing, a pin in a locating hole. Standard clearance fits include H7/g6 (snug sliding) and H9/d9 (loose running). The opposite is an interference (press) fit where the shaft is larger than the hole."
-            },
-            {
-                q: "What is a weld joint preparation (bevel/groove) for?",
-                options: [
-                    "Making the weld look better aesthetically",
-                    "Allowing full penetration of the weld through thick material",
-                    "Reducing the amount of filler material needed",
-                    "Preventing the base metals from melting"
-                ],
-                correct: 1,
-                explanation: "On thick plates (typically >6mm), the welding arc can't penetrate all the way through from one side. Beveling the edges creates a V-groove, U-groove, or J-groove that allows the welder to deposit filler metal through the full thickness, achieving complete joint penetration. Without preparation, you get partial penetration — the weld only fuses the top portion, dramatically reducing joint strength."
-            },
-            {
-                q: "Why is post-weld heat treatment sometimes required?",
-                options: [
-                    "To change the color of the weld",
-                    "To relieve residual stresses that could cause cracking or distortion",
-                    "To increase the carbon content of the weld",
-                    "To remove the weld flux residue"
-                ],
-                correct: 1,
-                explanation: "Welding introduces severe thermal gradients — the weld zone heats to melting while surrounding metal stays cool. This creates residual stresses that can cause distortion, cracking, or premature failure under load. Post-weld heat treatment (stress relieving) heats the entire assembly to a moderate temperature, allowing stresses to relax. It's especially important for thick sections, high-strength steels, and pressure vessels."
-            },
-            {
-                q: "What is the Heat Affected Zone (HAZ) in welding?",
-                options: [
-                    "The area where filler metal is deposited",
-                    "The zone adjacent to the weld where base metal properties are altered by heat",
-                    "The area that needs painting after welding",
-                    "The safe distance operators must maintain"
-                ],
-                correct: 1,
-                explanation: "The HAZ is the region of base metal next to the weld that didn't melt but got hot enough to change its microstructure and properties. In hardened steels, the HAZ can become soft (losing its heat treatment). In some stainless steels, the HAZ can become susceptible to corrosion. The HAZ is often the weakest part of a welded joint — good weld design minimizes heat input to control HAZ size."
-            },
-            {
-                q: "When welding stainless steel, which problem is most critical to manage?",
-                options: [
-                    "The weld cools too fast",
-                    "Distortion and heat discoloration (oxidation)",
-                    "Filler metal won't melt",
-                    "The material is too soft to weld"
-                ],
-                correct: 1,
-                explanation: "Stainless steel has low thermal conductivity (heat concentrates rather than spreading) and high thermal expansion (more distortion). Excessive heat causes oxidation (blue/purple discoloration), reduces corrosion resistance in the HAZ (sensitization), and distorts the part. TIG welding with back-purging (shielding gas on both sides) and minimal heat input is the standard approach for quality stainless welds."
-            },
-            {
-                q: "Which joint type is generally strongest in welding?",
-                options: [
-                    "Lap joint",
-                    "Butt joint with full penetration",
-                    "Corner joint",
-                    "Edge joint"
-                ],
-                correct: 1,
-                explanation: "A full-penetration butt joint — where the weld fuses completely through the thickness — can be as strong or stronger than the base metal. The weld cross-section equals the base metal cross-section, so the joint carries the full load. Lap joints introduce eccentricity (bending under tension), corner joints have stress concentrations, and edge joints have limited cross-section."
-            },
-            {
-                q: "What is the main advantage of MIG welding over TIG?",
-                options: [
-                    "Better precision and cleaner welds",
-                    "Much faster deposition rate (higher productivity)",
-                    "No shielding gas required",
-                    "Better for thin materials under 1mm"
-                ],
-                correct: 1,
-                explanation: "MIG feeds filler wire continuously through the torch, making it 3–5× faster than TIG for deposition rate. This makes MIG the go-to for production welding — structural steel, automotive, general fabrication. TIG is slower but gives superior control and cleaner welds, making it the choice for thin materials, aesthetics, and critical joints (aerospace, food-grade stainless). MIG wins on speed; TIG wins on precision."
-            },
-            {
-                q: "A part must fit into another with minimal play and no force. What kind of fit is this?",
-                options: [
-                    "Transition fit",
-                    "Clearance fit",
-                    "Interference fit",
-                    "Friction fit"
-                ],
-                correct: 0,
-                explanation: "A transition fit is between clearance and interference — the shaft and hole dimensions overlap such that you might get a very slight clearance or very slight interference depending on where each falls within its tolerance band. It provides precise location with minimal play and can typically be assembled by hand or with light tapping. Examples include locating pins and bearing housing fits."
-            }
-        ]
-    }
-];
-
-
-    // =========================================
-    // QUIZ ENGINE — 10 Random Questions From All Topics
-    // =========================================
-
-    let currentQuestion = 0;
-    let score = 0;
-    let answered = false;
-    let activeQuestions = [];
-    const QUESTIONS_PER_QUIZ = 10;
-
-    function shuffleArray(arr) {
-        const shuffled = [...arr];
-        for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-        return shuffled;
-    }
-
-    // Build a flat pool of all questions, each tagged with its topic name and icon
-    function buildQuestionPool() {
-        const pool = [];
-        quizData.forEach(topic => {
-            topic.questions.forEach(q => {
-                pool.push({
-                    ...q,
-                    topicName: topic.name,
-                    topicIcon: topic.icon
-                });
-            });
-        });
-        return pool;
-    }
-
-    function startQuiz() {
-        currentQuestion = 0;
-        score = 0;
-        answered = false;
-        const pool = buildQuestionPool();
-        activeQuestions = shuffleArray(pool).slice(0, QUESTIONS_PER_QUIZ);
-        document.getElementById('quizStart').classList.add('hidden');
-        document.getElementById('quizResults').classList.add('hidden');
-        document.getElementById('activeQuiz').classList.remove('hidden');
-        renderQuestion();
-    }
-
-    function renderQuestion() {
-        answered = false;
-        const q = activeQuestions[currentQuestion];
-        const total = activeQuestions.length;
-        const letters = ['A', 'B', 'C', 'D'];
-
-        document.getElementById('activeQuiz').innerHTML = `
-            <div class="question-card">
-                <div class="q-progress">
-                    <span class="q-counter">Question ${currentQuestion + 1} of ${total}</span>
-                    <span class="q-score">Score: ${score}/${currentQuestion}</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: ${((currentQuestion) / total) * 100}%"></div>
-                </div>
-                <div class="q-topic-badge">
-                    <span class="topic-emoji">${q.topicIcon}</span>
-                    ${q.topicName}
-                </div>
-                <div class="q-text">${q.q}</div>
-                <div class="options-list">
-                    ${q.options.map((opt, i) => `
-                        <button class="option-btn" onclick="selectAnswer(${i})" id="opt${i}">
-                            <span class="option-letter">${letters[i]}</span>
-                            <span>${opt}</span>
-                        </button>
-                    `).join('')}
-                </div>
-                <div id="explanationBox"></div>
-                <div id="nextBox" class="clearfix"></div>
-            </div>
-        `;
-    }
-
-    function selectAnswer(selected) {
-        if (answered) return;
-        answered = true;
-        const q = activeQuestions[currentQuestion];
-        const total = activeQuestions.length;
-        const isCorrect = selected === q.correct;
-
-        if (isCorrect) score++;
-
-        document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
-        document.getElementById(`opt${selected}`).classList.add(isCorrect ? 'correct' : 'wrong');
-        if (!isCorrect) {
-            document.getElementById(`opt${q.correct}`).classList.add('reveal-correct');
-        }
-
-        document.getElementById('explanationBox').innerHTML = `
-            <div class="explanation">
-                <strong>${isCorrect ? '✓ Correct!' : '✗ Not quite.'}</strong><br>
-                ${q.explanation}
-            </div>
-        `;
-
-        const isLast = currentQuestion >= total - 1;
-        document.getElementById('nextBox').innerHTML = `
-            <button class="next-btn" onclick="${isLast ? 'showResults()' : 'nextQuestion()'}">
-                ${isLast ? 'See Results' : 'Next Question →'}
-            </button>
-        `;
-    }
-
-    function nextQuestion() {
-        currentQuestion++;
-        renderQuestion();
-    }
-
-    function showResults() {
-        const total = activeQuestions.length;
-        const pct = Math.round((score / total) * 100);
-        let msg = '';
-        if (pct === 100) msg = "Perfect score! You really know your stuff.";
-        else if (pct >= 70) msg = "Solid knowledge. A few areas to revisit.";
-        else if (pct >= 40) msg = "Decent foundation — the explanations should help fill the gaps.";
-        else msg = "Don't worry — that's exactly why this quiz exists. Review the explanations and try again.";
-
-        // Count topics covered
-        const topicsCovered = [...new Set(activeQuestions.map(q => q.topicName))];
-
-        document.getElementById('activeQuiz').classList.add('hidden');
-        document.getElementById('quizResults').classList.remove('hidden');
-        document.getElementById('quizResults').innerHTML = `
-            <div class="question-card results-card">
-                <span class="section-label">Quiz Complete</span>
-                <div class="results-score">
-                    <span class="correct-count">${score}</span><span class="total-count"> / ${total}</span>
-                </div>
-                <p class="results-msg">${msg}</p>
-                <div class="results-breakdown">
-                    <div class="results-stat">
-                        <div class="num" style="color: var(--success)">${score}</div>
-                        <div class="label">Correct</div>
-                    </div>
-                    <div class="results-stat">
-                        <div class="num" style="color: var(--error)">${total - score}</div>
-                        <div class="label">Wrong</div>
-                    </div>
-                    <div class="results-stat">
-                        <div class="num" style="color: var(--teal-light)">${pct}%</div>
-                        <div class="label">Score</div>
-                    </div>
-                    <div class="results-stat">
-                        <div class="num" style="color: var(--orange)">${topicsCovered.length}</div>
-                        <div class="label">Topics</div>
-                    </div>
-                </div>
-                <div class="btn-group">
-                    <button class="hero-cta" onclick="startQuiz()" style="font-size:0.9rem; padding:0.8rem 1.8rem;">
-                        Try Again (New Questions)
-                    </button>
-                </div>
-                <div style="margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--border);">
-                    <p style="font-size:0.85rem; color:var(--text-dim); margin-bottom:0.75rem; font-weight:300;">Join the leaderboard</p>
-                    <div class="nickname-form">
-                        <input type="text" id="nicknameInput" placeholder="Your nickname" maxlength="20">
-                        <button id="submitScoreBtn" onclick="submitScore()">Submit</button>
-                    </div>
-                    <p id="nicknameMsg" class="nickname-msg"></p>
-                </div>
-            </div>
-        `;
-
-        // Store score data for leaderboard submission
-        window._lastQuizScore = score;
-        window._lastQuizTopics = topicsCovered.join(', ');
-    }
-
     function handleSignup() {
         const email = document.getElementById('emailInput').value;
         if (email && email.includes('@')) {
@@ -2825,27 +1697,11 @@ const quizData = [
             fetch('https://forminit.com/f/oh8o7herz1m', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    blocks: [
-                        {
-                            type: 'sender',
-                            properties: {
-                                email: email
-                            }
-                        }
-                    ]
-                })
+                body: JSON.stringify({ email: email })
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById('signupForm').style.display = 'none';
-                    document.getElementById('signupSuccess').style.display = 'block';
-                } else {
-                    btn.textContent = 'Subscribe';
-                    btn.disabled = false;
-                    alert('Something went wrong. Please try again.');
-                }
+            .then(response => {
+                document.getElementById('signupForm').style.display = 'none';
+                document.getElementById('signupSuccess').style.display = 'block';
             })
             .catch(error => {
                 btn.textContent = 'Subscribe';
@@ -2854,14 +1710,27 @@ const quizData = [
             });
         }
     }
-
-    // Initialize — nothing needed, start button handles it
     </script>
 
-    <!-- LEADERBOARD FUNCTIONS (must be before Firebase module) -->
+    <!-- FIREBASE (shared auth + leaderboard) -->
+    <script type="module">
+        import { app, db as firestoreDb } from './aje-auth.js';
+        import { getDatabase, ref, onValue, query, orderByChild } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+
+        const rtdb = getDatabase(app);
+        const leaderboardRef = query(ref(rtdb, 'leaderboard'), orderByChild('score'));
+        onValue(leaderboardRef, (snapshot) => {
+            const data = snapshot.val();
+            window.renderLeaderboard(data);
+        }, (error) => {
+            document.getElementById('leaderboardContent').innerHTML =
+                '<div class="leaderboard-empty">Could not load leaderboard.</div>';
+        });
+    </script>
+
     <script>
     // =========================================
-    // LEADERBOARD FUNCTIONS
+    // LEADERBOARD DISPLAY (read-only on homepage)
     // =========================================
 
     window.renderLeaderboard = function(data) {
@@ -2907,103 +1776,44 @@ const quizData = [
         div.appendChild(document.createTextNode(text));
         return div.innerHTML;
     }
-
-    window.submitScore = function() {
-        var input = document.getElementById('nicknameInput');
-        var btn = document.getElementById('submitScoreBtn');
-        var msgEl = document.getElementById('nicknameMsg');
-        var nickname = input.value.trim();
-
-        if (!nickname) {
-            msgEl.textContent = 'Please enter a nickname.';
-            msgEl.className = 'nickname-msg error';
-            return;
-        }
-
-        if (nickname.length > 20) {
-            msgEl.textContent = 'Nickname must be 20 characters or less.';
-            msgEl.className = 'nickname-msg error';
-            return;
-        }
-
-        var safeKey = nickname.replace(/[.#$\[\]\/]/g, '_');
-
-        btn.disabled = true;
-        btn.textContent = 'Saving...';
-        msgEl.textContent = '';
-
-        var dbRef = window.firebaseRef(window.firebaseDB, 'leaderboard/' + safeKey);
-
-        window.firebaseGet(dbRef).then(function(snapshot) {
-            var currentScore = window._lastQuizScore || 0;
-            var currentTopics = window._lastQuizTopics || '';
-
-            if (snapshot.exists()) {
-                var existing = snapshot.val();
-                if (existing.score >= currentScore) {
-                    msgEl.textContent = 'You already have a higher score (' + existing.score + '/10). Keep it!';
-                    msgEl.className = 'nickname-msg';
-                    btn.textContent = 'Submitted';
-                    return;
-                }
-            }
-
-            return window.firebaseSet(dbRef, {
-                score: currentScore,
-                topics: currentTopics,
-                timestamp: Date.now()
-            }).then(function() {
-                msgEl.textContent = 'Score saved to leaderboard!';
-                msgEl.className = 'nickname-msg success';
-                btn.textContent = 'Submitted';
-            });
-        }).catch(function(err) {
-            console.error('Firebase error:', err);
-            msgEl.textContent = 'Error saving score. Please try again.';
-            msgEl.className = 'nickname-msg error';
-            btn.disabled = false;
-            btn.textContent = 'Submit';
-        });
-    };
     </script>
 
-    <!-- FIREBASE SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-        import { getDatabase, ref, get, set, onValue, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+    </script>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyA6XXSKUxjAeM6yCgaNtrZZvjy6Khk5GDg",
-            authDomain: "aljazariedu-c4131.firebaseapp.com",
-            databaseURL: "https://aljazariedu-c4131-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "aljazariedu-c4131",
-            storageBucket: "aljazariedu-c4131.firebasestorage.app",
-            messagingSenderId: "937448537048",
-            appId: "1:937448537048:web:902de11f23800301cd50ad"
-        };
+    <!-- NAV HIDE/SHOW ON SCROLL -->
+    <script>
+    (function() {
+        const nav = document.querySelector('nav');
+        let lastScrollY = window.scrollY;
+        let ticking = false;
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        function updateNav() {
+            const currentScrollY = window.scrollY;
 
-        // Make functions available globally
-        window.firebaseDB = db;
-        window.firebaseRef = ref;
-        window.firebaseGet = get;
-        window.firebaseSet = set;
-        window.firebaseOnValue = onValue;
-        window.firebaseQuery = query;
-        window.firebaseOrderByChild = orderByChild;
-        window.firebaseLimitToLast = limitToLast;
+            if (currentScrollY > lastScrollY && currentScrollY > 60) {
+                nav.classList.add('nav-hidden');
+            } else {
+                nav.classList.remove('nav-hidden');
+            }
 
-        // Start listening to leaderboard
-        const leaderboardRef = query(ref(db, 'leaderboard'), orderByChild('score'));
-        onValue(leaderboardRef, (snapshot) => {
-            const data = snapshot.val();
-            window.renderLeaderboard(data);
-        }, (error) => {
-            document.getElementById('leaderboardContent').innerHTML =
-                '<div class="leaderboard-empty">Could not load leaderboard.</div>';
+            lastScrollY = currentScrollY;
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', function() {
+            if (!ticking) {
+                requestAnimationFrame(updateNav);
+                ticking = true;
+            }
         });
+    })();
     </script>
 
 </body>

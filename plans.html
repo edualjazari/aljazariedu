@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plans — Al-Jazari Education</title>
+    <meta name="description" content="Choose your plan. Free access to quizzes and book previews, or go Pro for the full mechanical engineering learning experience.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --teal: #294D66;
+            --teal-dark: #1E3A4E;
+            --teal-light: #3A6A8A;
+            --teal-glow: rgba(41, 77, 102, 0.2);
+            --orange: #E8632B;
+            --orange-dark: #C4511F;
+            --orange-light: #F2874D;
+            --orange-glow: rgba(232, 99, 43, 0.12);
+            --bg: #0A0F14;
+            --bg-card: #111920;
+            --bg-card-hover: #162029;
+            --text: #E8ECF0;
+            --text-dim: #8A9BAE;
+            --text-muted: #5A6B7E;
+            --border: #1E2A36;
+            --border-light: #2A3A4A;
+            --success: #2ECC71;
+            --error: #E74C3C;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .grid-bg {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(20px);
+            background: rgba(10, 15, 20, 0.85);
+            border-bottom: 1px solid var(--border);
+            transition: transform 0.3s ease;
+        }
+        nav.nav-hidden { transform: translateY(-100%); }
+
+        .nav-logo {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem;
+            color: var(--teal-light);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+        .nav-logo span { color: var(--orange); }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover { color: var(--teal-light); }
+
+        .nav-login {
+            color: var(--text-dim); text-decoration: none; font-size: 0.85rem;
+            font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase;
+            transition: all 0.3s; padding: 0.4rem 1rem;
+            border: 1px solid var(--border-light); border-radius: 6px;
+            cursor: pointer; background: none; font-family: 'IBM Plex Sans', sans-serif;
+        }
+        .nav-login:hover { color: var(--teal-light); border-color: var(--teal); }
+
+        .nav-user { display: flex; align-items: center; gap: 0.75rem; }
+        .nav-user-name {
+            font-size: 0.82rem; font-weight: 500; color: var(--teal-light);
+            letter-spacing: 0.02em; text-decoration: none;
+        }
+        .nav-user-name:hover { color: var(--orange); }
+        .nav-logout {
+            color: var(--text-muted); font-size: 0.78rem; font-weight: 500;
+            letter-spacing: 0.05em; text-transform: uppercase; transition: all 0.3s;
+            padding: 0.3rem 0.75rem; border: 1px solid var(--border); border-radius: 5px;
+            cursor: pointer; background: none; font-family: 'IBM Plex Sans', sans-serif;
+        }
+        .nav-logout:hover { color: var(--error); border-color: var(--error); }
+
+        /* SECTIONS */
+        section { position: relative; z-index: 1; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+
+        /* PAGE HEADER */
+        .page-header {
+            text-align: center;
+            padding: 8rem 2rem 3rem;
+        }
+        .section-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1rem; color: var(--orange);
+            text-transform: uppercase; letter-spacing: 0.15em;
+            margin-bottom: 1rem; display: block;
+        }
+        .page-header h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+        .page-header p {
+            color: var(--text-dim); font-size: 1.05rem;
+            max-width: 560px; margin: 0 auto; font-weight: 300; line-height: 1.8;
+        }
+
+        /* PLANS GRID */
+        .plans-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .plan-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .plan-card.pro {
+            border-color: var(--orange);
+            background: linear-gradient(135deg, var(--bg-card) 0%, rgba(232, 99, 43, 0.04) 100%);
+        }
+
+        .plan-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.9rem;
+            border-radius: 100px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.5rem;
+        }
+
+        .plan-badge.free-badge {
+            background: var(--teal-glow);
+            color: var(--teal-light);
+            border: 1px solid var(--teal);
+        }
+
+        .plan-badge.pro-badge {
+            background: var(--orange-glow);
+            color: var(--orange);
+            border: 1px solid var(--orange);
+        }
+
+        .plan-badge .dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        .plan-badge.free-badge .dot { background: var(--teal-light); }
+        .plan-badge.pro-badge .dot { background: var(--orange); }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .plan-card h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .plan-price {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            margin-bottom: 1.5rem;
+        }
+
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 2rem;
+        }
+
+        .plan-features li {
+            padding: 0.6rem 0;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            line-height: 1.5;
+        }
+        .plan-features li:last-child { border-bottom: none; }
+
+        .feature-icon {
+            flex-shrink: 0;
+            width: 18px; height: 18px;
+            margin-top: 2px;
+        }
+
+        .feature-icon.check { color: var(--success); }
+        .feature-icon.partial { color: var(--teal-light); }
+        .feature-icon.lock { color: var(--text-muted); }
+
+        .plan-cta {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 0.9rem 2rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: 'IBM Plex Sans', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .plan-cta.free-cta {
+            background: var(--teal);
+            color: #fff;
+            border: none;
+        }
+        .plan-cta.free-cta:hover { background: var(--teal-light); transform: translateY(-1px); }
+
+        .plan-cta.pro-cta {
+            background: var(--orange);
+            color: #fff;
+            border: none;
+        }
+        .plan-cta.pro-cta:hover { background: var(--orange-dark); transform: translateY(-1px); }
+
+        .plan-cta.current {
+            background: transparent;
+            border: 1px solid var(--border-light);
+            color: var(--text-muted);
+            cursor: default;
+        }
+        .plan-cta.current:hover { transform: none; }
+
+        /* PRO REQUEST FORM */
+        .pro-request-section {
+            padding: 3rem 0 5rem;
+        }
+
+        .pro-request-card {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2.5rem;
+        }
+
+        .pro-request-card h3 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .pro-request-card p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            font-weight: 300;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-dim);
+            margin-bottom: 0.4rem;
+            letter-spacing: 0.03em;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: 'IBM Plex Sans', sans-serif;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .form-input::placeholder { color: var(--text-muted); }
+        .form-input:focus { border-color: var(--teal); }
+        .form-input:disabled { opacity: 0.5; }
+
+        textarea.form-input {
+            min-height: 80px;
+            resize: vertical;
+            line-height: 1.6;
+        }
+
+        .form-submit {
+            width: 100%;
+            padding: 0.9rem 2rem;
+            background: var(--orange);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            font-family: 'IBM Plex Sans', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 0.5rem;
+        }
+        .form-submit:hover { background: var(--orange-dark); transform: translateY(-1px); }
+        .form-submit:disabled { opacity: 0.5; cursor: default; transform: none; }
+
+        .form-msg {
+            font-size: 0.82rem;
+            margin-top: 0.75rem;
+            text-align: center;
+        }
+        .form-msg.success { color: var(--success); }
+        .form-msg.error { color: var(--error); }
+
+        .login-prompt {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-dim);
+            font-size: 0.95rem;
+        }
+        .login-prompt a {
+            color: var(--orange);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .login-prompt a:hover { text-decoration: underline; }
+
+        /* Already Pro message */
+        .already-pro {
+            text-align: center;
+            padding: 2rem;
+            color: var(--success);
+            font-size: 0.95rem;
+        }
+
+        /* FOOTER */
+        footer {
+            position: relative; z-index: 1;
+            border-top: 1px solid var(--border);
+            padding: 3rem 2rem; text-align: center;
+        }
+        .footer-name { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--teal-light); margin-bottom: 0.5rem; }
+        .footer-text { font-size: 0.8rem; color: var(--text-muted); }
+        .footer-text a { color: var(--text-dim); text-decoration: none; }
+        .footer-text a:hover { color: var(--teal-light); }
+
+        .hidden { display: none !important; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            nav { padding: 0.75rem 1.25rem; }
+            .nav-links { gap: 1rem; }
+            .nav-links a { font-size: 0.75rem; }
+            .container { padding: 0 1.25rem; }
+            .plans-grid { grid-template-columns: 1fr; }
+            .page-header { padding: 7rem 1.5rem 2rem; }
+        }
+        @media (max-width: 480px) {
+            .nav-links a:not(:last-child) { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+
+    <nav>
+        <a href="index.html" class="nav-logo">Al-Jazari<span>Edu</span></a>
+        <div class="nav-links">
+            <a href="quiz.html">Quiz</a>
+            <a href="book.html">Book</a>
+            <a href="plans.html">Plans</a>
+            <a href="index.html#signup-section">Subscribe</a>
+            <span id="navAuthArea">
+                <a href="auth.html" class="nav-login">Log In</a>
+            </span>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <section class="page-header">
+        <span class="section-label">Choose Your Path</span>
+        <h1>Free vs <span style="color: var(--orange);">Pro</span></h1>
+        <p>Start free with quizzes and book previews. Go Pro for the complete mechanical engineering learning experience.</p>
+    </section>
+
+    <!-- PLANS COMPARISON -->
+    <section>
+        <div class="container">
+            <div class="plans-grid">
+                <!-- FREE PLAN -->
+                <div class="plan-card">
+                    <div class="plan-badge free-badge"><span class="dot"></span> Free</div>
+                    <h2>Explorer</h2>
+                    <div class="plan-price">$0 — forever</div>
+                    <ul class="plan-features">
+                        <li>
+                            <svg class="feature-icon check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            Engineering quiz with full explanations
+                        </li>
+                        <li>
+                            <svg class="feature-icon check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            Leaderboard ranking
+                        </li>
+                        <li>
+                            <svg class="feature-icon check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            Book chapter previews (summaries)
+                        </li>
+                        <li>
+                            <svg class="feature-icon check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            Free training content
+                        </li>
+                        <li>
+                            <svg class="feature-icon check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            Free design challenges
+                        </li>
+                        <li>
+                            <svg class="feature-icon lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                            <span style="color: var(--text-muted);">Full book content — Pro only</span>
+                        </li>
+                        <li>
+                            <svg class="feature-icon lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+                            <span style="color: var(--text-muted);">Full courses & challenges — Pro only</span>
+                        </li>
+                    </ul>
+                    <div id="freeCta"></div>
+                </div>
+
+                <!-- PRO PLAN -->
+                <div class="plan-card pro">
+                    <div class="plan-badge pro-badge"><span class="dot"></span> Pro</div>
+                    <h2>Engineer</h2>
+                    <div class="plan-price">Contact for pricing</div>
+                    <ul class="plan-features">
+                        <li>
+                            <svg class="feature-icon check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            Everything in Free
+                        </li>
+                        <li>
+                            <svg class="feature-icon check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            Full book — all 11 chapters, complete content
+                        </li>
+                        <li>
+                            <svg class="feature-icon check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            Complete training courses & video content
+                        </li>
+                        <li>
+                            <svg class="feature-icon check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            All design challenges with solutions
+                        </li>
+                        <li>
+                            <svg class="feature-icon check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            Priority support
+                        </li>
+                        <li>
+                            <svg class="feature-icon check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            Future content & updates included
+                        </li>
+                    </ul>
+                    <div id="proCta"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRO REQUEST FORM -->
+    <section class="pro-request-section" id="proRequestSection">
+        <div class="container">
+            <div class="pro-request-card" id="proRequestCard">
+                <!-- Content set by JS based on auth state -->
+                <div id="proRequestContent">
+                    <div class="login-prompt">Loading...</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-name">Al-Jazari Education</div>
+        <p class="footer-text">
+            Reality first, tools second. &nbsp;·&nbsp;
+            <a href="mailto:admin@aljazariedu.com">admin@aljazariedu.com</a>
+        </p>
+    </footer>
+
+    <!-- SHARED AUTH MODULE -->
+    <script type="module">
+        import { onUserReady, isLoggedIn, isPro, getUserName, db } from './aje-auth.js';
+        import { collection, addDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+        onUserReady((user, profile) => {
+            renderPlanButtons(user, profile);
+            renderProRequestForm(user, profile);
+        });
+
+        function renderPlanButtons(user, profile) {
+            const freeCta = document.getElementById('freeCta');
+            const proCta = document.getElementById('proCta');
+
+            if (!user) {
+                freeCta.innerHTML = '<a href="auth.html?tab=register" class="plan-cta free-cta">Register Free</a>';
+                proCta.innerHTML = '<a href="auth.html?tab=register" class="plan-cta pro-cta">Register to Request Pro</a>';
+            } else if (profile?.plan === 'pro') {
+                freeCta.innerHTML = '<div class="plan-cta current">—</div>';
+                proCta.innerHTML = '<div class="plan-cta current">Your Current Plan ✓</div>';
+            } else {
+                freeCta.innerHTML = '<div class="plan-cta current">Your Current Plan ✓</div>';
+                proCta.innerHTML = '<a href="#proRequestSection" class="plan-cta pro-cta">Request Pro Access</a>';
+            }
+        }
+
+        function renderProRequestForm(user, profile) {
+            const container = document.getElementById('proRequestContent');
+
+            if (!user) {
+                container.innerHTML = `
+                    <div class="login-prompt">
+                        <p><a href="auth.html?tab=register&redirect=plans.html">Register for free</a> or <a href="auth.html?redirect=plans.html">log in</a> to request Pro access.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            if (profile?.plan === 'pro') {
+                container.innerHTML = `
+                    <div class="already-pro">
+                        <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">🎉 You're on the Pro plan!</p>
+                        <p style="color: var(--text-dim); font-size: 0.9rem;">You have full access to all content on Al-Jazari Education.</p>
+                    </div>
+                `;
+                document.getElementById('proRequestSection').style.paddingBottom = '3rem';
+                return;
+            }
+
+            const name = user.displayName || '';
+            const email = user.email || '';
+
+            container.innerHTML = `
+                <h3>Request <span style="color: var(--orange);">Pro</span> Access</h3>
+                <p>Fill in your details below. We'll contact you to set up your Pro account.</p>
+                <div class="form-group">
+                    <label class="form-label">Name</label>
+                    <input class="form-input" type="text" id="reqName" value="${name}" placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input class="form-input" type="email" id="reqEmail" value="${email}" readonly style="opacity: 0.7;">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone Number *</label>
+                    <input class="form-input" type="tel" id="reqPhone" placeholder="+966 5XX XXX XXXX" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Message (optional)</label>
+                    <textarea class="form-input" id="reqMessage" placeholder="Tell us about your background or what you're looking for..."></textarea>
+                </div>
+                <button class="form-submit" id="reqSubmitBtn" onclick="window._submitProRequest()">Submit Request</button>
+                <p class="form-msg" id="reqMsg"></p>
+            `;
+        }
+
+        window._submitProRequest = async function() {
+            const phone = document.getElementById('reqPhone').value.trim();
+            const name = document.getElementById('reqName').value.trim();
+            const email = document.getElementById('reqEmail').value;
+            const message = document.getElementById('reqMessage').value.trim();
+            const btn = document.getElementById('reqSubmitBtn');
+            const msgEl = document.getElementById('reqMsg');
+
+            if (!phone) {
+                msgEl.textContent = 'Phone number is required.';
+                msgEl.className = 'form-msg error';
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+            msgEl.textContent = '';
+
+            try {
+                // 1. Save to Firestore
+                await addDoc(collection(db, 'pro-requests'), {
+                    uid: window.ajeUser.firebaseUser.uid,
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    message: message,
+                    status: 'pending',
+                    createdAt: new Date().toISOString()
+                });
+
+                // 2. Send via FormInit
+                try {
+                    await fetch('https://forminit.com/f/oh8o7herz1m', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            blocks: [
+                                { type: 'sender', name: name, email: email },
+                                { type: 'content', subject: 'Pro Access Request', body: `Phone: ${phone}\nName: ${name}\nEmail: ${email}\nMessage: ${message || 'None'}` }
+                            ]
+                        })
+                    });
+                } catch (e) {
+                    console.warn('FormInit notification failed (request still saved to Firestore):', e);
+                }
+
+                msgEl.textContent = 'Request submitted! We\'ll contact you soon.';
+                msgEl.className = 'form-msg success';
+                btn.textContent = 'Submitted ✓';
+            } catch (err) {
+                console.error('Pro request error:', err);
+                msgEl.textContent = 'Something went wrong. Please try again.';
+                msgEl.className = 'form-msg error';
+                btn.disabled = false;
+                btn.textContent = 'Submit Request';
+            }
+        };
+    </script>
+
+    <!-- NAV SCROLL -->
+    <script>
+    (function() {
+        const nav = document.querySelector('nav');
+        let lastScrollY = window.scrollY;
+        let ticking = false;
+        function updateNav() {
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > lastScrollY && currentScrollY > 60) {
+                nav.classList.add('nav-hidden');
+            } else {
+                nav.classList.remove('nav-hidden');
+            }
+            lastScrollY = currentScrollY;
+            ticking = false;
+        }
+        window.addEventListener('scroll', function() {
+            if (!ticking) { requestAnimationFrame(updateNav); ticking = true; }
+        });
+    })();
+    </script>
+</body>
+</html>
