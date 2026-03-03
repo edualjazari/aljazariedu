@@ -578,7 +578,20 @@
 
     <!-- AUTH PAGE -->
     <section class="auth-page">
-        <div class="auth-card">
+        <!-- Already logged in message (hidden by default) -->
+        <div class="auth-card hidden" id="alreadyLoggedIn" style="text-align: center; padding: 3rem;">
+            <div class="auth-header">
+                <div class="auth-logo">Al-Jazari<span>Edu</span></div>
+                <p class="auth-subtitle" id="loggedInName">You're already logged in.</p>
+            </div>
+            <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <a href="profile.html" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.8rem 1.8rem; background: var(--teal); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.3s;">My Profile</a>
+                <a href="index.html" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.8rem 1.8rem; background: transparent; color: var(--text-dim); border: 1px solid var(--border-light); border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.3s;">Back to Home</a>
+            </div>
+        </div>
+
+        <!-- Auth forms (shown when not logged in) -->
+        <div class="auth-card" id="authForms">
             <!-- Header -->
             <div class="auth-header">
                 <div class="auth-logo">Al-Jazari<span>Edu</span></div>
@@ -821,9 +834,20 @@
             return params.get('redirect') || 'index.html';
         }
 
+        // Track if user just completed an auth action (login/register/google)
+        // Only redirect after explicit action, NOT on page load
+        let authActionCompleted = false;
+
         onAuthStateChanged(auth, (user) => {
-            if (user) {
+            if (user && authActionCompleted) {
+                // User just logged in/registered — redirect
                 window.location.href = getRedirectUrl();
+            } else if (user && !authActionCompleted) {
+                // User is already logged in — show logged-in state
+                const name = user.displayName || user.email.split('@')[0];
+                document.getElementById('authForms').classList.add('hidden');
+                document.getElementById('alreadyLoggedIn').classList.remove('hidden');
+                document.getElementById('loggedInName').textContent = 'Welcome, ' + name + '. You\'re already logged in.';
             }
         });
 
@@ -876,6 +900,7 @@
                     await ensureProfile(cred.user);
                     window.setLoading('loginBtn', false);
                     window.showAlert('Welcome back, ' + (cred.user.displayName || 'engineer') + '!', 'success');
+                    authActionCompleted = true;
                     setTimeout(() => { window.location.href = getRedirectUrl(); }, 800);
                 })
                 .catch((error) => {
@@ -918,6 +943,7 @@
                     await ensureProfile(cred.user, name);
                     window.setLoading('registerBtn', false);
                     window.showAlert('Account created! Welcome, ' + name + '.', 'success');
+                    authActionCompleted = true;
                     setTimeout(() => { window.location.href = getRedirectUrl(); }, 800);
                 })
                 .catch((error) => {
@@ -956,6 +982,7 @@
                 .then(async (result) => {
                     await ensureProfile(result.user);
                     window.showAlert('Welcome, ' + (result.user.displayName || 'engineer') + '!', 'success');
+                    authActionCompleted = true;
                     setTimeout(() => { window.location.href = getRedirectUrl(); }, 800);
                 })
                 .catch((error) => {
