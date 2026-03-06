@@ -152,7 +152,7 @@
     <nav>
         <a href="index.html" class="nav-logo">Al-Jazari<span>Edu</span></a>
         <div class="nav-links">
-            <a href="quiz.html">Quiz</a>
+            <a href="practice.html">Practice Lab</a>
             <a href="book.html">Book</a>
             <a href="plans.html">Plans</a>
             <a href="index.html#signup-section">Newsletter</a>
@@ -177,11 +177,11 @@
         <div class="footer-name">Al-Jazari Education</div>
         <p class="footer-text">
             Reality first, tools second. &nbsp;·&nbsp;
-            <a href="/cdn-cgi/l/email-protection#1273767f7b7c52737e78736873607b7776673c717d7f"><span class="__cf_email__" data-cfemail="87e6e3eaeee9c7e6ebede6fde6f5eee2e3f2a9e4e8ea">[email&#160;protected]</span></a>
+            <a href="mailto:admin@aljazariedu.com">admin@aljazariedu.com</a>
         </p>
     </footer>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
+    <script type="module">
         import { onUserReady, updateUserProfile, auth } from './aje-auth.js';
         import { signOut } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
@@ -294,4 +294,17 @@
         function updateNav() {
             const currentScrollY = window.scrollY;
             if (currentScrollY > lastScrollY && currentScrollY > 60) { nav.classList.add('nav-hidden'); }
-            else { nav.classList.remove('nav-h
+            else { nav.classList.remove('nav-hidden'); }
+            lastScrollY = currentScrollY;
+            ticking = false;
+        }
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateNav);
+                ticking = true;
+            }
+        }, { passive: true });
+    })();
+    </script>
+</body>
+</html>

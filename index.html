@@ -981,14 +981,17 @@
         }
 
         .feature-tile.live {
-            border-color: var(--teal);
+            border-color: var(--teal-light);
+            border-width: 2px;
             cursor: pointer;
+            background: linear-gradient(135deg, rgba(41, 77, 102, 0.15) 0%, var(--bg-card) 100%);
+            box-shadow: 0 0 20px rgba(41, 77, 102, 0.2), inset 0 1px 0 rgba(58, 106, 138, 0.15);
         }
 
         .feature-tile.live:hover {
             border-color: var(--teal-light);
-            background: var(--bg-card-hover);
-            box-shadow: 0 8px 30px rgba(41, 77, 102, 0.15);
+            background: linear-gradient(135deg, rgba(41, 77, 102, 0.25) 0%, var(--bg-card-hover) 100%);
+            box-shadow: 0 8px 40px rgba(41, 77, 102, 0.3), inset 0 1px 0 rgba(58, 106, 138, 0.2);
         }
 
         .feature-tile .tile-icon {
@@ -1018,8 +1021,9 @@
         }
 
         .tile-status.live {
-            border-color: var(--border-light);
-            color: var(--text-dim);
+            border-color: rgba(58, 106, 138, 0.4);
+            color: var(--teal-light);
+            background: rgba(41, 77, 102, 0.15);
         }
 
         .tile-status.live .status-dot {
@@ -1440,7 +1444,7 @@
     <nav>
         <a href="#" class="nav-logo">Al-Jazari<span>Edu</span></a>
         <div class="nav-links">
-            <a href="#quiz-section">Quiz</a>
+            <a href="#quiz-section">Practice Lab</a>
             <a href="#book-section">Book</a>
             <a href="plans.html">Plans</a>
             <a href="#signup-section">Newsletter</a>
@@ -1466,20 +1470,20 @@
             </p>
 
             <div class="feature-tiles">
-                <a href="#training-section" class="feature-tile" style="text-decoration:none; color:inherit;">
-                    <span class="tile-icon">🎓</span>
-                    <h3>Training &amp; Courses</h3>
-                    <span class="tile-status soon">Coming Soon</span>
+                <a href="#quiz-section" class="feature-tile live" style="text-decoration:none; color:inherit;">
+                    <span class="tile-icon">⚡</span>
+                    <h3>Practice Lab</h3>
+                    <span class="tile-status live"><span class="status-dot"></span> Now Live</span>
                 </a>
                 <a href="#book-section" class="feature-tile early" style="text-decoration:none; color:inherit;">
                     <span class="tile-icon">📖</span>
                     <h3>Practical Book</h3>
                     <span class="tile-status early"><span class="status-dot"></span> Early Access</span>
                 </a>
-                <a href="#quiz-section" class="feature-tile live" style="text-decoration:none; color:inherit;">
-                    <span class="tile-icon">⚡</span>
-                    <h3>Knowledge Quiz</h3>
-                    <span class="tile-status live"><span class="status-dot"></span> Now Live</span>
+                <a href="#training-section" class="feature-tile" style="text-decoration:none; color:inherit;">
+                    <span class="tile-icon">🎓</span>
+                    <h3>Training &amp; Courses</h3>
+                    <span class="tile-status soon">Coming Soon</span>
                 </a>
                 <a href="#challenges-section" class="feature-tile" style="text-decoration:none; color:inherit;">
                     <span class="tile-icon">🔧</span>
@@ -1490,29 +1494,32 @@
         </div>
     </section>
 
-    <!-- TRAINING & COURSES -->
-    <section id="training-section" class="placeholder-section">
+    <!-- PRACTICE LAB -->
+    <section id="quiz-section" style="border-top: 1px solid var(--border);">
         <div class="container">
-            <div class="placeholder-content">
-                <div class="placeholder-info">
-                    <span class="section-label">Training &amp; Courses</span>
-                    <h2>Real Manufacturing &amp; Design Skills</h2>
+            <div class="book-content">
+                <div class="book-info">
+                    <span class="now-live-inline"><span class="live-dot"></span> Now Live</span>
+                    <span class="section-label">Practice Lab</span>
+                    <h2>Sharpen Your Engineering Edge</h2>
                     <p>
-                        Training on real manufacturing and design — not just software buttons. 
-                        Our courses focus on design thinking, manufacturability, and process knowledge. 
-                        3D modeling software training included, but oriented on design intent and 
-                        manufacturing constraints, not modeling tutorials.
+                        Test your knowledge with quick quizzes, learn from detailed explanations,
+                        and prepare for real technical interviews. Machining, sheet metal, plastics, 
+                        FEA, materials — the full spectrum of practical mechanical design.
                     </p>
-                    <span class="placeholder-badge">Coming Soon</span>
+                    <a href="practice.html" style="display:inline-flex; align-items:center; gap:0.75rem; padding:0.85rem 2rem; background:var(--teal); color:#fff; text-decoration:none; font-weight:600; font-size:0.9rem; border-radius:8px; transition:all 0.3s ease; margin-top:1.5rem;" onmouseover="this.style.background='var(--teal-light)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--teal)';this.style.transform='none'">
+                        Enter Practice Lab
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                    </a>
                 </div>
-                <div class="placeholder-visual">
-                    <div class="placeholder-card">
-                        <span class="coming-soon-badge">Coming Soon</span>
-                        <div class="placeholder-card-label">Courses</div>
-                        <div class="placeholder-card-title">Design Thinking &amp;<br>Manufacturing Skills</div>
-                        <div class="placeholder-card-sub">Reality-based training programs</div>
-                        <div class="placeholder-card-lines">
-                            <div></div><div></div><div></div><div></div>
+                <div class="book-visual">
+                    <div class="book-mockup" style="padding: 2.5rem 2rem;">
+                        <div class="leaderboard-title">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                            Top 10 — Leaderboard
+                        </div>
+                        <div id="leaderboardContent" style="max-height: 280px; overflow-y: auto;">
+                            <div class="leaderboard-loading">Loading...</div>
                         </div>
                     </div>
                 </div>
@@ -1571,32 +1578,29 @@
         </div>
     </section>
 
-    <!-- QUIZ -->
-    <section id="quiz-section" style="border-top: 1px solid var(--border);">
+    <!-- TRAINING & COURSES -->
+    <section id="training-section" class="placeholder-section">
         <div class="container">
-            <div class="book-content">
-                <div class="book-info">
-                    <span class="now-live-inline"><span class="live-dot"></span> Now Live</span>
-                    <span class="section-label">Test Your Knowledge</span>
-                    <h2>Engineering Quiz</h2>
+            <div class="placeholder-content">
+                <div class="placeholder-info">
+                    <span class="section-label">Training &amp; Courses</span>
+                    <h2>Real Manufacturing &amp; Design Skills</h2>
                     <p>
-                        Real-world mechanical design — is your design shop-floor ready? 
-                        Machining, sheet metal, plastics, FEA, materials — test yourself 
-                        across the full spectrum of practical mechanical design.
+                        Training on real manufacturing and design — not just software buttons. 
+                        Our courses focus on design thinking, manufacturability, and process knowledge. 
+                        3D modeling software training included, but oriented on design intent and 
+                        manufacturing constraints, not modeling tutorials.
                     </p>
-                    <a href="quiz.html" style="display:inline-flex; align-items:center; gap:0.75rem; padding:0.85rem 2rem; background:var(--teal); color:#fff; text-decoration:none; font-weight:600; font-size:0.9rem; border-radius:8px; transition:all 0.3s ease; margin-top:1.5rem;" onmouseover="this.style.background='var(--teal-light)';this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--teal)';this.style.transform='none'">
-                        Start Quiz
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                    </a>
+                    <span class="placeholder-badge">Coming Soon</span>
                 </div>
-                <div class="book-visual">
-                    <div class="book-mockup" style="padding: 2.5rem 2rem;">
-                        <div class="leaderboard-title">
-                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-                            Top 10 — Leaderboard
-                        </div>
-                        <div id="leaderboardContent" style="max-height: 280px; overflow-y: auto;">
-                            <div class="leaderboard-loading">Loading...</div>
+                <div class="placeholder-visual">
+                    <div class="placeholder-card">
+                        <span class="coming-soon-badge">Coming Soon</span>
+                        <div class="placeholder-card-label">Courses</div>
+                        <div class="placeholder-card-title">Design Thinking &amp;<br>Manufacturing Skills</div>
+                        <div class="placeholder-card-sub">Reality-based training programs</div>
+                        <div class="placeholder-card-lines">
+                            <div></div><div></div><div></div><div></div>
                         </div>
                     </div>
                 </div>
@@ -1690,11 +1694,11 @@
         <div class="footer-name">Al-Jazari Education</div>
         <p class="footer-text">
             Reality first, tools second. &nbsp;·&nbsp; 
-            <a href="/cdn-cgi/l/email-protection#83e2e7eeeaedc3e2efe9e2f9e2f1eae6e7f6ade0ecee"><span class="__cf_email__" data-cfemail="abcacfc6c2c5ebcac7c1cad1cad9c2cecfde85c8c4c6">[email&#160;protected]</span></a>
+            <a href="mailto:admin@aljazariedu.com">admin@aljazariedu.com</a>
         </p>
     </footer>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script>
     function handleSignup() {
         const email = document.getElementById('emailInput').value;
         if (email && email.includes('@')) {
@@ -1812,4 +1816,16 @@
             }
 
             lastScrollY = currentScrollY;
-            ticking = fal
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateNav);
+                ticking = true;
+            }
+        }, { passive: true });
+    })();
+    </script>
+</body>
+</html>

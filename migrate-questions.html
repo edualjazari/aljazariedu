@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AlJazariEdu — Question Migration Tool</title>
+    <style>
+        body { font-family: 'IBM Plex Sans', sans-serif; background: #0A0F14; color: #E8ECF0; padding: 2rem; }
+        h1 { color: #E8632B; margin-bottom: 1rem; }
+        #log { background: #111920; border: 1px solid #1E2A36; border-radius: 8px; padding: 1rem; max-height: 70vh; overflow-y: auto; font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; line-height: 1.6; white-space: pre-wrap; }
+        button { background: #E8632B; color: #fff; border: none; padding: 0.8rem 2rem; border-radius: 6px; font-size: 1rem; cursor: pointer; margin-bottom: 1rem; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+        .ok { color: #2ECC71; }
+        .err { color: #E74C3C; }
+        .info { color: #8A9BAE; }
+    </style>
+</head>
+<body>
+    <h1>Question Migration → Firestore</h1>
+    <p style="color:#8A9BAE; margin-bottom:1rem;">This will upload all 103 questions to the <code>questions</code> collection in Firestore. Each question gets a unique auto-ID. Run this ONCE.</p>
+    <button id="startBtn" onclick="runMigration()">Start Migration</button>
+    <div id="log"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA6XXSKUxjAeM6yCgaNtrZZvjy6Khk5GDg",
+            authDomain: "aljazariedu-c4131.firebaseapp.com",
+            databaseURL: "https://aljazariedu-c4131-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "aljazariedu-c4131",
+            storageBucket: "aljazariedu-c4131.firebasestorage.app",
+            messagingSenderId: "937448537048",
+            appId: "1:937448537048:web:902de11f23800301cd50ad"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const log = document.getElementById('log');
+        function logMsg(msg, cls) {
+            const span = document.createElement('span');
+            span.className = cls || '';
+            span.textContent = msg + '\n';
+            log.appendChild(span);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        // ============================================
+        // ALL 103 QUESTIONS
+        // ============================================
+        const quizData = [
+            {
+                name: "Design Fundamentals",
+                icon: "📐",
+                questions: [
+                    {
+                        q: "What is the function of a fillet in mechanical parts?",
+                        options: ["Reduce weight", "Improve aesthetics", "Minimize stress concentration", "Add volume"],
+                        correct: 2,
+                        explanation: "Fillets reduce stress concentrations at internal corners. Sharp corners act as stress risers — under load, stress at a sharp 90° corner can be several times higher than the nominal stress. A fillet distributes that stress over a larger area, dramatically improving fatigue life and part reliability."
+                    },
+                    {
+                        q: "What is a \"safety factor\" (Factor of Safety)?",
+                        options: ["A tolerance class used in GD&T", "Ratio of allowable stress to actual stress", "A safety standard for machine guarding", "The modulus of elasticity of a material"],
+                        correct: 1,
+                        explanation: "Factor of Safety (FoS) is the ratio of the material's allowable (or yield) stress to the actual working stress. An FoS of 2 means the part can handle twice the expected load before failure. It accounts for uncertainties in loading, material properties, manufacturing variations, and unexpected conditions. Choosing the right FoS is engineering judgment — too low risks failure, too high wastes material and money."
+                    },
+                    {
+                        q: "What is the role of a gusset in design?",
+                        options: ["Aesthetic support", "Increase stiffness of joints", "Create a mounting hole pattern", "Seal joints from fluids"],
+                        correct: 1,
+                        explanation: "A gusset is a triangular or plate-like reinforcement that stiffens joints where two members meet — typically at right angles. It prevents the joint from flexing, twisting, or failing under load. Gussets are everywhere: steel structures, sheet metal brackets, welded frames, and even 3D printed parts. The key design decision is thickness, size, and whether to use ribs or plate-style gussets."
+                    },
+                    {
+                        q: "In DFM, which is the most expensive feature to produce?",
+                        options: ["A through-hole", "A chamfer", "A tight tolerance on an internal bore", "A flat surface"],
+                        correct: 2,
+                        explanation: "Tight tolerances on internal bores require precision machining processes like boring, honing, or grinding — significantly more expensive than standard drilling or milling. The tighter the tolerance, the slower the process, the more expensive the tooling, and the higher the scrap rate. DFM principle: only specify tight tolerances where functionally necessary."
+                    },
+                    {
+                        q: "Why are draft angles added to injection-molded parts?",
+                        options: ["To increase strength", "To allow the part to eject from the mold", "To improve appearance", "To add flexibility"],
+                        correct: 1,
+                        explanation: "Draft angles (typically 1°–3° per side) allow the molded part to release cleanly from the mold cavity during ejection. Without draft, the part shrinks onto the core and grips the mold surfaces — causing sticking, surface damage, warping, or broken ejector pins. More draft = easier ejection = lower cycle time = cheaper parts."
+                    },
+                    {
+                        q: "What does 'Design Intent' mean in CAD?",
+                        options: ["The color scheme of a model", "How the model responds to changes based on how it was built", "The rendering style chosen", "The number of features used"],
+                        correct: 1,
+                        explanation: "Design intent is how your CAD model behaves when dimensions or features change. A well-built model with proper constraints, references, and feature order will update predictably — a poorly built one will break. For example, if you dimension a hole from an edge vs. from a datum plane, moving that edge gives completely different results. Design intent is the difference between a parametric model and a ticking time bomb."
+                    },
+                    {
+                        q: "What is the primary purpose of a tolerance in engineering?",
+                        options: ["Define exact dimensions", "Control allowable variation in a dimension", "Specify surface finish", "Determine material grade"],
+                        correct: 1,
+                        explanation: "Tolerances define the acceptable range of variation for a dimension. No manufacturing process produces a part at exact nominal — there is always variation. Tolerances tell the manufacturer 'this dimension must be between X and Y to function correctly.' Tighter tolerances = more precision required = higher cost. The engineer's job is to specify the loosest tolerance that still ensures proper function."
+                    },
+                    {
+                        q: "In mechanical design, what does 'stack-up analysis' refer to?",
+                        options: ["Arranging parts in a warehouse", "Cumulative effect of individual tolerances in an assembly", "Stacking materials for heat treatment", "Layering paint coatings"],
+                        correct: 1,
+                        explanation: "Tolerance stack-up analysis calculates how individual part tolerances accumulate across an assembly. If Part A is ±0.1mm and Part B is ±0.1mm, the assembly gap could vary by ±0.2mm (worst case). Stack-up analysis prevents interference, excessive gaps, or non-functional assemblies. Two methods: worst-case (all tolerances at extremes) and statistical (RSS — more realistic, assumes normal distribution)."
+                    },
+                    {
+                        q: "What is the main advantage of modular design?",
+                        options: ["Faster rendering", "Easier maintenance and component reuse", "Higher material strength", "Better thermal conductivity"],
+                        correct: 1,
+                        explanation: "Modular design breaks a product into interchangeable sub-assemblies (modules) that can be independently designed, manufactured, tested, and replaced. Benefits: easier maintenance (swap a module, not the whole product), faster development (parallel work on modules), component reuse across product families, and easier upgrades. Think IKEA furniture, server racks, or automotive platforms."
+                    },
+                    {
+                        q: "Which of the following is a key consideration when designing for assembly (DFA)?",
+                        options: ["Using as many fasteners as possible", "Minimising part count and simplifying assembly motions", "Making all parts the same colour", "Maximising the number of unique components"],
+                        correct: 1,
+                        explanation: "DFA aims to reduce assembly time and cost by minimizing part count (fewer parts = fewer operations = fewer things to go wrong), using simple top-down assembly motions (no flipping or rotating the assembly), designing parts that are self-locating and self-fastening, and eliminating separate fasteners where possible. Every part should earn its place — if two parts don't need to move relative to each other, consider combining them."
+                    },
+                    {
+                        q: "Why is it important to consider the manufacturing process during the design phase?",
+                        options: ["To make drawings look better", "To ensure the design can be produced cost-effectively and reliably", "To reduce the number of CAD features", "To satisfy aesthetic preferences only"],
+                        correct: 1,
+                        explanation: "Designing without considering manufacturing is the #1 cause of costly redesigns. Each process has constraints: minimum wall thickness, draft requirements, tool access, tolerances achievable, material limitations. A design that ignores these will either be impossible to make, expensive to make, or require complete redesign. DFM up front saves weeks of iteration and thousands in tooling changes."
+                    }
+                ]
+            },
+            {
+                name: "CAD & Engineering Drawings",
+                icon: "📏",
+                questions: [
+                    {
+                        q: "In an engineering drawing, what does a hidden line represent?",
+                        options: ["A center axis", "An edge not visible in the current view", "A cutting plane", "A dimension line"],
+                        correct: 1,
+                        explanation: "Hidden lines (dashed lines) represent edges, surfaces, or features that exist but are not directly visible from the current viewing angle — they're behind or inside the part. They help the reader understand the full 3D geometry from a 2D view. For example, a hole on the back face of a block would appear as hidden lines in the front view."
+                    },
+                    {
+                        q: "What is a section view used for?",
+                        options: ["To show an exploded assembly", "To reveal internal features by cutting through the part", "To display a 3D perspective", "To indicate surface finish"],
+                        correct: 1,
+                        explanation: "A section view shows what you'd see if you sliced the part with a cutting plane and looked at the cut face. It reveals internal features — bores, pockets, wall thicknesses, internal channels — that would otherwise be cluttered with hidden lines. The cutting plane line (with arrows showing viewing direction) appears on the parent view. Cross-hatching on the cut surfaces indicates solid material."
+                    },
+                    {
+                        q: "What projection system is standard in most countries outside the US?",
+                        options: ["Third angle projection", "First angle projection", "Isometric projection", "Oblique projection"],
+                        correct: 1,
+                        explanation: "First angle projection is the ISO standard used in Europe, Asia, and most of the world. In first angle, the part is placed in the first quadrant — the view is projected through the object onto the plane behind it. So the top view goes below, the right view goes to the left. The US, Canada, and Australia primarily use third angle projection, where views are placed intuitively (top view on top, right view on the right)."
+                    },
+                    {
+                        q: "What does GD&T stand for?",
+                        options: ["General Design & Tolerancing", "Geometric Dimensioning & Tolerancing", "Graphical Drawing & Testing", "Gauge, Datum & Tolerance"],
+                        correct: 1,
+                        explanation: "Geometric Dimensioning and Tolerancing is a symbolic language (per ASME Y14.5 / ISO 1101) for defining allowable variation in a part's geometry — not just size, but form (flatness, roundness), orientation (perpendicularity, angularity), location (position, concentricity), and runout. It communicates functional requirements precisely and avoids ambiguity that plus/minus tolerancing can't handle."
+                    },
+                    {
+                        q: "In GD&T, what is a datum?",
+                        options: ["A manufacturing defect", "A reference feature for measurements", "A type of tolerance zone", "A surface finish indicator"],
+                        correct: 1,
+                        explanation: "A datum is a theoretically perfect reference (point, line, or plane) derived from a real feature on the part. Datums establish the coordinate system from which other features are located and measured. They should be chosen based on how the part functions and how it's fixtured during manufacturing and inspection. Datum A, B, C are assigned in order of priority — A constrains the most degrees of freedom."
+                    },
+                    {
+                        q: "Which CAD approach builds features sequentially on a base shape?",
+                        options: ["Surface modeling", "Direct modeling", "Parametric feature-based modeling", "Mesh modeling"],
+                        correct: 2,
+                        explanation: "Parametric feature-based modeling (used in SolidWorks, Creo, Inventor, etc.) builds geometry as a sequence of features — each referencing dimensions, sketches, and prior features. The feature tree records this history, making the model fully editable and parametrically driven. Change a dimension, and all downstream features update. This is the backbone of mechanical design CAD."
+                    },
+                    {
+                        q: "What is the standard line type for a center line in technical drawings?",
+                        options: ["Solid thick line", "Dashed line", "Long dash–short dash (chain line)", "Dotted line"],
+                        correct: 2,
+                        explanation: "Center lines use a chain line pattern (long dash–short dash–long dash) to indicate axes of symmetry, bolt circle centers, and axes of revolution. They're thinner than visible lines and extend slightly beyond the feature they reference. Every cylindrical feature, symmetric feature, and bolt pattern should have center lines — they're essential for dimensioning and understanding geometry."
+                    },
+                    {
+                        q: "What is the purpose of a Bill of Materials (BOM)?",
+                        options: ["Track project deadlines", "List all components, quantities, and part numbers in an assembly", "Show exploded views", "Define material properties"],
+                        correct: 1,
+                        explanation: "A BOM is the master list of everything needed to build an assembly — part numbers, descriptions, quantities, materials, and often suppliers and costs. It's used by purchasing (to order parts), manufacturing (to know what to make), quality (to track specifications), and inventory (to manage stock). A wrong BOM means wrong parts, wrong quantities, and production chaos."
+                    },
+                    {
+                        q: "What does a chamfer dimension on a drawing specify?",
+                        options: ["A curved edge radius", "An angled cut at an edge, defined by angle and distance", "A surface roughness value", "A thread specification"],
+                        correct: 1,
+                        explanation: "A chamfer is an angled cut that removes a sharp edge, typically specified as distance × angle (e.g., 1mm × 45°) or two distances if not 45°. Chamfers ease assembly (guiding shafts into holes), remove burrs, reduce stress concentrations, and improve safety. On drawings, they're dimensioned with either the 'C' callout (for 45° chamfers) or explicit angle and distance."
+                    },
+                    {
+                        q: "What file format is commonly used for exchanging 3D CAD models between different software?",
+                        options: [".SLDPRT", ".STEP", ".PSD", ".DOCX"],
+                        correct: 1,
+                        explanation: "STEP (Standard for the Exchange of Product Data, ISO 10303) is the universal neutral format for 3D CAD exchange. It preserves solid geometry accurately across different CAD systems — SolidWorks, Creo, NX, CATIA, Inventor, etc. Unlike native formats, STEP loses feature history but keeps the geometry intact. Other neutral formats include IGES (older, less reliable) and Parasolid (.x_t)."
+                    },
+                    {
+                        q: "What is the purpose of a title block on an engineering drawing?",
+                        options: ["Decorative border only", "Contains part info, material, tolerances, revision, approval signatures", "Shows assembly instructions", "Lists supplier contact information"],
+                        correct: 1,
+                        explanation: "The title block is the drawing's identity card — it contains the part name, part number, material, general tolerances, scale, projection method, drawn-by/checked-by/approved-by names and dates, revision level, and company information. It provides every piece of metadata needed to manufacture, inspect, and track the part. A drawing without a proper title block is just a sketch."
+                    }
+                ]
+            },
+            {
+                name: "Machining",
+                icon: "⚙️",
+                questions: [
+                    {
+                        q: "Which factor most limits the geometry achievable by milling?",
+                        options: ["Material hardness", "Tool access and cutter reach", "Coolant type", "Machine colour"],
+                        correct: 1,
+                        explanation: "The fundamental constraint in milling is tool access — the cutter approaches from outside or above, and the tool body/holder cannot collide with the part. Deep narrow pockets, internal undercuts, and features hidden behind walls are problematic. When designing, always ask: can a cutting tool physically reach this feature? If not, redesign or consider a different process."
+                    },
+                    {
+                        q: "What is the purpose of a spot drill operation?",
+                        options: ["Enlarge existing holes", "Create a precise starting point for drilling", "Cut threads", "Measure hole depth"],
+                        correct: 1,
+                        explanation: "A spot drill creates a small conical recess at the exact location where a hole will be drilled. Without it, the drill point can 'walk' (wander) on the surface, especially on angled or irregular surfaces, resulting in a mispositioned hole. Spot drills are stiffer and shorter than twist drills, so they hold position accurately. It's a cheap operation that prevents expensive scrap."
+                    },
+                    {
+                        q: "Which machining process is best suited for achieving tight cylindrical tolerances?",
+                        options: ["Face milling", "CNC turning", "Band sawing", "Waterjet cutting"],
+                        correct: 1,
+                        explanation: "CNC turning (lathe) is purpose-built for cylindrical geometry — the workpiece rotates against a single-point cutting tool, naturally producing round, concentric features. It achieves tight diametral tolerances (±0.01mm or better), excellent surface finish, and inherent concentricity between features. For shafts, bores, and any axially symmetric part, turning is the first choice."
+                    },
+                    {
+                        q: "What does CNC stand for?",
+                        options: ["Computer Numeric Control", "Central Numeric Calculation", "Circular Notch Cutting", "Computer Nodal Calibration"],
+                        correct: 0,
+                        explanation: "Computer Numeric Control means the machine tool is driven by a computer executing programmed instructions (G-code) that specify tool paths, speeds, feeds, and operations. CNC replaced manual machining for most production work because it delivers repeatable accuracy, complex geometry, and unmanned operation. The 'numeric' refers to the coordinate-based positioning system."
+                    },
+                    {
+                        q: "Why are internal sharp corners impossible in milled pockets?",
+                        options: ["The CAM software can't process them", "Rotary cutters always leave a radius equal to the tool radius", "Sharp corners weaken the material", "CNC machines can't move in sharp angles"],
+                        correct: 1,
+                        explanation: "A milling cutter is round — it physically cannot produce a sharp internal corner. The minimum internal corner radius equals the cutter radius. If you need a sharp corner (e.g., for a mating rectangular part), you must add relief features: corner relief radii, dog-bone cutouts, or use EDM. Designing milled pockets with corner radii from the start avoids this issue entirely."
+                    },
+                    {
+                        q: "What is the main advantage of 5-axis CNC machining over 3-axis?",
+                        options: ["Faster spindle speed", "Ability to reach complex angles and undercuts in fewer setups", "Lower cost per part", "Simpler programming"],
+                        correct: 1,
+                        explanation: "5-axis machines add two rotational axes to the three linear axes, allowing the cutter to approach the workpiece from virtually any angle. This means complex parts (turbine blades, impellers, aerospace components) can be machined in one setup instead of multiple setups with re-fixturing. Fewer setups = better accuracy (no re-alignment errors), less handling, and shorter lead times."
+                    },
+                    {
+                        q: "What is the function of cutting fluid in machining?",
+                        options: ["Only for rust prevention", "Cool the tool and workpiece, lubricate, and flush chips", "Change material colour", "Increase cutting forces"],
+                        correct: 1,
+                        explanation: "Cutting fluid serves three critical functions: cooling (removes heat from the cutting zone that would otherwise damage the tool and distort the workpiece), lubrication (reduces friction between tool and chip, extending tool life), and chip evacuation (flushes chips away from the cutting zone to prevent re-cutting and surface damage). The right fluid choice depends on the material and operation."
+                    },
+                    {
+                        q: "Which tool is used to produce internal threads in a hole?",
+                        options: ["Reamer", "Tap", "Broach", "Countersink"],
+                        correct: 1,
+                        explanation: "A tap cuts internal threads by being rotated into a pre-drilled hole (the 'tap drill' size is smaller than the thread diameter to leave material for the threads). Types include hand taps (taper, plug, bottoming — for different depths), spiral point (pushes chips forward — for through holes), and spiral flute (pulls chips out — for blind holes). Thread milling is an alternative for CNC."
+                    },
+                    {
+                        q: "What is the typical tolerance achievable with standard CNC milling?",
+                        options: ["±5 mm", "±0.025 mm (±0.001\")", "±1 mm", "±10 mm"],
+                        correct: 1,
+                        explanation: "Standard CNC milling typically holds ±0.025mm (±0.001\") on critical dimensions — tighter with precision machines, careful programming, and controlled environments. This is far better than most other processes (casting ±0.5mm, sheet metal ±0.1mm). However, tighter tolerances (±0.005mm) require grinding, honing, or EDM. Always design to the loosest tolerance that satisfies function."
+                    },
+                    {
+                        q: "In CNC machining, what does 'feed rate' refer to?",
+                        options: ["The speed of the spindle", "The rate at which the tool advances through the material", "The power consumption of the machine", "The cost per hour of operation"],
+                        correct: 1,
+                        explanation: "Feed rate is how fast the cutting tool moves through the material — measured in mm/min (or inches/min) for milling, or mm/rev for turning. Combined with spindle speed and depth of cut, it determines material removal rate, surface finish, tool life, and cutting forces. Too high = tool breakage or poor finish. Too low = rubbing instead of cutting, which paradoxically accelerates tool wear."
+                    },
+                    {
+                        q: "What is a boring operation used for?",
+                        options: ["Creating flat surfaces", "Enlarging and finishing an existing hole to precise diameter", "Cutting external threads", "Hardening surfaces"],
+                        correct: 1,
+                        explanation: "Boring uses a single-point cutting tool to enlarge and finish a pre-existing hole (from drilling or casting) to a precise diameter with good surface finish and concentricity. It's essential when the hole must be larger than available drill sizes, needs tighter tolerance than drilling provides, or must be precisely concentric with other features. Boring bars can reach deep into parts where other tools can't."
+                    }
+                ]
+            },
+            {
+                name: "Sheet Metal",
+                icon: "🔩",
+                questions: [
+                    {
+                        q: "What is the K-factor in sheet metal bending?",
+                        options: ["The cost multiplier for bending", "Ratio locating the neutral axis shift within the material thickness", "The spring constant of the metal", "A safety factor for press brakes"],
+                        correct: 1,
+                        explanation: "The K-factor defines where the neutral axis (the plane that neither stretches nor compresses) sits within the sheet thickness during bending. It's a ratio from 0 to 1 — typically 0.3–0.5 depending on material, thickness, bend radius, and method. K-factor is critical for calculating bend allowance and flat pattern dimensions. Get it wrong, and your unfolded blank will be the wrong size."
+                    },
+                    {
+                        q: "Why is a bend relief necessary near the edge of a sheet metal part?",
+                        options: ["To add decoration", "To prevent tearing at the bend-to-edge junction", "To increase weight", "To improve conductivity"],
+                        correct: 1,
+                        explanation: "Bend relief is a small cutout (slot or notch) at the end of a bend line where it meets an edge or another feature. Without it, the material at the junction is forced to stretch and compress simultaneously, causing tearing, cracking, or unpredictable deformation. The relief gives the material room to deform cleanly along the intended bend line. Minimum relief width = material thickness; length ≥ bend radius + thickness."
+                    },
+                    {
+                        q: "What is the minimum recommended internal bend radius for sheet metal?",
+                        options: ["Zero — sharp bends are fine", "Equal to the material thickness", "5× the material thickness", "10× the material thickness"],
+                        correct: 1,
+                        explanation: "The general rule of thumb is minimum bend radius = 1× material thickness for ductile materials like mild steel and aluminum. Going tighter risks cracking on the outer surface of the bend (which is in tension). Brittle materials, hard tempers, or bending parallel to the grain direction may require 2× or more. Always check material-specific bend radius tables and consider grain direction."
+                    },
+                    {
+                        q: "Which process uses a punch and die to cut flat shapes from sheet metal?",
+                        options: ["Forging", "Blanking/Stamping", "Sand casting", "Extrusion"],
+                        correct: 1,
+                        explanation: "Blanking/stamping uses a punch (male) and die (female) to shear flat shapes from sheet metal in a press. The punch pushes through the sheet into the die cavity, shearing the material along the profile. High-speed stamping can produce hundreds of parts per minute, making it ideal for high-volume production. Tooling is expensive (custom die sets), so it's only economical at volume."
+                    },
+                    {
+                        q: "What does 'springback' mean in sheet metal forming?",
+                        options: ["The metal bouncing off the die", "The tendency of metal to partially return to its original shape after bending", "A defect in laser cutting", "The elasticity of the press brake"],
+                        correct: 1,
+                        explanation: "Springback is the elastic recovery of sheet metal after the bending force is removed — the part 'springs back' slightly toward its original flat shape. The bend angle opens up (e.g., you bend to 90° but get 92°). It's caused by the elastic component of deformation. Compensation methods: overbend (bend past target angle), bottom die with correction angle, or coining (applying enough force to exceed elastic limit everywhere)."
+                    },
+                    {
+                        q: "What is a hem in sheet metal?",
+                        options: ["A welding seam", "A fold where the edge is bent back onto itself (180°)", "A laser-cut edge", "A type of rivet"],
+                        correct: 1,
+                        explanation: "A hem is a 180° fold where the sheet edge is bent completely back onto itself — either flat (closed hem: folded tight) or with a gap (open hem / teardrop hem). Hems eliminate sharp edges (safety), double the edge thickness (stiffness and strength), and create a finished appearance. Common on automotive panels, appliance housings, and enclosures. Minimum hem length is typically 4× material thickness."
+                    },
+                    {
+                        q: "What is the primary advantage of laser cutting for sheet metal?",
+                        options: ["It hardens the material", "High precision and ability to cut complex profiles without tooling", "It eliminates the need for deburring", "It welds edges simultaneously"],
+                        correct: 1,
+                        explanation: "Laser cutting uses a focused high-energy beam to melt/vaporize material along a programmed path. Advantages: no physical tooling (unlike stamping/punching), extremely tight profiles and small features, fast setup (just load the program), excellent edge quality, and ±0.1mm accuracy. It's ideal for prototypes, low-to-medium volumes, and complex geometries. Limitations: heat-affected zone, thickness limits (typically ≤25mm steel)."
+                    },
+                    {
+                        q: "What is the function of louvers in a sheet metal enclosure?",
+                        options: ["Structural reinforcement", "Ventilation while maintaining some protection from debris/water", "Electrical grounding", "Acoustic amplification"],
+                        correct: 1,
+                        explanation: "Louvers are stamped or formed openings with angled slats that allow airflow for cooling while providing some protection against water ingress, debris, and direct contact with internal components. They're formed in a single press operation — a punch simultaneously cuts and bends the slat. Common on electrical enclosures, HVAC equipment, and any housing that needs passive ventilation."
+                    },
+                    {
+                        q: "Why should holes be placed away from bend lines?",
+                        options: ["For aesthetic reasons", "Holes near bends distort — minimum distance ≥ 2× thickness + bend radius", "To reduce material usage", "To improve laser cutting speed"],
+                        correct: 1,
+                        explanation: "Holes (and other features) near a bend line get distorted during bending — the material flow pulls and stretches the hole into an oval or teardrop shape. The minimum safe distance from hole edge to bend line is typically 2× material thickness + bend radius. If the hole must be closer, it should be added after bending (secondary operation), which adds cost."
+                    },
+                    {
+                        q: "What is a clinch joint (press join) in sheet metal?",
+                        options: ["A welded joint", "A mechanical interlock formed by deforming two sheets together", "A glued joint", "A riveted joint"],
+                        correct: 1,
+                        explanation: "Clinching (also called press joining or TOX joining) creates a mechanical interlock between two sheet metal layers by deforming them together using a punch and die — no fasteners, no heat, no consumables. The punch pushes both layers into a die cavity, causing the bottom sheet to flow laterally and lock with the top sheet. Fast, clean, and strong enough for many applications. Common in automotive and HVAC."
+                    },
+                    {
+                        q: "What is the purpose of a dimple (or lance) in sheet metal design?",
+                        options: ["Cosmetic branding", "Create a raised feature for alignment, spacing, or stiffening", "Reduce conductivity", "Enable powder coating adhesion"],
+                        correct: 1,
+                        explanation: "Dimples and lances are formed features stamped into sheet metal to create raised bumps, tabs, or ridges. They serve multiple purposes: alignment (locating one part against another), spacing (maintaining a gap between stacked sheets), stiffening (breaking up flat surfaces to resist deflection), and creating attachment points. They're formed in the stamping/punching operation at minimal extra cost."
+                    }
+                ]
+            },
+            {
+                name: "Plastics & Injection Molding",
+                icon: "🧪",
+                questions: [
+                    {
+                        q: "What is the recommended uniform wall thickness for most injection-molded parts?",
+                        options: ["0.1–0.3 mm", "1.0–3.0 mm", "5.0–10.0 mm", "15–20 mm"],
+                        correct: 1,
+                        explanation: "Most injection-molded parts use 1.0–3.0mm wall thickness (material-dependent: ABS ~1.5–3.0mm, PP ~0.8–2.5mm). Uniform walls are critical — thick sections cool slowly causing sink marks, voids, and warping; thin sections may not fill. If you must vary thickness, transition gradually (3:1 taper ratio). Wall thickness drives cooling time, which drives cycle time, which drives cost."
+                    },
+                    {
+                        q: "What defect results from thick sections in molded parts?",
+                        options: ["Flash", "Sink marks", "Weld lines", "Short shot"],
+                        correct: 1,
+                        explanation: "Sink marks are depressions on the surface caused by thick sections shrinking inward as they cool. The outer skin solidifies first, then the still-molten core shrinks as it cools — pulling the surface inward. Prevention: maintain uniform walls, core out thick sections, use ribs instead of solid thickness (rib thickness ≤ 60% of adjacent wall), and optimize packing pressure and cooling time."
+                    },
+                    {
+                        q: "What is the typical draft angle range for injection-molded parts?",
+                        options: ["0° (no draft needed)", "1°–3° per side", "10°–15° per side", "30°–45° per side"],
+                        correct: 1,
+                        explanation: "1°–3° per side is standard for injection molding. Textured surfaces need more draft (add 1° per 0.025mm texture depth, as the texture acts like tiny undercuts). Deep features need more draft than shallow ones. No draft = part sticks in mold = damage, cycle time increase, ejector pin marks. Some features (shut-offs, slides) may need more. More draft is always better if the design allows it."
+                    },
+                    {
+                        q: "What causes 'warping' in injection-molded parts?",
+                        options: ["Too much colorant", "Uneven cooling and shrinkage across the part", "Low injection speed", "Using recycled material"],
+                        correct: 1,
+                        explanation: "Warping occurs when different areas of the part shrink at different rates during cooling — one side pulls more than the other, bending the part. Causes: non-uniform wall thickness, asymmetric cooling (one mold half hotter than the other), fiber orientation in filled materials, gate location causing unbalanced flow. Prevention: uniform walls, symmetric cooling circuits, balanced gate placement, and proper material selection."
+                    },
+                    {
+                        q: "What is a 'gate' in injection molding?",
+                        options: ["The factory entrance", "The point where molten plastic enters the mold cavity", "A quality checkpoint", "A safety barrier on the machine"],
+                        correct: 1,
+                        explanation: "The gate is the small opening connecting the runner system to the mold cavity — it's where molten plastic enters the part. Gate type (edge, fan, submarine, pin, valve) and location affect fill pattern, weld line positions, packing efficiency, cosmetics (gate vestige mark), and ease of de-gating. Gate placement is one of the most critical decisions in mold design — wrong location can cause every defect in the book."
+                    },
+                    {
+                        q: "What is a 'living hinge' in plastic design?",
+                        options: ["A metal hinge embedded in plastic", "A thin flexible section molded integrally that allows repeated bending", "A hinge that moves on its own", "A biodegradable hinge"],
+                        correct: 1,
+                        explanation: "A living hinge is an extremely thin section (typically 0.2–0.5mm) of polypropylene (PP) molded as an integral part of the component that acts as a flexible hinge — like the lid of a shampoo bottle. PP is ideal because its molecular chains orient during flow through the thin section, creating exceptional flex fatigue resistance. The hinge should be flexed immediately after molding while still warm to orient the molecules. Other materials generally don't survive repeated flexing."
+                    },
+                    {
+                        q: "What is the purpose of ribs in injection-molded parts?",
+                        options: ["Decoration", "Increase stiffness without increasing wall thickness", "Improve colour consistency", "Reduce mold cost"],
+                        correct: 1,
+                        explanation: "Ribs are thin, tall features on the back of a wall that dramatically increase bending stiffness (stiffness increases with the cube of height) without adding the mass, sink marks, and cycle time that thicker walls would cause. Design rules: rib thickness ≤ 60% of adjacent wall, height ≤ 3× wall thickness, minimum 0.5° draft per side, and radius at the base (0.25–0.5× wall thickness). Multiple thin ribs beat fewer thick ribs."
+                    },
+                    {
+                        q: "Which thermoplastic is known for excellent chemical resistance and is widely used in packaging?",
+                        options: ["Polycarbonate (PC)", "Polypropylene (PP)", "Nylon (PA)", "Acrylic (PMMA)"],
+                        correct: 1,
+                        explanation: "Polypropylene (PP) offers excellent chemical resistance (resistant to most acids, bases, and solvents), good fatigue resistance (living hinges), low density (lightest common plastic at 0.9 g/cm³), low cost, and food-grade availability. It's everywhere: food containers, bottle caps, medical devices, automotive bumpers, and packaging. Limitations: poor UV resistance (needs stabilizers), low-temperature brittleness, and difficult to bond/paint."
+                    },
+                    {
+                        q: "What is 'flash' in injection molding?",
+                        options: ["A bright surface finish", "Thin excess plastic that leaks out at the mold parting line", "A fast injection technique", "A type of gate"],
+                        correct: 1,
+                        explanation: "Flash is thin, unwanted plastic that squeezes out between mold halves at the parting line or around slides/inserts. Causes: excessive injection pressure, insufficient clamping force, worn or damaged mold surfaces, or poor mold alignment. Flash must be trimmed (extra labor and cost) and indicates a process or tooling problem that should be addressed. Mold maintenance and process optimization are the primary fixes."
+                    },
+                    {
+                        q: "What is the difference between a thermoplastic and a thermoset?",
+                        options: ["Thermoplastics are harder", "Thermoplastics can be remelted; thermosets permanently cross-link and cannot", "Thermosets are always transparent", "There is no difference"],
+                        correct: 1,
+                        explanation: "Thermoplastics (PP, ABS, PC, Nylon) soften when heated and can be remelted and reshaped — their polymer chains are held by weak intermolecular forces. Thermosets (epoxy, phenolic, vulcanized rubber) undergo irreversible chemical cross-linking during curing — once set, they cannot be remelted (they char/decompose instead). Thermosets generally have better heat resistance and dimensional stability; thermoplastics are easier to process and recycle."
+                    },
+                    {
+                        q: "Why is mold cooling system design critical?",
+                        options: ["It affects the mold colour", "Cooling time is typically 70-80% of cycle time, directly affecting cost", "It's only important for aesthetic reasons", "It only matters for large parts"],
+                        correct: 1,
+                        explanation: "Cooling accounts for 70–80% of the total injection molding cycle time — it's the single biggest factor in part cost at volume. Uniform, efficient cooling channels reduce cycle time and prevent warping from uneven shrinkage. Conformal cooling (channels that follow the part geometry, often 3D-printed in tool steel) can cut cycle time by 20–40% compared to conventional straight-drilled channels."
+                    }
+                ]
+            },
+            {
+                name: "3D Printing & Additive",
+                icon: "🖨️",
+                questions: [
+                    {
+                        q: "What does FDM stand for in 3D printing?",
+                        options: ["Flat Deposition Method", "Fused Deposition Modeling", "Fast Design Manufacturing", "Fluid Dynamic Mixing"],
+                        correct: 1,
+                        explanation: "Fused Deposition Modeling melts a thermoplastic filament (PLA, ABS, PETG, Nylon, etc.) and extrudes it layer by layer through a heated nozzle to build up a part. It's the most widely used 3D printing technology due to low cost, material variety, and simplicity. Limitations: visible layer lines, anisotropic strength (weak between layers), limited resolution, and slow for large/solid parts."
+                    },
+                    {
+                        q: "Why are support structures often needed in FDM printing?",
+                        options: ["To add colour", "To support overhangs and bridging areas that would otherwise sag or fail", "To increase print speed", "To improve surface finish on all surfaces"],
+                        correct: 1,
+                        explanation: "FDM prints layer by layer from bottom up — each layer must be supported by the layer below. Overhangs beyond ~45° from vertical have nothing to print on and will sag or curl. Support structures provide temporary scaffolding that is removed after printing. They add print time, waste material, and leave surface marks. Design tip: orient the part and add chamfers/fillets to minimize or eliminate supports."
+                    },
+                    {
+                        q: "What is SLA 3D printing?",
+                        options: ["Selective Laser Assembly", "Stereolithography — a UV laser cures liquid resin layer by layer", "Single Layer Addition", "Standard Lathe Automation"],
+                        correct: 1,
+                        explanation: "Stereolithography (SLA) uses a UV laser to selectively cure (solidify) a liquid photopolymer resin, layer by layer, from a vat. It produces much finer detail and smoother surfaces than FDM — layer heights of 25–100 microns vs. FDM's 100–300 microns. Ideal for prototypes requiring smooth finish, dental/jewelry models, and detailed figurines. Downsides: resin is more expensive, parts can be brittle, and post-processing (washing, UV curing) is required."
+                    },
+                    {
+                        q: "What is the main limitation of 3D printing for production parts?",
+                        options: ["Inability to use plastic", "Generally slower and more expensive per part than injection molding at volume", "Cannot print in 3 dimensions", "No CAD software supports it"],
+                        correct: 1,
+                        explanation: "3D printing builds parts one at a time, layer by layer — it doesn't benefit from economies of scale the way molding does. Part #1 costs the same as part #10,000. For injection molding, the mold is expensive but each part costs pennies at volume. The crossover point is typically 100–5,000 parts depending on part size and complexity. Below that, 3D printing wins; above it, molding wins. 3D printing is a prototyping and low-volume champion, not a mass-production tool (yet)."
+                    },
+                    {
+                        q: "Which 3D printing method uses a powder bed and laser to fuse material?",
+                        options: ["FDM", "SLS (Selective Laser Sintering)", "SLA", "Inkjet printing"],
+                        correct: 1,
+                        explanation: "SLS spreads a thin layer of powder (typically Nylon PA12, PA11, or TPU) and a CO₂ laser selectively fuses (sinters) the powder into solid cross-sections. The unfused powder acts as support, so SLS parts need no support structures — enabling complex geometries impossible with FDM. Parts are strong, functional, and slightly rough (powdery surface). SLS is the go-to for functional prototypes and low-volume production parts."
+                    },
+                    {
+                        q: "What is 'layer height' in FDM printing and how does it affect quality?",
+                        options: ["The height of the printer — taller printers print better", "The thickness of each deposited layer — smaller = smoother surfaces but slower prints", "The height of the support structures", "The distance between the nozzle and bed"],
+                        correct: 1,
+                        explanation: "Layer height is the thickness of each extruded layer — typically 0.1–0.3mm for FDM. Thinner layers produce smoother surfaces, finer details, and less visible 'staircase' effect on curves and angles, but take proportionally longer to print (half the layer height = double the print time). Choose layer height based on the part's purpose: visual prototypes want fine layers; functional prototypes can use coarser layers for speed."
+                    },
+                    {
+                        q: "What is DMLS and when is it used?",
+                        options: ["Direct Metal Laser Sintering — 3D printing functional metal parts", "Double Mold Laser System", "Digital Machine Logging Software", "Dual Material Layering System"],
+                        correct: 0,
+                        explanation: "Direct Metal Laser Sintering (DMLS) uses a high-power laser to fuse metal powder (titanium, stainless steel, Inconel, aluminum, cobalt chrome) layer by layer. It produces fully dense, functional metal parts with complex internal geometries impossible to machine (conformal cooling channels, lattice structures, internal passages). Used in aerospace, medical implants, and tooling. Expensive but enables designs that can't exist any other way."
+                    },
+                    {
+                        q: "What is the 'staircase effect' in 3D printing?",
+                        options: ["A software error", "Visible stepped surface texture on curved/angled surfaces due to discrete layers", "A calibration procedure", "A type of support structure"],
+                        correct: 1,
+                        explanation: "The staircase effect is the visible stepped surface pattern that appears on curved or angled surfaces because 3D printing builds in discrete flat layers. Each layer is a flat cross-section, so curves are approximated by stacked rectangles — like drawing a circle with tiny squares. Thinner layers reduce the effect but increase print time. Post-processing (sanding, vapor smoothing, coating) can eliminate it."
+                    },
+                    {
+                        q: "Which FDM filament material offers the best heat resistance?",
+                        options: ["PLA", "ABS", "PEEK", "TPU"],
+                        correct: 2,
+                        explanation: "PEEK (Polyether Ether Ketone) has a glass transition temperature of ~143°C and continuous use temperature of 250°C — far exceeding PLA (~60°C), ABS (~100°C), and TPU (~80°C). It's also incredibly strong, chemically resistant, and biocompatible. The catch: PEEK requires specialized high-temperature printers (400°C+ nozzle, heated chamber), costs ~$500+/kg, and is difficult to print successfully. It's the aerospace and medical-grade material of FDM."
+                    },
+                    {
+                        q: "What is a key advantage of 3D printing in prototyping?",
+                        options: ["Lower material strength", "Rapid iteration — design changes require no tooling changes", "Higher per-part cost at all volumes", "Limited to one material"],
+                        correct: 1,
+                        explanation: "3D printing's killer advantage in prototyping is speed of iteration: change the CAD → re-slice → print. No tooling, no setup changes, no lead time waiting for mold modifications. A design change that would take weeks in injection molding (modify steel mold) takes minutes in 3D printing (modify CAD file). This enables rapid design exploration, fail-fast validation, and faster time to final design."
+                    },
+                    {
+                        q: "What is 'warping' in FDM 3D printing?",
+                        options: ["Intentional bending of the model", "Corners lifting from the build plate due to thermal contraction of cooling layers", "A type of surface finish", "Over-extrusion of filament"],
+                        correct: 1,
+                        explanation: "Warping happens when printed layers cool and contract at different rates — the first layers cool and shrink while upper layers are still warm, creating internal stresses that pull the corners up off the build plate. Worse with large flat parts and high-shrinkage materials (ABS, Nylon). Prevention: heated bed (60–110°C), enclosed chamber, adhesion aids (glue stick, PEI sheet, brim/raft), and designing with rounded corners."
+                    }
+                ]
+            },
+            {
+                name: "Materials & Heat Treatment",
+                icon: "🔬",
+                questions: [
+                    {
+                        q: "What is the primary effect of quenching steel?",
+                        options: ["Makes it softer", "Increases hardness by trapping carbon in a martensitic structure", "Improves conductivity", "Reduces weight"],
+                        correct: 1,
+                        explanation: "Quenching rapidly cools heated steel (from above its critical temperature) fast enough to prevent the carbon atoms from diffusing out of the iron lattice. This traps them in a strained, supersaturated structure called martensite — extremely hard but brittle. Quenching media (water, oil, air, polymer) control the cooling rate. Faster quench = harder but more prone to cracking. Quenching is almost always followed by tempering."
+                    },
+                    {
+                        q: "What does tempering do after quenching?",
+                        options: ["Increases hardness further", "Reduces brittleness while maintaining most of the hardness", "Changes the material to aluminum", "Removes all carbon from the steel"],
+                        correct: 1,
+                        explanation: "Tempering reheats quenched (martensitic) steel to a moderate temperature (150–650°C) and holds it there to allow some controlled relaxation of the strained martensite structure. This sacrifices some hardness in exchange for dramatically improved toughness and ductility. Higher tempering temperature = softer but tougher. It's a deliberate trade-off: the engineer chooses the tempering temperature to hit the desired hardness/toughness balance for the application."
+                    },
+                    {
+                        q: "Which material property measures resistance to elastic deformation?",
+                        options: ["Yield strength", "Young's Modulus (Modulus of Elasticity)", "Hardness", "Fatigue limit"],
+                        correct: 1,
+                        explanation: "Young's Modulus (E) is the ratio of stress to strain in the elastic region — it measures how stiff a material is (how much it deflects under load before permanent deformation). Steel: ~200 GPa, Aluminum: ~70 GPa, Titanium: ~110 GPa. A higher E means less deflection under the same load. It's a material property — you can't change it with heat treatment or processing. To reduce deflection, change the material or increase the cross-section."
+                    },
+                    {
+                        q: "What is the difference between yield strength and ultimate tensile strength?",
+                        options: ["They are the same thing", "Yield = onset of permanent deformation; UTS = maximum stress before fracture", "Yield is always higher than UTS", "UTS applies only to plastics"],
+                        correct: 1,
+                        explanation: "Yield strength is the stress at which the material begins to deform permanently (it won't return to its original shape). Ultimate Tensile Strength (UTS) is the maximum stress the material can withstand before necking and fracture. Between yield and UTS, the material deforms plastically but holds increasing load (strain hardening). Design typically uses yield strength as the failure criterion — once a part yields, it's functionally failed even if it hasn't fractured."
+                    },
+                    {
+                        q: "Why is 6061-T6 aluminum alloy so widely used?",
+                        options: ["It's the cheapest metal available", "Good strength-to-weight ratio, excellent machinability, corrosion resistance, and weldability", "It's harder than steel", "It's only used for aircraft"],
+                        correct: 1,
+                        explanation: "6061-T6 is the 'workhorse' aluminum alloy — it hits the sweet spot of properties: good strength (~310 MPa UTS), excellent machinability, good weldability (though the weld zone loses the T6 temper), natural corrosion resistance (anodizable for more), and wide availability in all forms (plate, bar, tube, extrusion). T6 = solution heat treated + artificially aged for peak strength. Used in everything from machine frames to bicycle components to structural members."
+                    },
+                    {
+                        q: "What is the purpose of annealing a metal?",
+                        options: ["Increase hardness", "Soften the metal, relieve internal stresses, and improve ductility", "Change its colour permanently", "Make it magnetic"],
+                        correct: 1,
+                        explanation: "Annealing heats the metal to a specific temperature, holds it (soaking), then cools it slowly (usually furnace cooling). This allows the grain structure to recrystallize into a stress-free, equiaxed state — making the metal soft, ductile, and workable again. Used after cold working (which hardens and embrittles the metal through work hardening) to restore formability for further processing. Full anneal, stress relief anneal, and process anneal are variations."
+                    },
+                    {
+                        q: "What does Rockwell Hardness (HRC) measure?",
+                        options: ["Material weight", "Resistance to surface indentation under a standardized load", "Tensile strength", "Thermal conductivity"],
+                        correct: 1,
+                        explanation: "Rockwell C (HRC) measures hardness by pressing a diamond cone indenter into the surface under a defined load (150 kgf) and measuring the depth of penetration. Higher number = harder surface. HRC is used for hardened steels (20–70 HRC range). Related scales: HRB (softer materials, ball indenter), HV (Vickers — any material), HB (Brinell — castings and forgings). Hardness correlates roughly with tensile strength and wear resistance."
+                    },
+                    {
+                        q: "Which stainless steel type is the most common and non-magnetic?",
+                        options: ["Ferritic (430)", "Austenitic (304/316)", "Martensitic (440C)", "Duplex (2205)"],
+                        correct: 1,
+                        explanation: "Austenitic stainless steels (304, 316, 303) are the most widely used — they have an FCC crystal structure that is non-magnetic (unlike BCC ferritic and martensitic types). 304 ('18/8' — 18% Cr, 8% Ni) is the general-purpose grade; 316 adds molybdenum for better corrosion resistance (marine, chemical environments). They offer excellent corrosion resistance, good formability, and can't be hardened by heat treatment (only cold working)."
+                    },
+                    {
+                        q: "What is work hardening (strain hardening)?",
+                        options: ["Hardening by heating", "Increase in strength and hardness caused by plastic deformation", "A surface coating process", "A type of welding"],
+                        correct: 1,
+                        explanation: "Work hardening occurs when a metal is plastically deformed (bent, rolled, drawn, forged) — the dislocation density increases, dislocations tangle and pin each other, and the metal becomes harder and stronger but less ductile. This is why bending a paperclip back and forth eventually breaks it — it work-hardens to the point of zero remaining ductility. Used deliberately in some processes (cold rolling for strength) and reversed by annealing when not wanted."
+                    },
+                    {
+                        q: "What is the purpose of case hardening (carburizing)?",
+                        options: ["Harden the entire part through-thickness", "Create a hard wear-resistant surface while keeping a tough, shock-absorbing core", "Change the metal to stainless steel", "Improve electrical conductivity"],
+                        correct: 1,
+                        explanation: "Case hardening diffuses carbon (carburizing) or nitrogen (nitriding) into the surface layer of a low-carbon steel part, then heat-treats it to create a hard, wear-resistant case (surface) while the low-carbon core remains tough and ductile. This combination is ideal for gears, shafts, and bearings — the hard surface resists wear and fatigue, while the tough core absorbs impact and prevents brittle fracture."
+                    },
+                    {
+                        q: "What determines whether to choose steel, aluminum, or plastic for a part?",
+                        options: ["Always pick the cheapest option", "Consider function (loads, environment, wear), weight constraints, manufacturing process, cost, and quantity", "Always pick steel — it's the strongest", "Material choice doesn't affect design"],
+                        correct: 1,
+                        explanation: "Material selection is a multi-variable decision: What loads and stresses will the part see? (→ strength, stiffness) What environment? (→ corrosion, temperature, UV) Does weight matter? (→ density) How will it be made? (→ machinability, moldability, weldability) How many are needed? (→ process economics) What's the budget? (→ raw material + processing cost) Ashby charts help visualize trade-offs between properties. The right material is the one that meets ALL requirements at the lowest total cost."
+                    }
+                ]
+            },
+            {
+                name: "FEA & Stress Analysis",
+                icon: "📊",
+                questions: [
+                    {
+                        q: "What does FEA stand for?",
+                        options: ["Fast Engineering Application", "Finite Element Analysis", "Final Evaluation Assessment", "Functional Elasticity Analysis"],
+                        correct: 1,
+                        explanation: "Finite Element Analysis is a numerical method that divides a complex geometry into many small, simple elements (the 'mesh') and solves the governing equations (stress, heat, fluid flow, etc.) for each element. By combining the results of thousands or millions of elements, FEA approximates the behavior of the entire structure. It's the primary tool for virtual stress testing, thermal analysis, and optimization."
+                    },
+                    {
+                        q: "Why is mesh quality important in FEA?",
+                        options: ["It affects the colour of results", "A poor mesh leads to inaccurate or misleading results", "It only matters for aesthetics", "Mesh quality is irrelevant to results"],
+                        correct: 1,
+                        explanation: "The mesh is the mathematical representation of your geometry — garbage mesh = garbage results. Distorted, skewed, or too-coarse elements can't accurately capture stress gradients, especially at critical features (fillets, holes, notches). Mesh convergence — refining the mesh until results stabilize — is how you verify accuracy. Rule: if halving the element size changes results by >5%, the mesh isn't fine enough at that location."
+                    },
+                    {
+                        q: "What is a boundary condition in FEA?",
+                        options: ["The edge of the CAD model", "Applied constraints (supports) and loads that define how the part is held and loaded", "The mesh element size", "A material property"],
+                        correct: 1,
+                        explanation: "Boundary conditions define the real-world loading scenario: how the part is supported (fixed, pinned, roller, spring) and what loads act on it (forces, pressures, torques, thermal loads, accelerations). Wrong boundary conditions = perfectly accurate answer to the wrong question. This is where most FEA errors occur — not in the solver, but in how the problem is set up. Always ask: does this model represent how the actual part is loaded and constrained?"
+                    },
+                    {
+                        q: "What does 'von Mises stress' represent?",
+                        options: ["Stress in the X direction only", "A scalar equivalent stress used to predict yielding under complex loading", "The maximum shear stress", "Stress caused by thermal expansion"],
+                        correct: 1,
+                        explanation: "Von Mises stress is a calculated scalar value that combines all stress components (normal and shear in all directions) into a single equivalent stress that can be compared directly to the material's yield strength. If von Mises stress ≥ yield strength, the material is predicted to yield. It's based on the von Mises yield criterion (distortion energy theory) and is the most commonly used failure criterion for ductile metals."
+                    },
+                    {
+                        q: "What type of element would you use for a thin-walled structure?",
+                        options: ["Solid (tetrahedral) elements", "Shell elements", "Beam elements", "Point masses"],
+                        correct: 1,
+                        explanation: "Shell elements are designed for structures where the thickness is much smaller than the other dimensions (plates, sheet metal, pressure vessels, panels). They model the mid-surface and assign thickness as a property — far more efficient than filling the thin wall with many layers of solid elements (which would require extremely small elements to avoid poor aspect ratios). Shells capture bending, membrane, and shear behavior accurately with far fewer elements."
+                    },
+                    {
+                        q: "What is a 'stress singularity' and how should you handle it?",
+                        options: ["A real stress that the part will experience", "An artificially infinite stress at a sharp re-entrant corner in the model — not physically real, should be addressed by adding fillets", "A software bug that must be reported", "A desirable result indicating strength"],
+                        correct: 1,
+                        explanation: "Stress singularities occur at sharp re-entrant corners (90° internal corners with zero radius) in FEA models — the calculated stress increases without bound as the mesh is refined (it never converges). This is a mathematical artifact, not reality, because real parts always have some radius. Fix: add the actual fillet radius to the model (as the real part would have). If the stress at a sharp corner is your peak result, your analysis is meaningless."
+                    },
+                    {
+                        q: "What is the difference between linear and non-linear FEA?",
+                        options: ["Linear FEA uses lines, non-linear uses curves", "Linear assumes small deformations and elastic behavior; non-linear handles large deformations, plasticity, and contact", "Non-linear is always less accurate", "There is no practical difference"],
+                        correct: 1,
+                        explanation: "Linear FEA assumes: material stays elastic (Hooke's law), deformations are small relative to the part (geometry doesn't change significantly), and no contact changes. This makes it fast but limited. Non-linear FEA handles: material yielding/plasticity, large deformations (rubber, sheet metal forming), contact between parts (changing boundaries), and buckling. Non-linear takes much longer to solve but is necessary when linear assumptions don't hold."
+                    },
+                    {
+                        q: "What is 'mesh convergence' and why is it important?",
+                        options: ["When all elements converge to one point", "Progressively refining the mesh until results stabilise, proving the solution is mesh-independent", "When the mesh looks visually appealing", "A mesh generation technique"],
+                        correct: 1,
+                        explanation: "Mesh convergence is the process of running the same analysis with progressively finer meshes (smaller elements) and checking when the result (peak stress, deflection, etc.) stops changing significantly. When further refinement changes results by <2–5%, you've 'converged.' This proves your result is a property of the physics, not an artifact of the mesh size. Without convergence, you don't know if your result is real."
+                    },
+                    {
+                        q: "When is FEA NOT the right tool?",
+                        options: ["Never — FEA can solve everything", "When analytical hand calculations can give a reliable answer faster, or when inputs are too uncertain", "When the part is made of metal", "When the part is smaller than 1 metre"],
+                        correct: 1,
+                        explanation: "FEA is a tool, not an answer machine. Don't use it when: a simple hand calculation (beam theory, pressure vessel formula, Hertzian contact) gives a reliable answer in minutes; when the loads, material data, or boundary conditions are too uncertain (FEA gives false precision — a precise answer to a vaguely defined problem is dangerous); or when you don't understand the physics well enough to validate the results. FEA should confirm engineering judgment, not replace it."
+                    },
+                    {
+                        q: "What is modal analysis used for?",
+                        options: ["Calculating part weight", "Determining a structure's natural frequencies and mode shapes to avoid resonance", "Measuring surface hardness", "Optimizing material cost"],
+                        correct: 1,
+                        explanation: "Modal analysis calculates the natural frequencies (how fast the structure 'wants' to vibrate) and mode shapes (how it deforms at each frequency) of a structure. This is critical because if an operating frequency (motor RPM, road vibration, pump pulsation) coincides with a natural frequency, resonance occurs — dramatically amplified vibrations that can cause fatigue failure, noise, or structural collapse. Design goal: keep natural frequencies well away from operating frequencies."
+                    }
+                ]
+            },
+            {
+                name: "Mechanical Components",
+                icon: "🔧",
+                questions: [
+                    {
+                        q: "What is the primary function of a bearing?",
+                        options: ["Lock components in place", "Reduce friction and support relative motion between parts", "Transmit electrical signals", "Seal fluids"],
+                        correct: 1,
+                        explanation: "Bearings enable relative motion (rotation or linear movement) between two parts while minimizing friction and supporting loads. Types: ball bearings (radial + light axial loads), roller bearings (heavy radial loads), thrust bearings (axial loads only), plain/sleeve bearings (simple, for low speed/load), and linear bearings/guides. Selection depends on load, speed, precision, space, and expected life."
+                    },
+                    {
+                        q: "When would you choose a helical gear over a spur gear?",
+                        options: ["When lower cost is the only priority", "When smoother, quieter operation and higher load capacity are needed", "When the shaft speed is very low", "Helical gears are always inferior to spur gears"],
+                        correct: 1,
+                        explanation: "Helical gears have teeth cut at an angle to the shaft axis, so engagement is gradual (teeth mesh progressively rather than all at once). This produces smoother, quieter operation and allows higher loads and speeds. The trade-off: helical gears generate an axial thrust force (requiring thrust bearings) and are more expensive to manufacture. Spur gears are simpler, cheaper, and fine for lower speeds and loads where noise isn't critical."
+                    },
+                    {
+                        q: "What is the purpose of a keyway on a shaft?",
+                        options: ["Reduce shaft weight", "Transmit torque between the shaft and a mounted component (gear, pulley, coupling)", "Act as a bearing surface", "Provide lubrication channels"],
+                        correct: 1,
+                        explanation: "A keyway is a slot machined into both the shaft and the hub of a mounted component (gear, pulley, sprocket, coupling). A key sits in both slots, creating a positive mechanical interlock that transmits torque from the shaft to the component (or vice versa). Key types: parallel (rectangular), Woodruff (half-moon), and tapered. The key is designed as the weakest link — it shears before the shaft or gear is damaged."
+                    },
+                    {
+                        q: "What type of spring stores energy when compressed?",
+                        options: ["Torsion spring", "Compression spring", "Extension spring", "Wave spring"],
+                        correct: 1,
+                        explanation: "Compression springs resist and store energy under compressive axial loads — they get shorter when loaded and push back when released. They're the most common spring type: valve springs in engines, suspension springs, battery contacts, return mechanisms, and countless other applications. Key parameters: spring rate (force per unit deflection), free length, solid height (fully compressed), and material (music wire, stainless, Inconel for high temp)."
+                    },
+                    {
+                        q: "What is the advantage of a ball screw over a lead screw?",
+                        options: ["Ball screws are simpler and cheaper", "Ball screws have much higher efficiency (90%+ vs ~40%) due to rolling instead of sliding friction", "Lead screws are always more accurate", "Ball screws are only for manual operation"],
+                        correct: 1,
+                        explanation: "Ball screws use recirculating ball bearings between the screw and nut, converting sliding friction to rolling friction. This gives ~90%+ efficiency (vs. ~20–40% for lead screws), lower heat generation, higher speeds, longer life, and near-zero backlash (with preloaded nuts). They're essential for CNC machines, robotics, and precision linear motion. Trade-offs: higher cost, not self-locking (need a brake for vertical applications), and require lubrication and contamination protection."
+                    },
+                    {
+                        q: "What is backlash in a gear system?",
+                        options: ["The force exerted by the gear on the shaft", "The small clearance (play) between meshing gear teeth", "The speed difference between gears", "The noise generated by gears"],
+                        correct: 1,
+                        explanation: "Backlash is the small gap between the non-driving faces of meshing gear teeth — the amount of 'wiggle' or lost motion when the direction of rotation reverses. Some backlash is necessary (for thermal expansion, lubrication, manufacturing tolerances), but excessive backlash causes positioning errors, vibration, and impact loads on direction reversal. Anti-backlash gears, split gears, or preloaded gear systems minimize it for precision applications."
+                    },
+                    {
+                        q: "What is a shaft coupling used for?",
+                        options: ["Reducing shaft speed", "Connecting two shafts to transmit torque while accommodating misalignment", "Preventing shaft rotation", "Measuring torque"],
+                        correct: 1,
+                        explanation: "Shaft couplings connect two shaft ends to transmit torque from one to the other. Critical function: accommodate misalignment (angular, parallel, axial) that is inevitable in real installations. Types: rigid couplings (precise alignment required), flexible jaw couplings (accommodate moderate misalignment), beam couplings (precision applications), disc couplings (high speed, low backlash), and universal joints (large angular misalignment). Selection depends on torque, speed, misalignment type/amount, and backlash requirements."
+                    },
+                    {
+                        q: "What is a circlip (retaining ring) used for?",
+                        options: ["Sealing against fluids", "Axially locating a component on a shaft or in a bore (preventing sliding off)", "Transmitting high torque", "Measuring shaft deflection"],
+                        correct: 1,
+                        explanation: "Circlips (snap rings, retaining rings) sit in a machined groove on a shaft (external) or inside a bore (internal) to prevent axial movement of bearings, gears, spacers, or other components. They're lightweight, compact, easy to assemble (with circlip pliers), and inexpensive compared to alternatives like threaded nuts or shoulders. They handle axial loads but are not designed for high thrust loads — for those, use a shoulder or locknut."
+                    },
+                    {
+                        q: "What is a linear guide rail used for?",
+                        options: ["Rotary motion", "Precise, smooth, and rigid straight-line motion", "Storing energy", "Measuring angles"],
+                        correct: 1,
+                        explanation: "Linear guide rails (linear bearings on profiled rails) provide smooth, precise, and highly rigid straight-line motion. Recirculating ball or roller elements ride in precision-ground tracks, giving very low friction, high load capacity, and excellent positional accuracy. Used in CNC machines, 3D printers, pick-and-place robots, and any application requiring controlled linear movement. Selection factors: load capacity, precision class, preload, speed, and stroke length."
+                    },
+                    {
+                        q: "What is a transition fit used for?",
+                        options: ["Loose clearance between parts", "A fit between clearance and interference — provides accurate location with easy assembly", "Maximum interference for permanent assembly", "A type of weld joint"],
+                        correct: 1,
+                        explanation: "A transition fit is between clearance and interference — the shaft and hole dimensions overlap such that you might get a very slight clearance or very slight interference depending on where each falls within its tolerance band. It provides precise location with minimal play and can typically be assembled by hand or with light tapping. Examples include locating pins and bearing housing fits."
+                    }
+                ]
+            },
+            {
+                name: "Welding & Joining",
+                icon: "🔥",
+                questions: [
+                    {
+                        q: "What is the heat-affected zone (HAZ)?",
+                        options: ["The area where filler metal is deposited", "The base metal region adjacent to the weld that experiences microstructural changes from heat", "The cooling zone of the welding machine", "The area protected by shielding gas"],
+                        correct: 1,
+                        explanation: "The HAZ is the band of base metal next to the weld that got hot enough to change its microstructure but didn't melt. These changes (grain growth, phase changes, softening or hardening depending on the material) can significantly alter the mechanical properties — often making the HAZ the weakest link. In heat-treated aluminum (like 6061-T6), the HAZ loses its temper and can be 40% weaker than the parent material."
+                    },
+                    {
+                        q: "What does MIG welding stand for?",
+                        options: ["Manual Induction Grinding", "Metal Inert Gas (GMAW)", "Magnetic Iron Grafting", "Mechanical Integrated Gauge"],
+                        correct: 1,
+                        explanation: "MIG (Metal Inert Gas), technically GMAW (Gas Metal Arc Welding), feeds a continuous solid wire electrode through a gun while shielding the weld pool with an inert or active gas (argon, CO₂, or mix). It's the most widely used industrial welding process because it's fast, easy to automate, works on most metals, and produces clean welds. Semi-automatic operation makes it more forgiving than TIG for less-skilled operators."
+                    },
+                    {
+                        q: "When is TIG welding preferred over MIG?",
+                        options: ["For high-speed production of thick steel plates", "For precision welds on thin materials, critical joints, and aesthetic welds", "When the lowest cost per weld is the only criteria", "TIG is never preferred"],
+                        correct: 1,
+                        explanation: "TIG (GTAW) uses a non-consumable tungsten electrode with separate filler rod, giving the welder precise control over heat input and filler addition independently. This makes it ideal for: thin materials (where MIG would burn through), critical/high-quality joints (aerospace, pressure vessels), aesthetic welds (visible joints, furniture, art), exotic metals (titanium, Inconel), and root passes on pipe. Trade-off: slower, more skill-dependent, and more expensive than MIG."
+                    },
+                    {
+                        q: "What is weld distortion caused by?",
+                        options: ["Poor material quality", "Non-uniform thermal expansion and contraction during and after welding", "Using too much filler metal", "Incorrect shielding gas"],
+                        correct: 1,
+                        explanation: "The weld zone heats up and expands while the surrounding cold metal resists that expansion. When the weld cools and contracts, it pulls the surrounding structure — causing distortion (bowing, angular distortion, twisting, longitudinal shrinkage). The more heat input, the more distortion. Mitigation: minimize heat input, use balanced welding sequences (alternating sides), pre-set (pre-distort) the parts, fixture rigidly, and use intermittent rather than continuous welds where possible."
+                    },
+                    {
+                        q: "What is a fillet weld?",
+                        options: ["A weld inside a groove", "A triangular cross-section weld joining two surfaces at approximately right angles", "A spot weld", "A weld with no filler material"],
+                        correct: 1,
+                        explanation: "A fillet weld is the most common weld type in structural work — it joins two surfaces meeting at approximately 90° (T-joints, lap joints, corner joints) with a roughly triangular cross-section. The critical dimension is the 'throat' (shortest distance from root to face). Fillet welds don't require edge preparation (unlike groove welds), making them faster and cheaper. Most welded structures use more linear meters of fillet welds than any other type."
+                    },
+                    {
+                        q: "What is the purpose of pre-heating before welding?",
+                        options: ["Speed up the welding process", "Reduce the cooling rate to prevent cracking in susceptible materials", "Make the metal lighter", "Eliminate the need for filler material"],
+                        correct: 1,
+                        explanation: "Pre-heating slows the cooling rate of the weld and HAZ. This is critical for: high-carbon and alloy steels (prevents hard, crack-prone martensite formation), thick sections (which act as heat sinks, causing rapid cooling), and hydrogen-sensitive materials. It also reduces thermal shock, residual stresses, and the risk of hydrogen-induced cracking (cold cracking). Pre-heat temperature depends on material composition, thickness, and joint restraint."
+                    },
+                    {
+                        q: "What causes porosity in welds?",
+                        options: ["Excessive pre-heating", "Gas bubbles trapped in solidifying weld metal from contamination, moisture, or inadequate shielding", "Using the wrong electrode colour", "Welding too slowly"],
+                        correct: 1,
+                        explanation: "Porosity = gas pockets frozen into the solidified weld metal. Sources: atmospheric contamination (insufficient shielding gas coverage, wind blowing gas away), moisture (on the base metal, filler, or flux — water decomposes into hydrogen and oxygen at welding temperatures), oils/grease/paint on the joint, and contaminated filler material. Prevention: clean the joint, use dry consumables, ensure proper gas flow rate and nozzle distance, and protect from drafts."
+                    },
+                    {
+                        q: "What is a butt joint?",
+                        options: ["Two pieces overlapping", "Two pieces aligned end-to-end in the same plane, welded along the seam", "Two pieces joined at 90°", "A bolted connection"],
+                        correct: 1,
+                        explanation: "A butt joint places two workpieces edge-to-edge in the same plane and welds along the seam. For thin material, a square butt (no preparation) works. For thicker material, edge preparation (V-groove, J-groove, U-groove, double-V) is needed to ensure full penetration through the joint thickness. Butt joints with full penetration provide the strongest joint — equivalent to or exceeding base metal strength when done correctly."
+                    },
+                    {
+                        q: "What is the role of shielding gas in MIG/TIG welding?",
+                        options: ["Adds alloying elements to the weld", "Protects the molten weld pool from atmospheric contamination (oxygen, nitrogen, moisture)", "Cools the electrode", "Increases welding speed"],
+                        correct: 1,
+                        explanation: "Shielding gas creates an inert (or controlled) atmosphere around the molten weld pool, displacing air that would otherwise contaminate the weld. Oxygen causes porosity and oxide inclusions; nitrogen causes brittleness and porosity. Common gases: pure argon (TIG, MIG on aluminum), argon + CO₂ mix (MIG on steel — CO₂ improves penetration but increases spatter), and pure CO₂ (cheapest for carbon steel MIG). Gas selection affects arc characteristics, penetration, and weld quality."
+                    },
+                    {
+                        q: "What does a welding procedure specification (WPS) define?",
+                        options: ["The cost of welding", "All essential variables for producing a qualified weld: process, parameters, materials, joint design, positions, pre/post-heat", "The colour of the welding helmet", "Only the filler metal type"],
+                        correct: 1,
+                        explanation: "A WPS is the documented instruction set that tells the welder exactly how to produce a qualified weld — it defines every variable: welding process, base metal and filler metal specifications, joint design and preparation, welding position, preheat and interpass temperatures, current/voltage/travel speed ranges, shielding gas type and flow rate, and post-weld heat treatment. It's backed by a Procedure Qualification Record (PQR) — actual test welds that proved these parameters produce acceptable results."
+                    },
+                    {
+                        q: "What is resistance spot welding primarily used for?",
+                        options: ["Thick structural steel", "Joining thin sheet metal parts (automotive body panels, appliances) quickly", "Underwater welding", "Pipe welding"],
+                        correct: 1,
+                        explanation: "Resistance spot welding (RSW) squeezes two thin sheets between copper electrodes and passes high current through the contact point — the electrical resistance at the interface generates enough heat to fuse the sheets into a small 'nugget.' It's extremely fast (fractions of a second per spot), easily automated (robots in car plants), and needs no consumables. Automotive body assembly uses thousands of spot welds per vehicle. Limited to thin sheets (typically ≤3mm) and lap joints."
+                    }
+                ]
+            }
+        ];
+
+        // ============================================
+        // MIGRATION FUNCTION
+        // ============================================
+        window.runMigration = async function() {
+            const btn = document.getElementById('startBtn');
+            btn.disabled = true;
+            btn.textContent = 'Running...';
+
+            // Safety check — see if questions already exist
+            logMsg('Checking if questions collection already has data...', 'info');
+            try {
+                const existing = await getDocs(collection(db, 'questions'));
+                if (existing.size > 0) {
+                    logMsg(`⚠️ ABORT: Found ${existing.size} existing documents in 'questions' collection.`, 'err');
+                    logMsg('Delete the collection in Firebase Console first if you want to re-run.', 'err');
+                    btn.textContent = 'Aborted';
+                    return;
+                }
+            } catch(e) {
+                logMsg('Collection empty or does not exist yet — proceeding.', 'info');
+            }
+
+            let total = 0;
+            let success = 0;
+            let errors = 0;
+
+            for (const topic of quizData) {
+                logMsg(`\n── ${topic.icon} ${topic.name} (${topic.questions.length} questions) ──`, 'info');
+
+                for (const q of topic.questions) {
+                    total++;
+                    const docData = {
+                        questionText: q.q,
+                        options: q.options,
+                        correctAnswer: q.correct,
+                        fullExplanation: q.explanation,
+                        topic: topic.name,
+                        topicIcon: topic.icon,
+                        difficulty: "medium",
+                        svgCode: "",
+                        modes: ["quick", "full"],
+                        createdAt: new Date().toISOString()
+                    };
+
+                    try {
+                        const docRef = await addDoc(collection(db, 'questions'), docData);
+                        success++;
+                        logMsg(`  ✓ Q${total}: "${q.q.substring(0, 60)}..." → ${docRef.id}`, 'ok');
+                    } catch(e) {
+                        errors++;
+                        logMsg(`  ✗ Q${total}: "${q.q.substring(0, 60)}..." — ${e.message}`, 'err');
+                    }
+                }
+            }
+
+            logMsg(`\n${'='.repeat(50)}`, 'info');
+            logMsg(`MIGRATION COMPLETE`, 'info');
+            logMsg(`Total: ${total} | Success: ${success} | Errors: ${errors}`, success === total ? 'ok' : 'err');
+            btn.textContent = 'Done';
+        };
+    </script>
+</body>
+</html>

@@ -11,10 +11,10 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quick Quiz — Al-Jazari Education</title>
+    <title>Practice Lab — Al-Jazari Education</title>
     <meta name="description" content="Practice Lab — Test your mechanical engineering knowledge with quick quizzes, and prepare for real technical interviews with our Interview Simulator. Machining, sheet metal, plastics, FEA, materials, and more.">
     <meta name="keywords" content="mechanical engineering quiz, design for manufacturing, DFM, machining quiz, sheet metal quiz, plastics quiz, FEA quiz, engineering test">
-    <meta property="og:title" content="Quick Quiz — Al-Jazari Education">
+    <meta property="og:title" content="Practice Lab — Al-Jazari Education">
     <meta property="og:description" content="Real-world mechanical design — is your design shop-floor ready? Test yourself across 10 manufacturing topics.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://aljazariedu.com/quiz.html">
@@ -772,38 +772,48 @@
         </div>
     </section>
 
-    <!-- QUIZ -->
+    <!-- PRACTICE LAB -->
     <section id="quiz-section">
         <div class="container">
             <div class="quiz-header">
-                <span class="section-label">Quick Quiz</span>
-                <h2>Test Your Knowledge</h2>
-                <p>10 random questions across all topics. Learn from detailed explanations after each answer.</p>
+                <span class="section-label">Practice Lab</span>
+                <h2>Sharpen Your Engineering Edge</h2>
+                <p>Test your knowledge, learn from every answer, and prepare for real technical interviews.</p>
             </div>
 
-            <!-- Start Screen -->
-            <div id="quizStart" style="text-align: center; padding: 2rem 0;">
-                <button class="hero-cta" onclick="startQuiz()" id="quizStartBtn" style="font-size: 1rem; padding: 1rem 2.5rem;" disabled>
-                    Loading Questions...
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:18px;height:18px;">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
-                    </svg>
-                </button>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 800px; margin: 0 auto; padding: 1rem 0 3rem;">
+
+                <!-- Quick Quiz Card -->
+                <a href="quiz.html" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; text-align: center; transition: all 0.3s; text-decoration: none; color: inherit; display: block;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">⚡</div>
+                    <h3 style="font-family: 'DM Serif Display', serif; font-size: 1.3rem; margin-bottom: 0.5rem; color: var(--text);">Quick Quiz</h3>
+                    <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 1.5rem; font-weight: 300; line-height: 1.6;">10 random questions across all topics. Learn from detailed explanations after each answer.</p>
+                    <span style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.8rem; background: var(--teal); color: #fff; border-radius: 8px; font-weight: 600; font-size: 0.9rem;">
+                        Start Quiz
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                    </span>
+                </a>
+
+                <!-- Interview Simulator Card -->
+                <a href="exam.html" style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; text-align: center; opacity: 0.6; position: relative; text-decoration: none; color: inherit; display: block; transition: all 0.3s;">
+                    <div style="position: absolute; top: 1rem; right: 1rem; font-size: 0.65rem; font-family: 'IBM Plex Mono', monospace; text-transform: uppercase; letter-spacing: 1px; color: var(--orange); background: var(--orange-glow); border: 1px solid rgba(232,99,43,0.3); padding: 0.2rem 0.6rem; border-radius: 20px;">Pro &middot; Coming Soon</div>
+                    <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🎯</div>
+                    <h3 style="font-family: 'DM Serif Display', serif; font-size: 1.3rem; margin-bottom: 0.5rem; color: var(--text);">Interview Simulator</h3>
+                    <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 1.5rem; font-weight: 300; line-height: 1.6;">Full timed exam across all disciplines. Results and explanations at the end — just like a real technical interview.</p>
+                    <span style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.8rem; background: var(--teal); color: #fff; border-radius: 8px; font-weight: 600; font-size: 0.9rem; opacity: 0.4;">
+                        Coming Soon
+                    </span>
+                </a>
+
             </div>
-
-            <!-- Active Quiz -->
-            <div id="activeQuiz" class="hidden"></div>
-
-            <!-- Results -->
-            <div id="quizResults" class="hidden"></div>
         </div>
     </section>
 
     <!-- FOOTER -->
     <footer>
-        <div class="footer-name">Al-Jazari Education</div>
+        <div class="footer-name">Al-Jazari<span style="color: var(--orange);">Edu</span></div>
         <p class="footer-text">
-            Reality first, tools second. &nbsp;·&nbsp;
+            Built for engineers who build things. &nbsp;
             <a href="mailto:admin@aljazariedu.com">admin@aljazariedu.com</a>
         </p>
     </footer>
@@ -819,355 +829,17 @@
         document.getElementById('leaderboardBody').classList.toggle('collapsed', !leaderboardExpanded);
         document.getElementById('leaderboardToggle').classList.toggle('collapsed', !leaderboardExpanded);
     }
-
-    function autoCollapseLeaderboard() {
-        if (leaderboardExpanded) {
-            leaderboardExpanded = false;
-            document.getElementById('leaderboardBody').classList.add('collapsed');
-            document.getElementById('leaderboardToggle').classList.add('collapsed');
-        }
-    }
-
-    function autoExpandLeaderboard() {
-        if (!leaderboardExpanded) {
-            leaderboardExpanded = true;
-            document.getElementById('leaderboardBody').classList.remove('collapsed');
-            document.getElementById('leaderboardToggle').classList.remove('collapsed');
-        }
-    }
-
-    // =========================================
-    // AUTH CHECK
-    // =========================================
-    function isUserLoggedIn() {
-        return window._firebaseUser !== null && window._firebaseUser !== undefined;
-    }
-
-    window._firebaseUser = undefined; // will be set by onAuthStateChanged
-
-    // =========================================
-    // QUIZ DATA — loaded from Firestore
-    // =========================================
-</script>
-<script>
-// quizData will be populated from Firestore by the module script below
-let quizData = [];
-let quizDataReady = false;
-window.quizData = quizData;
-window.quizDataReady = false;
-
-
-    // =========================================
-    // QUIZ ENGINE — 10 Random Questions From All Topics
-    // =========================================
-
-    let currentQuestion = 0;
-    let score = 0;
-    let answered = false;
-    let activeQuestions = [];
-    const QUESTIONS_PER_QUIZ = 10;
-
-    function shuffleArray(arr) {
-        const shuffled = [...arr];
-        for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-        return shuffled;
-    }
-
-    function buildQuestionPool() {
-        const pool = [];
-        const data = window.quizData || quizData || [];
-        data.forEach(topic => {
-            topic.questions.forEach(q => {
-                pool.push({
-                    ...q,
-                    topicName: topic.name,
-                    topicIcon: topic.icon
-                });
-            });
-        });
-        return pool;
-    }
-
-    function startQuiz() {
-        if (!window.quizDataReady || (window.quizData || []).length === 0) {
-            alert('Questions are still loading. Please wait a moment and try again.');
-            return;
-        }
-        currentQuestion = 0;
-        score = 0;
-        answered = false;
-        const pool = buildQuestionPool();
-        activeQuestions = shuffleArray(pool).slice(0, QUESTIONS_PER_QUIZ);
-
-        document.getElementById('quizStart').classList.add('hidden');
-        document.getElementById('quizResults').classList.add('hidden');
-        document.getElementById('activeQuiz').classList.remove('hidden');
-
-        // Hide leaderboard and header to give quiz full viewport
-        document.querySelector('.leaderboard-section').classList.add('hidden');
-        document.querySelector('.quiz-header').classList.add('hidden');
-
-        // Auto-collapse leaderboard during quiz
-        autoCollapseLeaderboard();
-
-        renderQuestion();
-    }
-
-    function renderQuestion() {
-        answered = false;
-        const q = activeQuestions[currentQuestion];
-        const total = activeQuestions.length;
-        const letters = ['A', 'B', 'C', 'D'];
-
-        const hasSvg = q.svgCode && q.svgCode.trim().length > 0;
-        const svgHtml = hasSvg
-            ? `<div class="svg-panel">${q.svgCode}</div>`
-            : '';
-        const topRowClass = hasSvg ? 'quiz-top-row' : 'quiz-top-row no-svg';
-        const explClass = hasSvg ? 'explanation-panel' : 'explanation-panel centered';
-
-        document.getElementById('activeQuiz').innerHTML = `
-            <div class="quiz-active-layout">
-                <div class="${topRowClass}">
-                    <div class="question-panel">
-                        <div class="q-progress">
-                            <span class="q-counter">Question ${currentQuestion + 1} of ${total}</span>
-                            <span class="q-score">Score: ${score}/${currentQuestion}</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${((currentQuestion) / total) * 100}%"></div>
-                        </div>
-                        <div class="q-topic-badge">
-                            <span class="topic-emoji">${q.topicIcon}</span>
-                            ${q.topicName}
-                        </div>
-                        <div class="q-text">${q.q}</div>
-                        <div class="options-list">
-                            ${q.options.map((opt, i) => `
-                                <button class="option-btn" onclick="selectAnswer(${i})" id="opt${i}">
-                                    <span class="option-letter">${letters[i]}</span>
-                                    <span>${opt}</span>
-                                </button>
-                            `).join('')}
-                        </div>
-                        <div id="nextBox"></div>
-                    </div>
-                    ${svgHtml}
-                </div>
-                <div class="${explClass} hidden" id="explanationPanel"></div>
-            </div>
-        `;
-
-        // Ensure quiz is in view
-        document.getElementById('activeQuiz').scrollIntoView({ behavior: 'instant', block: 'start' });
-    }
-
-    function selectAnswer(selected) {
-        if (answered) return;
-        answered = true;
-        const q = activeQuestions[currentQuestion];
-        const total = activeQuestions.length;
-        const isCorrect = selected === q.correct;
-
-        if (isCorrect) score++;
-
-        document.querySelectorAll('.option-btn').forEach(btn => btn.disabled = true);
-        document.getElementById(`opt${selected}`).classList.add(isCorrect ? 'correct' : 'wrong');
-        if (!isCorrect) {
-            document.getElementById(`opt${q.correct}`).classList.add('reveal-correct');
-        }
-
-        // Show explanation — gated for visitors
-        document.getElementById('explanationPanel').classList.remove('hidden');
-        if (isUserLoggedIn()) {
-            document.getElementById('explanationPanel').innerHTML = `
-                <div class="explanation">
-                    <strong>${isCorrect ? '✓ Correct!' : '✗ Not quite.'}</strong><br>
-                    ${q.explanation}
-                </div>
-            `;
-        } else {
-            document.getElementById('explanationPanel').innerHTML = `
-                <div class="explanation" style="border-left-color: var(--teal); background: var(--teal-glow); text-align: center;">
-                    <strong style="color: var(--teal-light);">${isCorrect ? '✓ Correct!' : '✗ Not quite.'}</strong><br><br>
-                    <span style="color: var(--text-dim);">Register for free to see full explanations and learn from each question.</span><br><br>
-                    <a href="auth.html?tab=register&redirect=quiz.html" style="color: var(--orange); font-weight: 600; text-decoration: none;">Register Free →</a>
-                </div>
-            `;
-        }
-
-        // Show next button below options
-        const isLast = currentQuestion >= total - 1;
-        document.getElementById('nextBox').innerHTML = `
-            <div class="next-btn-row">
-                <button class="next-btn" onclick="${isLast ? 'showResults()' : 'nextQuestion()'}">
-                    ${isLast ? 'See Results' : 'Next Question →'}
-                </button>
-            </div>
-        `;
-
-        // Scroll explanation into view
-        document.getElementById('explanationPanel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
-
-    function nextQuestion() {
-        currentQuestion++;
-        renderQuestion();
-    }
-
-    function showResults() {
-        const total = activeQuestions.length;
-        const pct = Math.round((score / total) * 100);
-        let msg = '';
-        if (pct === 100) msg = "Perfect score! You really know your stuff.";
-        else if (pct >= 70) msg = "Solid knowledge. A few areas to revisit.";
-        else if (pct >= 40) msg = "Decent foundation — the explanations should help fill the gaps.";
-        else msg = "Don't worry — that's exactly why this quiz exists. Review the explanations and try again.";
-
-        const topicsCovered = [...new Set(activeQuestions.map(q => q.topicName))];
-
-        document.getElementById('activeQuiz').classList.add('hidden');
-        document.getElementById('quizResults').classList.remove('hidden');
-
-        // Restore leaderboard and header
-        document.querySelector('.leaderboard-section').classList.remove('hidden');
-        document.querySelector('.quiz-header').classList.remove('hidden');
-
-        // Re-expand leaderboard when quiz ends
-        autoExpandLeaderboard();
-
-        const leaderboardHtml = isUserLoggedIn()
-            ? `<div style="margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--border);">
-                    <p style="font-size:0.85rem; color:var(--text-dim); margin-bottom:0.75rem; font-weight:300;">Join the leaderboard</p>
-                    <div class="nickname-form">
-                        <input type="text" id="nicknameInput" placeholder="Your nickname" maxlength="20">
-                        <button id="submitScoreBtn" onclick="submitScore()">Submit</button>
-                    </div>
-                    <p id="nicknameMsg" class="nickname-msg"></p>
-                </div>`
-            : `<div style="margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--border); text-align:center;">
-                    <p style="font-size:0.85rem; color:var(--text-dim); margin-bottom:0.75rem; font-weight:300;">Want to join the leaderboard and see full explanations?</p>
-                    <a href="auth.html?tab=register&redirect=quiz.html" style="color: var(--orange); font-weight: 600; text-decoration: none; font-size: 0.95rem;">Register Free →</a>
-                </div>`;
-
-        document.getElementById('quizResults').innerHTML = `
-            <div class="results-card">
-                <span class="section-label">Quiz Complete</span>
-                <div class="results-score">
-                    <span class="correct-count">${score}</span><span class="total-count"> / ${total}</span>
-                </div>
-                <p class="results-msg">${msg}</p>
-                <div class="results-breakdown">
-                    <div class="results-stat">
-                        <div class="num" style="color: var(--success)">${score}</div>
-                        <div class="label">Correct</div>
-                    </div>
-                    <div class="results-stat">
-                        <div class="num" style="color: var(--error)">${total - score}</div>
-                        <div class="label">Wrong</div>
-                    </div>
-                    <div class="results-stat">
-                        <div class="num" style="color: var(--teal-light)">${pct}%</div>
-                        <div class="label">Score</div>
-                    </div>
-                    <div class="results-stat">
-                        <div class="num" style="color: var(--orange)">${topicsCovered.length}</div>
-                        <div class="label">Topics</div>
-                    </div>
-                </div>
-                <div class="btn-group">
-                    <button class="hero-cta" onclick="startQuiz()" style="font-size:0.9rem; padding:0.8rem 1.8rem;">
-                        Try Again (New Questions)
-                    </button>
-                </div>
-                ${leaderboardHtml}
-            </div>
-        `;
-
-        window._lastQuizScore = score;
-        window._lastQuizTopics = topicsCovered.join(', ');
-    }
-
     </script>
 
-    <!-- FIREBASE (shared auth + leaderboard + Firestore questions) -->
+    <!-- FIREBASE (shared auth + leaderboard) -->
     <script type="module">
         import { app, onUserReady } from './aje-auth.js';
-        import { getDatabase, ref, get, set, onValue, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+        import { getDatabase, ref, onValue, query, orderByChild } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
 
         const rtdb = getDatabase(app);
-        const fsdb = getFirestore(app);
 
-        // =========================================
-        // LOAD QUIZ QUESTIONS FROM FIRESTORE
-        // =========================================
-        async function loadQuizQuestions() {
-            try {
-                const snapshot = await getDocs(collection(fsdb, 'questions'));
-                const questions = [];
-                snapshot.forEach(doc => {
-                    const d = doc.data();
-                    if (d.modes && (d.modes.includes('quick') || d.modes.includes('full'))) {
-                        questions.push(d);
-                    }
-                });
-
-                // Group by topic to match the quizData format
-                const topicMap = {};
-                questions.forEach(q => {
-                    const t = q.topic || 'Uncategorized';
-                    if (!topicMap[t]) {
-                        topicMap[t] = { name: t, icon: q.topicIcon || '', questions: [] };
-                    }
-                    topicMap[t].questions.push({
-                        q: q.questionText,
-                        options: q.options,
-                        correct: q.correctAnswer,
-                        explanation: q.fullExplanation,
-                        svgCode: q.svgCode || ''
-                    });
-                });
-
-                window.quizData = Object.values(topicMap);
-                window.quizDataReady = true;
-
-                console.log(`Loaded ${questions.length} questions across ${Object.keys(topicMap).length} topics from Firestore`);
-
-                const startBtn = document.getElementById('quizStartBtn');
-                if (startBtn) {
-                    startBtn.disabled = false;
-                    startBtn.innerHTML = 'Start Quiz <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" style="width:18px;height:18px;"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>';
-                }
-            } catch(e) {
-                console.error('Failed to load questions from Firestore:', e);
-                const startBtn = document.getElementById('quizStartBtn');
-                if (startBtn) {
-                    startBtn.textContent = 'Error Loading Questions';
-                    startBtn.disabled = true;
-                }
-            }
-        }
-
-        loadQuizQuestions();
-
-        // Expose to global scope for quiz engine
+        // Expose to global scope
         window.firebaseDB = rtdb;
-        window.firebaseRef = ref;
-        window.firebaseGet = get;
-        window.firebaseSet = set;
-        window.firebaseOnValue = onValue;
-        window.firebaseQuery = query;
-        window.firebaseOrderByChild = orderByChild;
-        window.firebaseLimitToLast = limitToLast;
-
-        // Auth state for quiz gating
-        onUserReady((user, profile) => {
-            window._firebaseUser = user || null;
-        });
 
         // Leaderboard listener
         const leaderboardRef = query(ref(rtdb, 'leaderboard'), orderByChild('score'));
@@ -1179,7 +851,6 @@ window.quizDataReady = false;
                 '<div class="leaderboard-empty">Could not load leaderboard.</div>';
         });
     </script>
-
     <script>
     // =========================================
     // LEADERBOARD FUNCTIONS
@@ -1287,8 +958,6 @@ window.quizDataReady = false;
         });
     };
     </script>
-
-    <!-- Google Analytics loaded in head -->
 
     <!-- NAV HIDE/SHOW ON SCROLL -->
     <script>

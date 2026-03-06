@@ -433,7 +433,7 @@
     <nav>
         <a href="index.html" class="nav-logo">Al-Jazari<span>Edu</span></a>
         <div class="nav-links">
-            <a href="quiz.html">Quiz</a>
+            <a href="practice.html">Practice Lab</a>
             <a href="book.html">Book</a>
             <a href="plans.html">Plans</a>
             <a href="index.html#signup-section">Newsletter</a>
@@ -546,12 +546,12 @@
         <div class="footer-name">Al-Jazari Education</div>
         <p class="footer-text">
             Reality first, tools second. &nbsp;·&nbsp;
-            <a href="/cdn-cgi/l/email-protection#1170757c787f51707d7b706b7063787475643f727e7c"><span class="__cf_email__" data-cfemail="355451585c5b7554595f544f54475c5051401b565a58">[email&#160;protected]</span></a>
+            <a href="mailto:admin@aljazariedu.com">admin@aljazariedu.com</a>
         </p>
     </footer>
 
     <!-- SHARED AUTH MODULE -->
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
+    <script type="module">
         import { onUserReady, isLoggedIn, isPro, getUserName, db } from './aje-auth.js';
         import { collection, addDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
@@ -698,4 +698,17 @@
             } else {
                 nav.classList.remove('nav-hidden');
             }
-            lastScrol
+            lastScrollY = currentScrollY;
+            ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updateNav);
+                ticking = true;
+            }
+        }, { passive: true });
+    })();
+    </script>
+</body>
+</html>
