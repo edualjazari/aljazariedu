@@ -323,6 +323,21 @@
             padding-top: 5rem;
         }
 
+        /* ===== IMMERSIVE QUIZ MODE ===== */
+        body.quiz-active {
+            overflow: hidden;
+        }
+        body.quiz-active nav,
+        body.quiz-active footer,
+        body.quiz-active .leaderboard-section,
+        body.quiz-active .quiz-header,
+        body.quiz-active #quizStart {
+            display: none !important;
+        }
+        body.quiz-active #quiz-section {
+            padding-top: 0;
+        }
+
         .quiz-header {
             text-align: center;
             margin-bottom: 2rem;
@@ -367,28 +382,43 @@
         .hero-cta svg { width: 18px; height: 18px; transition: transform 0.3s; }
         .hero-cta:hover svg { transform: translateX(4px); }
 
-        /* ===== QUIZ ACTIVE LAYOUT ===== */
+        /* ===== QUIZ ACTIVE LAYOUT — FULL VIEWPORT, NO SCROLL ===== */
         .quiz-active-layout {
             display: flex;
             flex-direction: column;
-            height: calc(100vh - 80px);
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: var(--border-light) transparent;
+            height: 100vh;
+            padding: 1.25rem 2rem;
+            overflow: hidden;
         }
 
-        /* Top row: question + SVG side by side (or question centered if no SVG) */
+        /* Top bar: progress + topic + score */
+        .quiz-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            flex-shrink: 0;
+        }
+        .quiz-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Main content area: question (+ optional SVG) */
         .quiz-top-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 1.5rem;
             align-items: stretch;
+            flex: 1;
+            min-height: 0;
         }
 
         /* When no SVG, question centers itself */
         .quiz-top-row.no-svg {
             grid-template-columns: 1fr;
-            max-width: 700px;
+            max-width: 750px;
             margin: 0 auto;
             width: 100%;
         }
@@ -402,10 +432,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
         }
         .svg-panel svg {
             max-width: 100%;
-            max-height: 300px;
+            max-height: 100%;
             display: block;
         }
 
@@ -414,10 +445,11 @@
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 1.5rem;
+            padding: 1.25rem;
             display: flex;
             flex-direction: column;
-            animation: fadeUp 0.3s ease;
+            justify-content: center;
+            overflow-y: auto;
         }
 
         @keyframes fadeUp {
@@ -558,17 +590,22 @@
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 1.5rem;
-            margin-top: 1rem;
+            padding: 1rem 1.25rem;
+            margin-top: 0.75rem;
+            flex-shrink: 0;
+            max-height: 35vh;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--border-light) transparent;
         }
 
         /* Match centered width when no SVG */
         .explanation-panel.centered {
-            max-width: 700px;
+            max-width: 750px;
             margin-left: auto;
             margin-right: auto;
             width: 100%;
-            margin-top: 1rem;
+            margin-top: 0.75rem;
         }
 
         .explanation-waiting {
@@ -716,8 +753,7 @@
                 grid-template-columns: 1fr;
             }
             .quiz-active-layout {
-                height: auto;
-                min-height: calc(100vh - 80px);
+                padding: 1rem;
             }
         }
         @media (max-width: 768px) {
@@ -903,16 +939,9 @@ window.quizDataReady = false;
         const pool = buildQuestionPool();
         activeQuestions = shuffleArray(pool).slice(0, QUESTIONS_PER_QUIZ);
 
-        document.getElementById('quizStart').classList.add('hidden');
-        document.getElementById('quizResults').classList.add('hidden');
+        // Enter immersive quiz mode — hides nav, footer, leaderboard, header
+        document.body.classList.add('quiz-active');
         document.getElementById('activeQuiz').classList.remove('hidden');
-
-        // Hide leaderboard and header to give quiz full viewport
-        document.querySelector('.leaderboard-section').classList.add('hidden');
-        document.querySelector('.quiz-header').classList.add('hidden');
-
-        // Auto-collapse leaderboard during quiz
-        autoCollapseLeaderboard();
 
         renderQuestion();
     }
@@ -932,19 +961,21 @@ window.quizDataReady = false;
 
         document.getElementById('activeQuiz').innerHTML = `
             <div class="quiz-active-layout">
-                <div class="${topRowClass}">
-                    <div class="question-panel">
-                        <div class="q-progress">
-                            <span class="q-counter">Question ${currentQuestion + 1} of ${total}</span>
-                            <span class="q-score">Score: ${score}/${currentQuestion}</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${((currentQuestion) / total) * 100}%"></div>
-                        </div>
+                <div class="quiz-bar">
+                    <div class="quiz-bar-left">
+                        <span class="q-counter">Question ${currentQuestion + 1} / ${total}</span>
                         <div class="q-topic-badge">
                             <span class="topic-emoji">${q.topicIcon}</span>
                             ${q.topicName}
                         </div>
+                    </div>
+                    <span class="q-score">Score: ${score}/${currentQuestion}</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${((currentQuestion) / total) * 100}%"></div>
+                </div>
+                <div class="${topRowClass}">
+                    <div class="question-panel">
                         <div class="q-text">${q.q}</div>
                         <div class="options-list">
                             ${q.options.map((opt, i) => `
@@ -961,9 +992,6 @@ window.quizDataReady = false;
                 <div class="${explClass} hidden" id="explanationPanel"></div>
             </div>
         `;
-
-        // Ensure quiz is in view
-        document.getElementById('activeQuiz').scrollIntoView({ behavior: 'instant', block: 'start' });
     }
 
     function selectAnswer(selected) {
@@ -985,15 +1013,15 @@ window.quizDataReady = false;
         document.getElementById('explanationPanel').classList.remove('hidden');
         if (isUserLoggedIn()) {
             document.getElementById('explanationPanel').innerHTML = `
-                <div class="explanation">
-                    <strong>${isCorrect ? '✓ Correct!' : '✗ Not quite.'}</strong><br>
+                <div class="explanation" style="border-left-color: ${isCorrect ? 'var(--success)' : 'var(--error)'}; background: ${isCorrect ? 'var(--correct-bg)' : 'var(--wrong-bg)'};">
+                    <strong style="color: ${isCorrect ? 'var(--success)' : 'var(--error)'};">${isCorrect ? '✓ Correct!' : '✗ Not quite.'}</strong><br>
                     ${q.explanation}
                 </div>
             `;
         } else {
             document.getElementById('explanationPanel').innerHTML = `
-                <div class="explanation" style="border-left-color: var(--teal); background: var(--teal-glow); text-align: center;">
-                    <strong style="color: var(--teal-light);">${isCorrect ? '✓ Correct!' : '✗ Not quite.'}</strong><br><br>
+                <div class="explanation" style="border-left-color: ${isCorrect ? 'var(--success)' : 'var(--error)'}; background: ${isCorrect ? 'var(--correct-bg)' : 'var(--wrong-bg)'}; text-align: center;">
+                    <strong style="color: ${isCorrect ? 'var(--success)' : 'var(--error)'};">${isCorrect ? '✓ Correct!' : '✗ Not quite.'}</strong><br><br>
                     <span style="color: var(--text-dim);">Register for free to see full explanations and learn from each question.</span><br><br>
                     <a href="auth.html?tab=register&redirect=quiz.html" style="color: var(--orange); font-weight: 600; text-decoration: none;">Register Free →</a>
                 </div>
@@ -1011,7 +1039,6 @@ window.quizDataReady = false;
         `;
 
         // Scroll explanation into view
-        document.getElementById('explanationPanel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     function nextQuestion() {
@@ -1033,9 +1060,8 @@ window.quizDataReady = false;
         document.getElementById('activeQuiz').classList.add('hidden');
         document.getElementById('quizResults').classList.remove('hidden');
 
-        // Restore leaderboard and header
-        document.querySelector('.leaderboard-section').classList.remove('hidden');
-        document.querySelector('.quiz-header').classList.remove('hidden');
+        // Exit immersive mode — restore nav, footer, leaderboard
+        document.body.classList.remove('quiz-active');
 
         // Re-expand leaderboard when quiz ends
         autoExpandLeaderboard();
