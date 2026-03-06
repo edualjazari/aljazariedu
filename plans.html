@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CF6SQXJZ57"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag("js", new Date());
+        gtag("config", "G-CF6SQXJZ57");
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plans — Al-Jazari Education</title>
@@ -538,12 +546,12 @@
         <div class="footer-name">Al-Jazari Education</div>
         <p class="footer-text">
             Reality first, tools second. &nbsp;·&nbsp;
-            <a href="mailto:admin@aljazariedu.com">admin@aljazariedu.com</a>
+            <a href="/cdn-cgi/l/email-protection#1170757c787f51707d7b706b7063787475643f727e7c"><span class="__cf_email__" data-cfemail="355451585c5b7554595f544f54475c5051401b565a58">[email&#160;protected]</span></a>
         </p>
     </footer>
 
     <!-- SHARED AUTH MODULE -->
-    <script type="module">
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
         import { onUserReady, isLoggedIn, isPro, getUserName, db } from './aje-auth.js';
         import { collection, addDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
@@ -690,13 +698,4 @@
             } else {
                 nav.classList.remove('nav-hidden');
             }
-            lastScrollY = currentScrollY;
-            ticking = false;
-        }
-        window.addEventListener('scroll', function() {
-            if (!ticking) { requestAnimationFrame(updateNav); ticking = true; }
-        });
-    })();
-    </script>
-</body>
-</html>
+            lastScrol

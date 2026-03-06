@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CF6SQXJZ57"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag("js", new Date());
+        gtag("config", "G-CF6SQXJZ57");
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Al-Jazari Education — Log In</title>
@@ -804,12 +812,12 @@
         <div class="footer-name">Al-Jazari<span style="color: var(--orange);">Edu</span></div>
         <p class="footer-text">
             Built for engineers who build things. &nbsp;
-            <a href="mailto:admin@aljazariedu.com">admin@aljazariedu.com</a>
+            <a href="/cdn-cgi/l/email-protection#78191c151116381914121902190a111d1c0d561b1715"><span class="__cf_email__" data-cfemail="0362676e6a6d43626f69627962716a6667762d606c6e">[email&#160;protected]</span></a>
         </p>
     </footer>
 
     <!-- FIREBASE SDK -->
-    <script type="module">
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
@@ -1127,16 +1135,4 @@
                 nav.classList.remove('nav-hidden');
             }
             lastScrollY = currentScrollY;
-            ticking = false;
-        }
-
-        window.addEventListener('scroll', function() {
-            if (!ticking) {
-                requestAnimationFrame(updateNav);
-                ticking = true;
-            }
-        });
-    })();
-    </script>
-</body>
-</html>
+            ticking = fa
