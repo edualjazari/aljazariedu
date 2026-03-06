@@ -1082,70 +1082,86 @@ window.quizDataReady = false;
         else msg = "Don't worry — that's exactly why this quiz exists. Review the explanations and try again.";
 
         const topicsCovered = [...new Set(activeQuestions.map(q => q.topicName))];
+        const topicsStr = topicsCovered.join(', ');
+        const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 
-        document.getElementById('activeQuiz').classList.add('hidden');
-        document.getElementById('quizResults').classList.remove('hidden');
+        // Save result to Firestore if logged in
+        if (isUserLoggedIn() && window.ajeUser && window.ajeUser.firebaseUser) {
+            try {
+                const uid = window.ajeUser.firebaseUser.uid;
+                const userRef = window.firebaseDoc(window.firebaseFirestore, 'users', uid);
+                window.firebaseUpdateDoc(userRef, {
+                    lastQuiz: {
+                        score: score,
+                        total: total,
+                        pct: pct,
+                        topics: topicsStr,
+                        date: new Date().toISOString()
+                    }
+                });
+            } catch(e) { console.error('Failed to save quiz result:', e); }
+        }
 
-        // Exit immersive mode — restore nav, footer, leaderboard
-        document.body.classList.remove('quiz-active');
-
-        // Re-expand leaderboard when quiz ends
-        autoExpandLeaderboard();
-
-        const leaderboardHtml = isUserLoggedIn()
-            ? `<div style="margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--border);">
-                    <p style="font-size:0.85rem; color:var(--text-dim); margin-bottom:0.75rem; font-weight:300;">Join the leaderboard</p>
-                    <div class="nickname-form">
-                        <input type="text" id="nicknameInput" placeholder="Your nickname" maxlength="20">
-                        <button id="submitScoreBtn" onclick="submitScore()">Submit</button>
+        // Stay in immersive mode — full screen results
+        document.getElementById('activeQuiz').innerHTML = `
+            <div class="quiz-active-layout" style="justify-content: center; align-items: center;">
+                <div class="results-card">
+                    <span class="section-label">Quiz Complete</span>
+                    <div class="results-score">
+                        <span class="correct-count">${score}</span><span class="total-count"> / ${total}</span>
                     </div>
-                    <p id="nicknameMsg" class="nickname-msg"></p>
-                </div>`
-            : `<div style="margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--border); text-align:center;">
-                    <p style="font-size:0.85rem; color:var(--text-dim); margin-bottom:0.75rem; font-weight:300;">Want to join the leaderboard and see full explanations?</p>
-                    <a href="auth.html?tab=register&redirect=quiz.html" style="color: var(--orange); font-weight: 600; text-decoration: none; font-size: 0.95rem;">Register Free →</a>
-                </div>`;
-
-        document.getElementById('quizResults').innerHTML = `
-            <div class="results-card">
-                <span class="section-label">Quiz Complete</span>
-                <div class="results-score">
-                    <span class="correct-count">${score}</span><span class="total-count"> / ${total}</span>
+                    <p class="results-msg">${msg}</p>
+                    <div class="results-breakdown">
+                        <div class="results-stat">
+                            <div class="num" style="color: var(--success)">${score}</div>
+                            <div class="label">Correct</div>
+                        </div>
+                        <div class="results-stat">
+                            <div class="num" style="color: var(--error)">${total - score}</div>
+                            <div class="label">Wrong</div>
+                        </div>
+                        <div class="results-stat">
+                            <div class="num" style="color: var(--teal-light)">${pct}%</div>
+                            <div class="label">Score</div>
+                        </div>
+                        <div class="results-stat">
+                            <div class="num" style="color: var(--orange)">${topicsCovered.length}</div>
+                            <div class="label">Topics</div>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.5rem; font-family: 'IBM Plex Mono', monospace;">${topicsStr}</p>
+                    <div class="btn-group">
+                        <button class="hero-cta" onclick="startQuiz()" style="font-size:0.9rem; padding:0.8rem 1.8rem;">
+                            Try Again
+                        </button>
+                        <a href="https://www.linkedin.com/feed/?shareActive=true&text=${encodeURIComponent('I just scored ' + score + '/' + total + ' (' + pct + '%) on the Al-Jazari Engineering Quiz covering ' + topicsStr + '.\n\nTest your mechanical engineering knowledge: https://aljazariedu.com/practice')}" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.8rem 1.8rem; background:none; border:1px solid var(--border-light); color:var(--text-dim); text-decoration:none; font-weight:600; font-size:0.9rem; border-radius:8px; transition:all 0.3s; cursor:pointer;">
+                            <svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px;"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                            Share on LinkedIn
+                        </a>
+                        <a href="practice.html" style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.8rem 1.8rem; background:none; border:1px solid var(--border); color:var(--text-muted); text-decoration:none; font-weight:600; font-size:0.9rem; border-radius:8px; transition:all 0.3s;">
+                            Back to Practice Lab
+                        </a>
+                    </div>
+                    ${isUserLoggedIn()
+                        ? `<div style="margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--border);">
+                                <p style="font-size:0.85rem; color:var(--text-dim); margin-bottom:0.75rem; font-weight:300;">Join the leaderboard</p>
+                                <div class="nickname-form">
+                                    <input type="text" id="nicknameInput" placeholder="Your nickname" maxlength="20">
+                                    <button id="submitScoreBtn" onclick="submitScore()">Submit</button>
+                                </div>
+                                <p id="nicknameMsg" class="nickname-msg"></p>
+                            </div>`
+                        : `<div style="margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--border); text-align:center;">
+                                <p style="font-size:0.85rem; color:var(--text-dim); margin-bottom:0.75rem; font-weight:300;">Want to join the leaderboard and see full explanations?</p>
+                                <a href="auth.html?tab=register&redirect=quiz.html" style="color: var(--orange); font-weight: 600; text-decoration: none; font-size: 0.95rem;">Register Free →</a>
+                            </div>`
+                    }
                 </div>
-                <p class="results-msg">${msg}</p>
-                <div class="results-breakdown">
-                    <div class="results-stat">
-                        <div class="num" style="color: var(--success)">${score}</div>
-                        <div class="label">Correct</div>
-                    </div>
-                    <div class="results-stat">
-                        <div class="num" style="color: var(--error)">${total - score}</div>
-                        <div class="label">Wrong</div>
-                    </div>
-                    <div class="results-stat">
-                        <div class="num" style="color: var(--teal-light)">${pct}%</div>
-                        <div class="label">Score</div>
-                    </div>
-                    <div class="results-stat">
-                        <div class="num" style="color: var(--orange)">${topicsCovered.length}</div>
-                        <div class="label">Topics</div>
-                    </div>
-                </div>
-                <div class="btn-group">
-                    <button class="hero-cta" onclick="startQuiz()" style="font-size:0.9rem; padding:0.8rem 1.8rem;">
-                        Try Again (New Questions)
-                    </button>
-                    <a href="https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://aljazariedu.com/practice')}" target="_blank" rel="noopener" onclick="this.href='https://www.linkedin.com/feed/?shareActive=true&text=' + encodeURIComponent('I just scored ${score}/${total} (${pct}%) on the Al-Jazari Engineering Quiz covering ${topicsCovered.join(', ')}.\\n\\nTest your mechanical engineering knowledge: https://aljazariedu.com/practice')" style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.8rem 1.8rem; background:none; border:1px solid var(--border-light); color:var(--text-dim); text-decoration:none; font-weight:600; font-size:0.9rem; border-radius:8px; transition:all 0.3s; cursor:pointer;">
-                        <svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px;"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                        Share on LinkedIn
-                    </a>
-                </div>
-                ${leaderboardHtml}
             </div>
         `;
 
         window._lastQuizScore = score;
-        window._lastQuizTopics = topicsCovered.join(', ');
+        window._lastQuizTopics = topicsStr;
     }
 
     </script>
@@ -1154,7 +1170,7 @@ window.quizDataReady = false;
     <script type="module">
         import { app, onUserReady } from './aje-auth.js';
         import { getDatabase, ref, get, set, onValue, query, orderByChild, limitToLast } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-database.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
         const rtdb = getDatabase(app);
         const fsdb = getFirestore(app);
@@ -1219,6 +1235,11 @@ window.quizDataReady = false;
         window.firebaseOnValue = onValue;
         window.firebaseQuery = query;
         window.firebaseOrderByChild = orderByChild;
+
+        // Firestore helpers for saving quiz results
+        window.firebaseFirestore = fsdb;
+        window.firebaseDoc = doc;
+        window.firebaseUpdateDoc = updateDoc;
         window.firebaseLimitToLast = limitToLast;
 
         // Auth state for quiz gating
