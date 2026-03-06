@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel — Al-Jazari Education</title>
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CF6SQXJZ57"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-CF6SQXJZ57');
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --teal: #294D66;
+            --teal-dark: #1E3A4E;
+            --teal-light: #3A6A8A;
+            --orange: #E8632B;
+            --orange-dark: #C4511F;
+            --orange-light: #F2874D;
+            --bg: #0A0F14;
+            --bg-card: #111920;
+            --bg-card-hover: #162029;
+            --text: #E8ECF0;
+            --text-dim: #8A9BAE;
+            --text-muted: #5A6B7E;
+            --border: #1E2A36;
+            --border-light: #2A3A4A;
+            --success: #2ECC71;
+            --error: #E74C3C;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Gate overlay */
+        #gate {
+            position: fixed; inset: 0; z-index: 9999;
+            background: var(--bg);
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: 1rem;
+        }
+        #gate .spinner {
+            width: 40px; height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--orange);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #gate p { color: var(--text-dim); font-size: 0.9rem; }
+        #gate.denied .spinner { display: none; }
+        #gate.denied p { color: var(--error); font-size: 1.1rem; }
+
+        /* Header */
+        .admin-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .admin-header h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.5rem;
+            color: var(--orange);
+        }
+        .admin-header .stats {
+            font-size: 0.85rem; color: var(--text-dim);
+        }
+        .admin-header .stats strong { color: var(--text); }
+
+        /* Toolbar */
+        .toolbar {
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+        }
+        .toolbar input[type="text"] {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            flex: 1; min-width: 200px;
+        }
+        .toolbar input::placeholder { color: var(--text-muted); }
+        .toolbar select {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+        .btn {
+            padding: 0.5rem 1.2rem;
+            border: none; border-radius: 6px;
+            font-size: 0.85rem; font-weight: 600;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .btn-primary {
+            background: var(--orange); color: #fff;
+        }
+        .btn-primary:hover { background: var(--orange-dark); }
+        .btn-secondary {
+            background: var(--teal); color: #fff;
+        }
+        .btn-secondary:hover { background: var(--teal-dark); }
+        .btn-danger {
+            background: transparent; color: var(--error);
+            border: 1px solid var(--error);
+        }
+        .btn-danger:hover { background: rgba(231,76,60,0.1); }
+        .btn-ghost {
+            background: transparent; color: var(--text-dim);
+            border: 1px solid var(--border);
+        }
+        .btn-ghost:hover { border-color: var(--text-dim); color: var(--text); }
+
+        /* Question list */
+        .question-list {
+            padding: 1rem 2rem 4rem;
+        }
+        .q-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 0.75rem;
+            transition: border-color 0.2s;
+        }
+        .q-card:hover { border-color: var(--border-light); }
+        .q-card-header {
+            display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+        }
+        .q-card-header .q-text {
+            font-size: 0.95rem; font-weight: 500; flex: 1;
+        }
+        .q-card-actions {
+            display: flex; gap: 0.5rem; flex-shrink: 0;
+        }
+        .q-card-actions button {
+            padding: 0.3rem 0.7rem; font-size: 0.75rem;
+        }
+        .q-meta {
+            display: flex; gap: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap;
+        }
+        .q-badge {
+            font-size: 0.7rem;
+            padding: 0.15rem 0.5rem;
+            border-radius: 20px;
+            background: rgba(41,77,102,0.3);
+            color: var(--teal-light);
+            border: 1px solid rgba(41,77,102,0.4);
+        }
+        .q-badge.mode-quick { background: rgba(46,204,113,0.12); color: var(--success); border-color: rgba(46,204,113,0.3); }
+        .q-badge.mode-full { background: rgba(41,77,102,0.2); color: var(--teal-light); border-color: rgba(41,77,102,0.3); }
+        .q-badge.mode-interview { background: rgba(232,99,43,0.12); color: var(--orange); border-color: rgba(232,99,43,0.3); }
+        .q-badge.topic { background: rgba(138,155,174,0.12); color: var(--text-dim); border-color: rgba(138,155,174,0.2); }
+        .q-badge.difficulty { background: rgba(232,99,43,0.08); color: var(--orange-light); border-color: rgba(232,99,43,0.15); }
+        .q-badge.has-svg { background: rgba(46,204,113,0.08); color: var(--success); border-color: rgba(46,204,113,0.2); }
+
+        .empty-state {
+            text-align: center; padding: 4rem 2rem; color: var(--text-dim);
+        }
+        .empty-state h3 { color: var(--text); margin-bottom: 0.5rem; }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 1000;
+            background: rgba(0,0,0,0.7);
+            display: flex; align-items: flex-start; justify-content: center;
+            padding: 2rem; overflow-y: auto;
+        }
+        .modal-overlay.hidden { display: none; }
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            width: 100%; max-width: 700px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        .modal h2 {
+            font-family: 'DM Serif Display', serif;
+            color: var(--orange);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-bottom: 0.3rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-group input[type="text"],
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.6rem 0.8rem;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--teal-light);
+        }
+        .form-group textarea { resize: vertical; min-height: 80px; }
+        .form-group textarea.tall { min-height: 120px; }
+
+        .options-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem;
+        }
+        .option-input-row {
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .option-input-row .letter {
+            width: 28px; height: 28px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--teal);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 0.75rem; font-weight: 600;
+            flex-shrink: 0;
+        }
+        .option-input-row input { flex: 1; }
+
+        .correct-select {
+            display: flex; gap: 0.75rem; margin-top: 0.5rem;
+        }
+        .correct-select label {
+            display: flex; align-items: center; gap: 0.3rem;
+            font-size: 0.85rem; color: var(--text); cursor: pointer;
+            text-transform: none; letter-spacing: 0;
+        }
+        .correct-select input[type="radio"] { accent-color: var(--success); }
+
+        .modes-check {
+            display: flex; gap: 1rem;
+        }
+        .modes-check label {
+            display: flex; align-items: center; gap: 0.3rem;
+            font-size: 0.85rem; color: var(--text); cursor: pointer;
+            text-transform: none; letter-spacing: 0;
+        }
+        .modes-check input[type="checkbox"] { accent-color: var(--orange); }
+
+        .svg-preview {
+            margin-top: 0.5rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+            min-height: 60px;
+        }
+        .svg-preview svg { max-width: 100%; max-height: 200px; }
+        .svg-preview .placeholder { color: var(--text-muted); font-size: 0.8rem; }
+
+        .modal-actions {
+            display: flex; gap: 0.75rem; justify-content: flex-end;
+            margin-top: 1.5rem; padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Delete confirm */
+        .delete-confirm {
+            background: rgba(231,76,60,0.08);
+            border: 1px solid rgba(231,76,60,0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        .delete-confirm p { color: var(--error); margin-bottom: 0.75rem; font-size: 0.9rem; }
+
+        /* Toast */
+        .toast {
+            position: fixed; bottom: 2rem; right: 2rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem; font-weight: 500;
+            z-index: 2000;
+            animation: toastIn 0.3s ease;
+        }
+        .toast.success { background: var(--success); color: #fff; }
+        .toast.error { background: var(--error); color: #fff; }
+        @keyframes toastIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-header, .toolbar, .question-list { padding-left: 1rem; padding-right: 1rem; }
+            .options-grid { grid-template-columns: 1fr; }
+            .modal { padding: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Auth Gate -->
+<div id="gate">
+    <div class="spinner"></div>
+    <p>Verifying access...</p>
+</div>
+
+<!-- Admin Content (hidden until auth) -->
+<div id="adminApp" style="display:none;">
+    <header class="admin-header">
+        <h1>Admin Panel</h1>
+        <div class="stats">
+            <strong id="totalCount">0</strong> questions &middot;
+            <span id="topicCount">0</span> topics
+        </div>
+    </header>
+
+    <div class="toolbar">
+        <input type="text" id="searchInput" placeholder="Search questions...">
+        <select id="topicFilter">
+            <option value="">All Topics</option>
+        </select>
+        <select id="modeFilter">
+            <option value="">All Modes</option>
+            <option value="quick">Quick Quiz</option>
+            <option value="full">Full Quiz</option>
+            <option value="interview">Interview Simulator</option>
+        </select>
+        <button class="btn btn-primary" onclick="openModal()">+ Add Question</button>
+    </div>
+
+    <div class="question-list" id="questionList">
+        <div class="empty-state">
+            <div class="spinner" style="margin: 0 auto 1rem;"></div>
+            <p>Loading questions...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-overlay hidden" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+        <h2 id="modalTitle">Add Question</h2>
+        <input type="hidden" id="editDocId">
+
+        <div class="form-group">
+            <label>Question Text</label>
+            <textarea id="fQuestionText" placeholder="Enter the question..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Answer Options</label>
+            <div class="options-grid">
+                <div class="option-input-row">
+                    <span class="letter">A</span>
+                    <input type="text" id="fOpt0" placeholder="Option A">
+                </div>
+                <div class="option-input-row">
+                    <span class="letter">B</span>
+                    <input type="text" id="fOpt1" placeholder="Option B">
+                </div>
+                <div class="option-input-row">
+                    <span class="letter">C</span>
+                    <input type="text" id="fOpt2" placeholder="Option C">
+                </div>
+                <div class="option-input-row">
+                    <span class="letter">D</span>
+                    <input type="text" id="fOpt3" placeholder="Option D">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Correct Answer</label>
+            <div class="correct-select">
+                <label><input type="radio" name="correct" value="0"> A</label>
+                <label><input type="radio" name="correct" value="1" checked> B</label>
+                <label><input type="radio" name="correct" value="2"> C</label>
+                <label><input type="radio" name="correct" value="3"> D</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Full Explanation</label>
+            <textarea id="fExplanation" class="tall" placeholder="Detailed explanation shown to registered users..."></textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Topic</label>
+            <select id="fTopic">
+                <option value="Design Fundamentals">Design Fundamentals</option>
+                <option value="CAD & Engineering Drawings">CAD & Engineering Drawings</option>
+                <option value="Machining">Machining</option>
+                <option value="Sheet Metal">Sheet Metal</option>
+                <option value="Plastics & Injection Molding">Plastics & Injection Molding</option>
+                <option value="3D Printing & Additive">3D Printing & Additive</option>
+                <option value="Materials & Heat Treatment">Materials & Heat Treatment</option>
+                <option value="FEA & Stress Analysis">FEA & Stress Analysis</option>
+                <option value="Mechanical Components">Mechanical Components</option>
+                <option value="Welding & Joining">Welding & Joining</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Difficulty</label>
+            <select id="fDifficulty">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Modes</label>
+            <div class="modes-check">
+                <label><input type="checkbox" id="fModeQuick" checked> Quick Quiz</label>
+                <label><input type="checkbox" id="fModeFull" checked> Full Quiz</label>
+                <label><input type="checkbox" id="fModeInterview"> Interview Simulator</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>SVG Illustration (optional)</label>
+            <textarea id="fSvgCode" class="tall" placeholder="Paste SVG code here..." style="font-family:'IBM Plex Mono',monospace; font-size:0.8rem;"></textarea>
+            <div class="svg-preview" id="svgPreview">
+                <span class="placeholder">SVG preview will appear here</span>
+            </div>
+        </div>
+
+        <div id="deleteSection"></div>
+
+        <div class="modal-actions">
+            <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+            <button class="btn btn-primary" id="saveBtn" onclick="saveQuestion()">Save Question</button>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+    import { getFirestore, collection, getDocs, addDoc, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyA6XXSKUxjAeM6yCgaNtrZZvjy6Khk5GDg",
+        authDomain: "aljazariedu-c4131.firebaseapp.com",
+        databaseURL: "https://aljazariedu-c4131-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "aljazariedu-c4131",
+        storageBucket: "aljazariedu-c4131.firebasestorage.app",
+        messagingSenderId: "937448537048",
+        appId: "1:937448537048:web:902de11f23800301cd50ad"
+    };
+
+    const ADMIN_UID = "hbFGdmdsPSMhOYaNBsRm1r0nQJ93";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Topic icons map
+    const topicIcons = {
+        "Design Fundamentals": "📐",
+        "CAD & Engineering Drawings": "📏",
+        "Machining": "⚙️",
+        "Sheet Metal": "🔩",
+        "Plastics & Injection Molding": "🧪",
+        "3D Printing & Additive": "🖨️",
+        "Materials & Heat Treatment": "🔬",
+        "FEA & Stress Analysis": "📊",
+        "Mechanical Components": "🔧",
+        "Welding & Joining": "🔥"
+    };
+
+    // Store questions in memory
+    let allQuestions = [];
+
+    // ============================================
+    // AUTH GATE
+    // ============================================
+    onAuthStateChanged(auth, async (user) => {
+        const gate = document.getElementById('gate');
+        if (user && user.uid === ADMIN_UID) {
+            gate.style.display = 'none';
+            document.getElementById('adminApp').style.display = 'block';
+            await loadQuestions();
+        } else {
+            gate.classList.add('denied');
+            gate.querySelector('p').textContent = user
+                ? 'Access denied. Admin only.'
+                : 'Not logged in. Please log in at auth.html first.';
+        }
+    });
+
+    // ============================================
+    // LOAD QUESTIONS
+    // ============================================
+    async function loadQuestions() {
+        try {
+            const q = query(collection(db, 'questions'), orderBy('topic'));
+            const snapshot = await getDocs(q);
+            allQuestions = [];
+            snapshot.forEach(d => {
+                allQuestions.push({ id: d.id, ...d.data() });
+            });
+
+            // Populate topic filter
+            const topics = [...new Set(allQuestions.map(q => q.topic))].sort();
+            const topicFilter = document.getElementById('topicFilter');
+            topicFilter.innerHTML = '<option value="">All Topics</option>';
+            topics.forEach(t => {
+                topicFilter.innerHTML += `<option value="${t}">${t}</option>`;
+            });
+
+            // Update stats
+            document.getElementById('totalCount').textContent = allQuestions.length;
+            document.getElementById('topicCount').textContent = topics.length;
+
+            renderList();
+        } catch(e) {
+            console.error('Load error:', e);
+            document.getElementById('questionList').innerHTML =
+                `<div class="empty-state"><h3>Error loading questions</h3><p>${e.message}</p></div>`;
+        }
+    }
+
+    // ============================================
+    // RENDER LIST
+    // ============================================
+    function renderList() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const topicFilter = document.getElementById('topicFilter').value;
+        const modeFilter = document.getElementById('modeFilter').value;
+
+        let filtered = allQuestions.filter(q => {
+            if (searchTerm && !q.questionText.toLowerCase().includes(searchTerm) && !q.fullExplanation?.toLowerCase().includes(searchTerm)) return false;
+            if (topicFilter && q.topic !== topicFilter) return false;
+            if (modeFilter && !(q.modes || []).includes(modeFilter)) return false;
+            return true;
+        });
+
+        const container = document.getElementById('questionList');
+
+        if (filtered.length === 0) {
+            container.innerHTML = `<div class="empty-state"><h3>No questions found</h3><p>Try adjusting your filters or add a new question.</p></div>`;
+            return;
+        }
+
+        container.innerHTML = filtered.map(q => {
+            const modes = (q.modes || []).map(m =>
+                `<span class="q-badge mode-${m}">${m}</span>`
+            ).join('');
+            const hasSvg = q.svgCode ? '<span class="q-badge has-svg">SVG</span>' : '';
+
+            return `
+                <div class="q-card">
+                    <div class="q-card-header">
+                        <div class="q-text">${escapeHtml(q.questionText)}</div>
+                        <div class="q-card-actions">
+                            <button class="btn btn-ghost" onclick="window._editQuestion('${q.id}')">Edit</button>
+                            <button class="btn btn-danger" onclick="window._deleteQuestion('${q.id}')">Delete</button>
+                        </div>
+                    </div>
+                    <div class="q-meta">
+                        <span class="q-badge topic">${topicIcons[q.topic] || ''} ${q.topic}</span>
+                        <span class="q-badge difficulty">${q.difficulty || 'medium'}</span>
+                        ${modes}
+                        ${hasSvg}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.appendChild(document.createTextNode(text || ''));
+        return div.innerHTML;
+    }
+
+    // ============================================
+    // MODAL — OPEN / CLOSE
+    // ============================================
+    window.openModal = function(docId) {
+        const modal = document.getElementById('modalOverlay');
+        modal.classList.remove('hidden');
+        document.getElementById('deleteSection').innerHTML = '';
+
+        if (docId) {
+            // Edit mode
+            const q = allQuestions.find(q => q.id === docId);
+            if (!q) return;
+            document.getElementById('modalTitle').textContent = 'Edit Question';
+            document.getElementById('editDocId').value = docId;
+            document.getElementById('fQuestionText').value = q.questionText || '';
+            document.getElementById('fOpt0').value = (q.options || [])[0] || '';
+            document.getElementById('fOpt1').value = (q.options || [])[1] || '';
+            document.getElementById('fOpt2').value = (q.options || [])[2] || '';
+            document.getElementById('fOpt3').value = (q.options || [])[3] || '';
+            document.querySelector(`input[name="correct"][value="${q.correctAnswer}"]`).checked = true;
+            document.getElementById('fExplanation').value = q.fullExplanation || '';
+            document.getElementById('fTopic').value = q.topic || 'Design Fundamentals';
+            document.getElementById('fDifficulty').value = q.difficulty || 'medium';
+            document.getElementById('fModeQuick').checked = (q.modes || []).includes('quick');
+            document.getElementById('fModeFull').checked = (q.modes || []).includes('full');
+            document.getElementById('fModeInterview').checked = (q.modes || []).includes('interview');
+            document.getElementById('fSvgCode').value = q.svgCode || '';
+            updateSvgPreview();
+
+            // Show delete option
+            document.getElementById('deleteSection').innerHTML = `
+                <div class="delete-confirm">
+                    <p>Danger zone</p>
+                    <button class="btn btn-danger" onclick="window._confirmDelete('${docId}')">Delete This Question</button>
+                </div>
+            `;
+        } else {
+            // Add mode — reset
+            document.getElementById('modalTitle').textContent = 'Add Question';
+            document.getElementById('editDocId').value = '';
+            document.getElementById('fQuestionText').value = '';
+            document.getElementById('fOpt0').value = '';
+            document.getElementById('fOpt1').value = '';
+            document.getElementById('fOpt2').value = '';
+            document.getElementById('fOpt3').value = '';
+            document.querySelector('input[name="correct"][value="1"]').checked = true;
+            document.getElementById('fExplanation').value = '';
+            document.getElementById('fTopic').value = 'Design Fundamentals';
+            document.getElementById('fDifficulty').value = 'medium';
+            document.getElementById('fModeQuick').checked = true;
+            document.getElementById('fModeFull').checked = true;
+            document.getElementById('fModeInterview').checked = false;
+            document.getElementById('fSvgCode').value = '';
+            document.getElementById('svgPreview').innerHTML = '<span class="placeholder">SVG preview will appear here</span>';
+        }
+    };
+
+    window.closeModal = function() {
+        document.getElementById('modalOverlay').classList.add('hidden');
+    };
+
+    // ============================================
+    // SAVE QUESTION
+    // ============================================
+    window.saveQuestion = async function() {
+        const btn = document.getElementById('saveBtn');
+        const docId = document.getElementById('editDocId').value;
+
+        const questionText = document.getElementById('fQuestionText').value.trim();
+        const options = [
+            document.getElementById('fOpt0').value.trim(),
+            document.getElementById('fOpt1').value.trim(),
+            document.getElementById('fOpt2').value.trim(),
+            document.getElementById('fOpt3').value.trim()
+        ];
+        const correctAnswer = parseInt(document.querySelector('input[name="correct"]:checked').value);
+        const fullExplanation = document.getElementById('fExplanation').value.trim();
+        const topic = document.getElementById('fTopic').value;
+        const difficulty = document.getElementById('fDifficulty').value;
+        const svgCode = document.getElementById('fSvgCode').value.trim();
+
+        const modes = [];
+        if (document.getElementById('fModeQuick').checked) modes.push('quick');
+        if (document.getElementById('fModeFull').checked) modes.push('full');
+        if (document.getElementById('fModeInterview').checked) modes.push('interview');
+
+        // Validate
+        if (!questionText) { toast('Question text is required', 'error'); return; }
+        if (options.some(o => !o)) { toast('All four options are required', 'error'); return; }
+        if (!fullExplanation) { toast('Explanation is required', 'error'); return; }
+        if (modes.length === 0) { toast('Select at least one mode', 'error'); return; }
+
+        const data = {
+            questionText,
+            options,
+            correctAnswer,
+            fullExplanation,
+            topic,
+            topicIcon: topicIcons[topic] || '',
+            difficulty,
+            svgCode,
+            modes,
+            updatedAt: new Date().toISOString()
+        };
+
+        btn.disabled = true;
+        btn.textContent = 'Saving...';
+
+        try {
+            if (docId) {
+                await updateDoc(doc(db, 'questions', docId), data);
+                toast('Question updated');
+            } else {
+                data.createdAt = new Date().toISOString();
+                await addDoc(collection(db, 'questions'), data);
+                toast('Question added');
+            }
+            closeModal();
+            await loadQuestions();
+        } catch(e) {
+            console.error('Save error:', e);
+            toast('Error: ' + e.message, 'error');
+        }
+
+        btn.disabled = false;
+        btn.textContent = 'Save Question';
+    };
+
+    // ============================================
+    // DELETE
+    // ============================================
+    window._editQuestion = function(docId) {
+        openModal(docId);
+    };
+
+    window._deleteQuestion = function(docId) {
+        openModal(docId);
+        // Scroll to delete section
+        setTimeout(() => {
+            document.getElementById('deleteSection').scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+    };
+
+    window._confirmDelete = async function(docId) {
+        try {
+            await deleteDoc(doc(db, 'questions', docId));
+            toast('Question deleted');
+            closeModal();
+            await loadQuestions();
+        } catch(e) {
+            toast('Error: ' + e.message, 'error');
+        }
+    };
+
+    // ============================================
+    // SVG PREVIEW
+    // ============================================
+    function updateSvgPreview() {
+        const code = document.getElementById('fSvgCode').value.trim();
+        const preview = document.getElementById('svgPreview');
+        if (code && code.includes('<svg')) {
+            preview.innerHTML = code;
+        } else {
+            preview.innerHTML = '<span class="placeholder">SVG preview will appear here</span>';
+        }
+    }
+
+    document.getElementById('fSvgCode').addEventListener('input', updateSvgPreview);
+
+    // ============================================
+    // SEARCH & FILTER
+    // ============================================
+    document.getElementById('searchInput').addEventListener('input', renderList);
+    document.getElementById('topicFilter').addEventListener('change', renderList);
+    document.getElementById('modeFilter').addEventListener('change', renderList);
+
+    // ============================================
+    // TOAST
+    // ============================================
+    function toast(msg, type = 'success') {
+        const el = document.createElement('div');
+        el.className = `toast ${type}`;
+        el.textContent = msg;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 3000);
+    }
+    window.toast = toast;
+</script>
+
+</body>
+</html>
